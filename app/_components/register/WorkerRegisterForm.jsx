@@ -1,7 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { Button } from "@/components/ui/button";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import {
   Select,
   SelectContent,
@@ -11,10 +15,16 @@ import {
 } from "@/components/ui/select";
 
 const WorkerRegisterForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <div className="flex flex-col  items-center">
       <p className="font-bold text-2xl mt-5">Create Worker Account</p>
-      <form className=" w-full flex justify-center flex-col items-center gap-y-10 mt-5">
+      <form className=" w-full flex justify-center flex-col items-center gap-y-8 mt-5">
         <TextField
           id="standard-basic"
           label="Name"
@@ -40,6 +50,27 @@ const WorkerRegisterForm = () => {
           className="w-3/4"
           required
           type="text"
+        />
+        <TextField
+          id="standard-password"
+          label="Password"
+          variant="outlined"
+          className="w-3/4"
+          required
+          type={showPassword ? "text" : "password"}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  edge="end"
+                >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
         />
         <Select required>
           <SelectTrigger className="w-3/4">
