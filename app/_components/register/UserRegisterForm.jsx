@@ -7,13 +7,17 @@ import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import toast, { Toaster } from "react-hot-toast";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const UserRegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = React.useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
   async function RegisterUser(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -25,6 +29,7 @@ const UserRegisterForm = () => {
     const Address = formData.get("Address");
 
     try {
+      setLoading(true);
       const response = await fetch(
         "http://localhost:8000/api/v1/users/UserRegister",
         {
@@ -45,11 +50,15 @@ const UserRegisterForm = () => {
       const result = await response.json();
 
       if (result.success) {
+        setLoading(false);
         toast.success(result.message);
+        event.target.reset();
       } else {
+        setLoading(false);
         toast.error(result.message);
       }
     } catch (error) {
+      setLoading(false);
       toast.error("please try again");
     }
   }
@@ -57,6 +66,12 @@ const UserRegisterForm = () => {
   return (
     <div className="flex flex-col  items-center">
       <Toaster />
+      <Backdrop
+        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <p className="font-bold text-2xl mt-5">Create User Account</p>
       <form
         className=" w-full flex justify-center flex-col items-center gap-y-8 mt-5"

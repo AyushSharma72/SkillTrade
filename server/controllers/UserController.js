@@ -1,5 +1,6 @@
 const UserModal = require("../modals/UserModal");
 const bcrypt = require("bcrypt");
+const WorkerModal = require("../modals/WorkerModal");
 
 async function RegisterUser(req, resp) {
   try {
@@ -13,6 +14,7 @@ async function RegisterUser(req, resp) {
     }
     const userEmailExists = await UserModal.findOne({ Email });
     const userMobileExists = await UserModal.findOne({ MobileNo });
+    const WorkerMobileExists = await WorkerModal.findOne({ MobileNo });
 
     if (userEmailExists) {
       return resp.status(409).send({
@@ -20,10 +22,10 @@ async function RegisterUser(req, resp) {
         message: "User already exists, please login",
       });
     }
-    if (userMobileExists) {
+    if (userMobileExists || WorkerMobileExists) {
       return resp.status(409).send({
         success: false,
-        message: "Mobile number already exists, please login",
+        message: "Mobile number already exists",
       });
     }
 
@@ -40,7 +42,7 @@ async function RegisterUser(req, resp) {
 
     resp.status(201).send({
       success: true,
-      message: "User created succesfully",
+      message: "Account created succesfully",
     });
   } catch (error) {
     resp.status(500).send({ success: false, error: "Internal server error" });

@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const ConnectDb = require("./dbconfig");
 const UserRoutes = require("./routes/UserRoutes");
+const WorkerRoutes = require("./routes/WorkerRoutes");
 const app = express();
 
 //parse the data
@@ -18,7 +19,8 @@ dotenv.config();
 ConnectDb();
 
 app.use("/api/v1/users", UserRoutes);
- 
+app.use("/api/v1/workers", WorkerRoutes);
+
 const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, () => {
