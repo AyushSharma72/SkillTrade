@@ -20,6 +20,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
+import { useAuth } from "../_context/UserAuthContent";
 
 const drawerWidth = 240;
 
@@ -57,6 +58,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 const Navbar = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
+  const [auth, setauth] = useAuth();
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -75,18 +77,31 @@ const Navbar = () => {
           <Link href="/" className={`${pathname === "/" ? "border-b-2 " : ""}`}>
             Home
           </Link>
-          <Link
-            href="/register"
-            className={`${pathname === "/register" ? "border-b-2 " : ""}`}
-          >
-            Register
-          </Link>
-          <Link
-            href="/login"
-            className={`${pathname === "/login" ? "border-b-2 " : ""}`}
-          >
-            Login
-          </Link>
+          {auth.user ? (
+            <Link
+              href="/create_request"
+              className={`${
+                pathname === "/create_request" ? "border-b-2 " : ""
+              }`}
+            >
+              Create request
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/register"
+                className={`${pathname === "/register" ? "border-b-2 " : ""}`}
+              >
+                Register
+              </Link>
+              <Link
+                href="/login"
+                className={`${pathname === "/login" ? "border-b-2 " : ""}`}
+              >
+                Login
+              </Link>
+            </>
+          )}
         </div>
       </div>
 

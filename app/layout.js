@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "./_components/Navbar";
+import { AuthProvider } from "./_context/UserAuthContent"; // Import the AuthProvider
 
 // Import Inter font from Google Fonts
 const inter = Inter({
@@ -18,11 +19,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body
-        className={`${inter.variable}   antialiased`}
+        className={`${inter.variable} antialiased`}
         style={{ fontFamily: "Inter, Helvetica, sans-serif" }} // Set the global font family
       >
-        <Navbar />
-        {children}
+        <AuthProvider>
+          <Navbar />
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

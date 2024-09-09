@@ -9,10 +9,12 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import toast, { Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useAuth } from "@/app/_context/UserAuthContent";
 
 const UserRegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [auth, setauth] = useAuth();
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
