@@ -29,6 +29,7 @@ const UserRegisterForm = () => {
     const Email = formData.get("Email");
     const Password = formData.get("Password");
     const Address = formData.get("Address");
+    const Pincode = formData.get("Pincode");
 
     try {
       setLoading(true);
@@ -45,6 +46,7 @@ const UserRegisterForm = () => {
             Email,
             Password,
             Address,
+            Pincode,
           }),
         }
       );
@@ -74,11 +76,12 @@ const UserRegisterForm = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <p className="font-bold text-2xl mt-5">Create User Account</p>
+
       <form
-        className=" w-full flex justify-center flex-col items-center gap-y-8 mt-5"
+        className=" w-full flex justify-center flex-col items-center gap-y-5 mt-5 formshadow py-2 rounded-md"
         onSubmit={RegisterUser}
       >
+        <p className="font-bold text-2xl">Create User Account</p>
         <TextField
           id="standard-basic"
           label="Name"
@@ -137,6 +140,15 @@ const UserRegisterForm = () => {
           required
           type="text"
           name="Address"
+        />
+        <TextField
+          id="standard-basic"
+          label="Area Pincode"
+          variant="outlined"
+          className="w-3/4"
+          required
+          type="number"
+          name="Pincode"
         />
         <Button>Register</Button>
       </form>

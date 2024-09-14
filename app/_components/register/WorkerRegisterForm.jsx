@@ -38,6 +38,7 @@ const WorkerRegisterForm = () => {
     const MobileNo = formData.get("MobileNumber");
     const Address = formData.get("Address");
     const Password = formData.get("Password");
+    const Pincode = formData.get("Pincode");
 
     // Ensure that the service type is selected
     if (!serviceType) {
@@ -60,6 +61,7 @@ const WorkerRegisterForm = () => {
             Address,
             Password,
             ServiceType: serviceType,
+            Pincode,
           }),
         }
       );
@@ -81,7 +83,7 @@ const WorkerRegisterForm = () => {
   }
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center ">
       <Toaster />
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
@@ -89,11 +91,12 @@ const WorkerRegisterForm = () => {
       >
         <CircularProgress color="inherit" />
       </Backdrop>
-      <p className="font-bold text-2xl mt-5">Create Worker Account</p>
+
       <form
-        className="w-full flex justify-center flex-col items-center gap-y-8 mt-5"
+        className="w-full flex justify-center flex-col items-center gap-y-5 mt-5 formshadow py-2 rounded-md"
         onSubmit={RegisterWorker}
       >
+        <p className="font-bold text-2xl ">Create Worker Account</p>
         <TextField
           id="standard-basic"
           label="Name"
@@ -121,6 +124,15 @@ const WorkerRegisterForm = () => {
           required
           type="text"
           name="Address"
+        />
+        <TextField
+          id="standard-basic"
+          label="Area Pincode"
+          variant="outlined"
+          className="w-3/4"
+          required
+          type="number"
+          name="Pincode"
         />
         <TextField
           id="standard-password"

@@ -4,7 +4,8 @@ const UserModal = require("../modals/UserModal");
 
 async function RegisterWorker(req, resp) {
   try {
-    const { Name, MobileNo, ServiceType, Password, Address } = req.body;
+    const { Name, MobileNo, ServiceType, Password, Address, Pincode } =
+      req.body;
 
     if (!Name || !MobileNo || !ServiceType || !Password || !Address) {
       return resp.status(400).send({
@@ -30,6 +31,7 @@ async function RegisterWorker(req, resp) {
       ServiceType,
       Password: hashedPassword,
       Address,
+      Pincode,
     });
     await newWorker.save();
 

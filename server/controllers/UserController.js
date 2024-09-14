@@ -5,7 +5,7 @@ const UserModal = require("../modals/UserModal");
 
 async function RegisterUser(req, resp) {
   try {
-    const { Name, MobileNo, Email, Password, Address } = req.body;
+    const { Name, MobileNo, Email, Password, Address, Pincode } = req.body;
 
     if (!Name || !MobileNo || !Email || !Password || !Address) {
       return resp.status(400).send({
@@ -38,6 +38,7 @@ async function RegisterUser(req, resp) {
       Email,
       Password: hashedPassword,
       Address,
+      Pincode,
     });
     await newuser.save();
 

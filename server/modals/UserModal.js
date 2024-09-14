@@ -23,6 +23,10 @@ const UserSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  Pincode: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Users", UserSchema);

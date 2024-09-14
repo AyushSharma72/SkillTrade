@@ -4,6 +4,8 @@ const dotenv = require("dotenv");
 const ConnectDb = require("./dbconfig");
 const UserRoutes = require("./routes/UserRoutes");
 const WorkerRoutes = require("./routes/WorkerRoutes");
+const RequestRoutes = require("./routes/RequestRoutes");
+
 const app = express();
 
 //parse the data
@@ -20,6 +22,7 @@ ConnectDb();
 
 app.use("/api/v1/users", UserRoutes);
 app.use("/api/v1/workers", WorkerRoutes);
+app.use("/api/v1/request", RequestRoutes);
 
 const PORT = process.env.PORT || 8000;
 

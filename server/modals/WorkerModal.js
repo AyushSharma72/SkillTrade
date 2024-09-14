@@ -22,6 +22,10 @@ const WorkerSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  Pincode: {
+    type: Number,
+    required: true,
+  },
 });
 
 module.exports = mongoose.model("Workers", WorkerSchema);

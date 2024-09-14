@@ -82,10 +82,10 @@ const LoginForm = () => {
         src={loginimage}
         className="lg:w-[500px] lg:h-[400px] sm:w-[300px] sm:h-[300px] hidden md:block"
       />
-      <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%]">
-        <p className="font-bold text-2xl mt-5">LOGIN</p>
+      <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%] formshadow py-5 px-2 rounded-md h-fit">
+        <p className="font-bold text-2xl ">LOGIN</p>
         <form
-          className="w-full flex justify-center flex-col items-center gap-y-10 mt-5"
+          className="w-full flex justify-center flex-col items-center gap-y-10"
           onSubmit={HandleLogin}
         >
           <TextField
