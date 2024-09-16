@@ -58,4 +58,38 @@ async function CreateRequest(req, resp) {
   }
 }
 
-module.exports = { CreateRequest };
+async function GetUserRequest(req, resp) {
+  try {
+    const { id, page } = req.params;
+
+    const totalRequests = await RequestModal.countDocuments({ user: id });
+
+    // Fetch the requests for the current page
+    const requests = await RequestModal.find({ user: id })
+      .select("-image")
+      .limit(5)
+      .skip((page-1) * 5)
+      .sort({ createdAt: -1 });
+ 
+    if (requests && requests.length) { 
+      return resp.status(200).send({
+        success: true,
+        totalRequests,
+        requests,
+      });
+    } else {
+      return resp.status(400).send({
+        success: false,
+        message: "No requests found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    resp.status(500).send({
+      success: false,
+      message: "Error in API",
+    });
+  }
+}
+
+module.exports = { CreateRequest, GetUserRequest };

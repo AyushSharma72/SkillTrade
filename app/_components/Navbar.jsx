@@ -21,6 +21,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "../_context/UserAuthContent";
+import Menu from "../_components/NavBarComponenets/menu";
 
 const drawerWidth = 240;
 
@@ -67,25 +68,32 @@ const Navbar = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
   const pathname = usePathname();
   return (
-    <div className="bg-black  text-white ">
+    <div className="bg-black flex justify-center text-white ">
       {/* navbar big screen  */}
-      <div className="w-3/4  justify-between m-auto  sm:flex hidden">
+      <div className="w-full  xl:w-3/4 justify-between sm:flex hidden">
         <Image src={logo} className="w-[200px] h-[70px]"></Image>
-        <div className="xl:w-1/4 sm:w-1/2 flex items-center justify-around font-bold">
-          <Link href="/" className={`${pathname === "/" ? "border-b-2 " : ""}`}>
-            Home
-          </Link>
+        <div className=" xl:w-1/2 sm:w-1/2 flex items-center justify-around xl:justify-around font-bold">
           {auth.user ? (
-            <Link
-              href="/create_request"
-              className={`${
-                pathname === "/create_request" ? "border-b-2 " : ""
-              }`}
-            >
-              Create request
-            </Link>
+            <>
+              <Link
+                href="/"
+                className={`${pathname === "/" ? "border-b-2 " : ""}`}
+              >
+                Home
+              </Link>{" "}
+              <Link
+                href="/user/create_request"
+                className={`${
+                  pathname === "/user/create_request" ? "border-b-2 " : ""
+                }`}
+              >
+                Create request
+              </Link>
+              <Menu />
+            </>
           ) : (
             <>
               <Link

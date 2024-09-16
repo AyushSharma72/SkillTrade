@@ -35,6 +35,10 @@ const RequestSchema = new mongoose.Schema(
         required: true,
       },
     },
+    status: {
+      type: String,
+      default: "Pending",
+    },
     time: {
       type: String,
       required: true,

@@ -11,11 +11,11 @@ import StepLabel from "@mui/material/StepLabel";
 import SvgIcon from "@mui/joy/SvgIcon";
 import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
-import { useAuth } from "../_context/UserAuthContent";
+import { useAuth } from "@/app/_context/UserAuthContent";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { services, steps } from "../_Arrays/Arrays";
-import success from "../assests/success.svg";
+import { services, steps } from "../../_Arrays/Arrays";
+import success from "../../assests/success.svg";
 import Image from "next/image";
 import { Toaster, toast } from "react-hot-toast";
 const CreateRequest = () => {
@@ -139,7 +139,7 @@ const CreateRequest = () => {
       isCustomService ? customService : service?.value
     );
     formData.append("description", description);
-    formData.append("image", image.file);
+    formData.append("image", image?.file ? image.file : null);
     formData.append("time", time);
     formData.append("date", date);
     formData.append(
