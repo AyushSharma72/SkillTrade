@@ -17,6 +17,10 @@ import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import Pagination from "@mui/material/Pagination";
 import GetRequestData from "./GetRequestData";
 import { PulseLoader } from "react-spinners";
+import Empty from "../../assests/Empty.svg";
+import Image from "next/image";
+import Link from "next/link";
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -43,11 +47,12 @@ export default function ViewRequest() {
   const [data, setdata] = useState([]);
   const [pages, SetPages] = useState(1);
   const [pageNumber, SetPageNumber] = useState(1);
-  const [loading, setloading] = useState(true);
+  const [loading, setloading] = useState(false);
 
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
   };
+
   async function GetData() {
     try {
       setloading(true);
@@ -67,11 +72,13 @@ export default function ViewRequest() {
       setloading(false);
     }
   }
+
   useEffect(() => {
-    if (auth?.user?._id) {
+    if (auth?.user?._id && pageNumber) {
       GetData();
     }
   }, [pageNumber, auth]);
+
   return (
     <div>
       <Toaster />
@@ -79,82 +86,80 @@ export default function ViewRequest() {
         <div className="h-[600px] w-full  flex  ">
           <PulseLoader size={20} className="m-auto" />
         </div>
-      ) : (
+      ) : data.length > 0 ? (
         <div>
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
             Requests
           </p>
-          {data.length > 0 ? (
-            <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col items-center pb-3">
-              <Table aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="center">
-                      Service type
+          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col items-center pb-3">
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center">Service type</StyledTableCell>
+                  <StyledTableCell align="center">Location</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Visiting Date
+                  </StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                  <StyledTableCell align="center">Action</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {data.map((data) => (
+                  <StyledTableRow>
+                    <StyledTableCell component="th" scope="row" align="center">
+                      {data.service}
                     </StyledTableCell>
-                    <StyledTableCell align="center">Location</StyledTableCell>
                     <StyledTableCell align="center">
-                      Visiting Date
+                      {data.location}
                     </StyledTableCell>
-                    <StyledTableCell align="center">Status</StyledTableCell>
-                    <StyledTableCell align="center">Action</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {data.map((data) => (
-                    <StyledTableRow>
-                      <StyledTableCell
-                        component="th"
-                        scope="row"
-                        align="center"
-                      >
-                        {data.service}
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        {data.location}
-                      </StyledTableCell>
 
-                      <StyledTableCell align="center">
-                        {" "}
-                        <div className="flex flex-col">
-                          <span className="font-bold">
-                            {moment(data.date).format("MMMM Do YYYY")}
-                          </span>
-                        </div>
-                      </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {" "}
+                      <div className="flex flex-col">
+                        <span className="font-bold">
+                          {moment(data.date).format("MMMM Do YYYY")}
+                        </span>
+                      </div>
+                    </StyledTableCell>
 
-                      <StyledTableCell align="center">
-                        {data.status === "Pending" ? (
-                          <Flex gap="4px 0" wrap>
-                            <Tag icon={<ClockCircleOutlined />} color="warning">
-                              {data.status}
-                            </Tag>
-                          </Flex>
-                        ) : (
-                          <Flex gap="4px 0" wrap>
-                            <Tag icon={<CheckCircleOutlined />} color="success">
-                              {data.status}
-                            </Tag>
-                          </Flex>
-                        )}
-                      </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {data.status === "Pending" ? (
+                        <Flex gap="4px 0" wrap>
+                          <Tag icon={<ClockCircleOutlined />} color="warning">
+                            {data.status}
+                          </Tag>
+                        </Flex>
+                      ) : (
+                        <Flex gap="4px 0" wrap>
+                          <Tag icon={<CheckCircleOutlined />} color="success">
+                            {data.status}
+                          </Tag>
+                        </Flex>
+                      )}
+                    </StyledTableCell>
 
-                      <StyledTableCell align="center">
-                        <Button>View</Button>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <Pagination
-                count={pages}
-                color="primary"
-                onChange={handlePageChange}
-              />
-            </TableContainer>
-          ) : (
-            <p>no data</p>
-          )}
+                    <StyledTableCell align="center">
+                      <Link href={`Request_Details/${data._id}`}><Button>View</Button></Link>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Pagination
+              className="mt-5"
+              count={pages}
+              page={pageNumber}
+              color="primary"
+              onChange={handlePageChange}
+            />
+          </TableContainer>
+        </div>
+      ) : (
+        <div className="w-full flex flex-col justify-center items-center">
+          <p className="font-bold text-3xl text-center mt-10">No Data</p>
+          <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
+          <Link href="/"><Button>Home</Button></Link>
         </div>
       )}
     </div>

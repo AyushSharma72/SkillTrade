@@ -191,7 +191,9 @@ const CreateRequest = () => {
         <div className="flex flex-col justify-center items-center gap-y-4 h-[500px]">
           <p className="font-bold text-2xl">Request submitted</p>
           <Image src={success} className="w-[300px]"></Image>
-          <Button>View request</Button>
+          <Link href="/view_request">
+            <Button>View request</Button>
+          </Link>
         </div>
       ) : (
         <React.Fragment>
