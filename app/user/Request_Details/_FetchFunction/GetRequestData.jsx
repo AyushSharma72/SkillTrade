@@ -1,7 +1,7 @@
 export default async function GetRequestData(rid) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/GetUserRequest/${rid}`
+      `http://localhost:8000/api/v1/request//GetSingleUserRequest/${rid}`
     );
 
     if (response.status === 200) {
