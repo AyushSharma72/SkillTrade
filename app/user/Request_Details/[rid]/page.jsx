@@ -16,7 +16,7 @@ const page = () => {
     {
       key: "2",
       label: "Timeline",
-      children: "Content of Tab Pane 2",
+      children: "timeline",
       icon: <TbTimeline />,
     },
     {
@@ -29,7 +29,7 @@ const page = () => {
 
   return (
     <div>
-      <Tabs defaultActiveKey="1" items={items} />;
+      <Tabs defaultActiveKey="1" items={items} className="sm:mt-0 mt-20" />
     </div>
   );
 };
