@@ -9,8 +9,8 @@ import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendarCheck } from "react-icons/fa";
 import { GrStatusInfo } from "react-icons/gr";
 import moment from "moment";
-import CircularProgress from '@mui/material/CircularProgress';
-import Box from '@mui/material/Box';
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -42,9 +42,9 @@ const RequestDetails = () => {
     <div className="flex flex-col items-center justify-center mb-10">
       <p className="text-2xl font-bold">Request Details</p>
       {loading ? (
-       <Box sx={{ display: 'flex' }} className="mt-5">
-       <CircularProgress />
-     </Box>
+        <Box sx={{ display: "flex" }} className="mt-5">
+          <CircularProgress />
+        </Box>
       ) : (
         <div className="w-full">
           <div className="flex flex-col justify-center items-start m-auto w-full lg:w-3/4 mt-5 xl:justify-around p-2">
@@ -78,9 +78,14 @@ const RequestDetails = () => {
                       Visiting Date :
                     </span>
                     <p className="text-lg">
-                      {data.date
-                        ? moment(data.date).format("MMMM Do YYYY")
-                        : "No date available"}
+                      {data.date ? (
+                        <>
+                          {moment(data.date).format("MMMM Do YYYY")} at{" "}
+                          {data.time}
+                        </>
+                      ) : (
+                        "No date available"
+                      )}
                     </p>
                   </div>
                   <hr />

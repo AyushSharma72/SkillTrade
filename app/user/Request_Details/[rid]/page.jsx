@@ -5,6 +5,7 @@ import { TbTimeline } from "react-icons/tb";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 import RequestDetails from "../_Components/RequestDetails";
 import TimeLine from "../_Components/TimeLine";
+import Reschedule from "../_Components/Reschedule";
 const page = () => {
   const items = [
     {
@@ -16,13 +17,13 @@ const page = () => {
     {
       key: "2",
       label: "Timeline",
-      children: <TimeLine/>,
+      children: <TimeLine />,
       icon: <TbTimeline />,
     },
     {
       key: "3",
       label: "Reschedule",
-      children: "Content of Tab Pane 3",
+      children: <Reschedule />,
       icon: <RiCalendarScheduleFill />,
     },
   ];
