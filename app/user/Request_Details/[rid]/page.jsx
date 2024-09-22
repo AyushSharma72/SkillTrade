@@ -4,7 +4,7 @@ import { CgDetailsMore } from "react-icons/cg";
 import { TbTimeline } from "react-icons/tb";
 import { RiCalendarScheduleFill } from "react-icons/ri";
 import RequestDetails from "../_Components/RequestDetails";
-
+import TimeLine from "../_Components/TimeLine";
 const page = () => {
   const items = [
     {
@@ -16,7 +16,7 @@ const page = () => {
     {
       key: "2",
       label: "Timeline",
-      children: "timeline",
+      children: <TimeLine/>,
       icon: <TbTimeline />,
     },
     {
