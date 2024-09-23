@@ -20,3 +20,9 @@ body::-webkit-scrollbar {
   justify-content: center !important;
   align-items: center !important;
 }
+
+.react-datepicker__input-container {
+  width: 100% !important;
+  display: flex;
+  justify-content: center;
+} 

@@ -150,9 +150,46 @@ async function GetRequestPhotoController(req, resp) {
   }
 }
 
+async function EditRequestController(req, resp) {
+  try {
+    const { date, time, address } = req.fields;
+    const { rid } = req.params;
+    const request = await RequestModal.findById(rid);
+    if (request) {
+      const updatedRequest = await RequestModal.findByIdAndUpdate(
+        rid,
+        {
+          date: date || request.date,
+          time: time || request.time,
+          location: address || request.location,
+        },
+        { new: true }
+      );
+      await updatedRequest.save();
+
+      return resp.status(200).send({
+        success: true,
+        message: "request updated",
+        updatedRequest,
+      });
+    } else {
+      return resp.status(404).send({
+        success: false,
+        message: "request not found ",
+      });
+    }
+  } catch (error) {
+    return resp.status(400).send({
+      success: false,
+      message: "Error in Updation",
+    });
+  }
+}
+
 module.exports = {
   CreateRequest,
   GetUserRequest,
   GetSingleUserRequest,
   GetRequestPhotoController,
+  EditRequestController,
 };

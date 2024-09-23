@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
-import { Flex, Tag } from "antd";
+import { Tag } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import Pagination from "@mui/material/Pagination";
 import GetRequestData from "./GetRequestData";
@@ -20,7 +20,6 @@ import { PulseLoader } from "react-spinners";
 import Empty from "../../assests/Empty.svg";
 import Image from "next/image";
 import Link from "next/link";
-
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -125,22 +124,23 @@ export default function ViewRequest() {
 
                     <StyledTableCell align="center">
                       {data.status === "Pending" ? (
-                        <Flex gap="4px 0" wrap>
+                       
                           <Tag icon={<ClockCircleOutlined />} color="warning">
                             {data.status}
                           </Tag>
-                        </Flex>
+                    
                       ) : (
-                        <Flex gap="4px 0" wrap>
+                       
                           <Tag icon={<CheckCircleOutlined />} color="success">
                             {data.status}
-                          </Tag>
-                        </Flex>
+                          </Tag> 
                       )}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      <Link href={`Request_Details/${data._id}`}><Button>View</Button></Link>
+                      <Link href={`Request_Details/${data._id}`}>
+                        <Button>View</Button>
+                      </Link>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
@@ -159,7 +159,9 @@ export default function ViewRequest() {
         <div className="w-full flex flex-col justify-center items-center">
           <p className="font-bold text-3xl text-center mt-10">No Data</p>
           <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
-          <Link href="/"><Button>Home</Button></Link>
+          <Link href="/">
+            <Button>Home</Button>
+          </Link>
         </div>
       )}
     </div>
