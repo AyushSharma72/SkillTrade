@@ -10,6 +10,7 @@ export default function CheckLogin(WrappedComponent) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const router = useRouter();
+    
     useEffect(() => {
       const checkAuth = async () => {
         try {

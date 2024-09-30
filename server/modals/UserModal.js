@@ -27,6 +27,10 @@ const UserSchema = mongoose.Schema({
     type: Number,
     required: true,
   },
+  image: {
+    data: Buffer,
+    contentType: String,
+  },
 });
 
 module.exports = mongoose.model("Users", UserSchema);

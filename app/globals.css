@@ -25,4 +25,9 @@ body::-webkit-scrollbar {
   width: 100% !important;
   display: flex;
   justify-content: center;
-} 
+}
+.ant-drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}

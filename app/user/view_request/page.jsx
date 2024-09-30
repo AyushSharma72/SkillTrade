@@ -20,6 +20,7 @@ import { PulseLoader } from "react-spinners";
 import Empty from "../../assests/Empty.svg";
 import Image from "next/image";
 import Link from "next/link";
+import UserPrivateRoutes from "./../../_components/privateroutes/UserPrivateRoutes";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,7 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function ViewRequest() {
+function ViewRequest() {
   const [auth, setauth] = useAuth();
   const [data, setdata] = useState([]);
   const [pages, SetPages] = useState(1);
@@ -124,16 +125,13 @@ export default function ViewRequest() {
 
                     <StyledTableCell align="center">
                       {data.status === "Pending" ? (
-                       
-                          <Tag icon={<ClockCircleOutlined />} color="warning">
-                            {data.status}
-                          </Tag>
-                    
+                        <Tag icon={<ClockCircleOutlined />} color="warning">
+                          {data.status}
+                        </Tag>
                       ) : (
-                       
-                          <Tag icon={<CheckCircleOutlined />} color="success">
-                            {data.status}
-                          </Tag> 
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                          {data.status}
+                        </Tag>
                       )}
                     </StyledTableCell>
 
@@ -167,3 +165,5 @@ export default function ViewRequest() {
     </div>
   );
 }
+
+export default UserPrivateRoutes(ViewRequest);

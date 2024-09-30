@@ -18,7 +18,11 @@ import { services, steps } from "../../_Arrays/Arrays";
 import success from "../../assests/success.svg";
 import Image from "next/image";
 import Link from "next/link";
+import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
+
 import { Toaster, toast } from "react-hot-toast";
+
+
 const CreateRequest = () => {
   //mui
   const [activeStep, setActiveStep] = useState(0);
@@ -375,4 +379,4 @@ const CreateRequest = () => {
   );
 };
 
-export default CreateRequest;
+export default UserPrivateRoutes(CreateRequest);

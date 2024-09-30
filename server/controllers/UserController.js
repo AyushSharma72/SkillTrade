@@ -1,4 +1,4 @@
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const WorkerModal = require("../modals/WorkerModal");
 const UserModal = require("../modals/UserModal");
@@ -121,4 +121,88 @@ async function UserLogin(req, resp) {
   }
 }
 
-module.exports = { RegisterUser, UserLogin };
+async function GetUserInfo(req, resp) {
+  try {
+    const { uid } = req.params;
+    const user = await UserModal.findById(uid);
+    if (user) {
+      return resp.status(200).send({
+        success: true,
+        user,
+      });
+    } else {
+      return resp.status(400).send({
+        success: false,
+        message: "user not found",
+      });
+    }
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "error",
+    });
+  }
+}
+
+// async function UpdateUserInfo(req, resp) {
+//   try {
+//     const { uid } = req.params;
+
+//     // Find the user by ID
+//     const user = await UserModal.findById(uid);
+//     if (!user) {
+//       return resp.status(404).send({
+//         success: false,
+//         message: "User not found",
+//       });
+//     }
+
+//     // Destructure image from files and other fields from req
+//     const { image } = req.files || {};
+//     const { Name, MobileNo, Address, Pincode } = req.fields;
+
+//     // Update user fields
+//     const updatedUser = await UserModal.findByIdAndUpdate(
+//       uid,
+//       {
+//         Name: Name || user.Name,
+//         MobileNo: MobileNo || user.MobileNo,
+//         Address: Address || user.Address, // Fixed typo from Addres to Address
+//         Pincode: Pincode || user.Pincode,
+//       },
+//       { new: true }
+//     );
+
+//     // Handle image update
+//     if (image && image.path) {
+//       try {
+//         updatedUser.image.data = await fs.readFile(image.path);
+//         updatedUser.image.contentType = image.type;
+//       } catch (error) {
+//         return resp.status(400).send({
+//           success: false,
+//           message: "Image processing failed",
+//         });
+//       }
+//     }
+
+//     // Save the updated user
+//     await updatedUser.save();
+
+//     // Send successful response
+//     return resp.status(200).send({
+//       success: true,
+//       message: "User updated successfully",
+//       updateduser: updatedUser,
+//     });
+//   } catch (error) {
+//     // Send error response
+//     return resp.status(500).send({
+//       success: false,
+//       message: "Internal server error",
+//       error: error.message,
+//     });
+//   }
+// }
+
+module.exports = { RegisterUser, UserLogin, GetUserInfo };

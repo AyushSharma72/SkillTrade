@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { useState, useEffect, useContext, createContext } from "react";
 
 const AuthContext = createContext();
@@ -16,7 +16,7 @@ function AuthProvider({ children }) {
       const ParseData = JSON.parse(data);
       Setauth({
         ...auth,
-        user: ParseData.user?ParseData.user:ParseData.worker,
+        user: ParseData.user ? ParseData.user : ParseData.worker,
         token: ParseData.token,
       });
     }

@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import { Tabs } from "antd";
 import { CgDetailsMore } from "react-icons/cg";
@@ -6,6 +7,8 @@ import { RiCalendarScheduleFill } from "react-icons/ri";
 import RequestDetails from "../_Components/RequestDetails";
 import TimeLine from "../_Components/TimeLine";
 import Reschedule from "../_Components/Reschedule";
+import UserPrivateRoutes from "../../../_components/privateroutes/UserPrivateRoutes";
+
 const page = () => {
   const items = [
     {
@@ -35,4 +38,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default UserPrivateRoutes(page);

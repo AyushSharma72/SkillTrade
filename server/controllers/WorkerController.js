@@ -1,5 +1,5 @@
 const WorkerModal = require("../modals/WorkerModal");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const UserModal = require("../modals/UserModal");
 
 async function RegisterWorker(req, resp) {
