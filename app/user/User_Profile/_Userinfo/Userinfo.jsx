@@ -1,29 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { Upload, Image } from "antd";
 import Input from "@mui/joy/Input";
 import { Button } from "@/components/ui/button";
 import { GetUserInfo } from "./fetchfunction/GetUserInfo";
 import { useAuth } from "../../../_context/UserAuthContent";
-import { UpdateUserInfo } from "@/server/controllers/UserController";
+import { UpdateUserInfo } from "./fetchfunction/UpdateUserInfo";
 import { Toaster, toast } from "react-hot-toast";
 
-const getBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-
 const Userinfo = () => {
-  const [fileList, setFileList] = useState([]);
-  const [previewImage, setPreviewImage] = useState("");
-  const [previewOpen, setPreviewOpen] = useState(false);
   const [auth, setAuth] = useAuth();
 
-  // State to hold input field values
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
@@ -32,7 +18,8 @@ const Userinfo = () => {
     pincode: "",
   });
 
-  // Handle input change
+  const [imageFile, setImageFile] = useState(null);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -41,7 +28,13 @@ const Userinfo = () => {
     }));
   };
 
-  // Simulating fetching user data including image
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+    }
+  };
+
   async function getuserdata() {
     try {
       const response = await GetUserInfo(auth?.user?._id);
@@ -53,17 +46,6 @@ const Userinfo = () => {
           address: response.data.user.Address || "",
           pincode: response.data.user.Pincode || "",
         });
-
-        // Fetch image and set in fileList if it exists
-        const imageUrl = `http://localhost:8000/api/v1/request/GetRequestPhotoController/${auth?.user?._id}`;
-        setFileList([
-          {
-            uid: "-1",
-            name: "user-photo.png",
-            status: "done",
-            url: imageUrl,
-          },
-        ]);
       }
     } catch (error) {
       console.error(error);
@@ -71,27 +53,43 @@ const Userinfo = () => {
   }
 
   async function updateuserdata() {
-    try {
-      const response = await GetUserInfo(auth?.user?._id, formData);
-      if (response.data.success) {
-        setAuth({
-          ...auth, //spread auth to keep previous values as it is
-          user: response.data.updateduser,
-        });
+    if (auth?.user?._id) {
+      try {
+        const data = new FormData();
 
-        localStorage.setItem(
-          "auth",
-          JSON.stringify({
+        data.append("Name", formData.name);
+        data.append("MobileNo", formData.mobile);
+        data.append("Email", formData.email);
+        data.append("Address", formData.address);
+        data.append("Pincode", formData.pincode);
+
+        if (imageFile) {
+          data.append("image", imageFile);
+        }
+
+        const response = await UpdateUserInfo(auth?.user?._id, data);
+
+        if (response.success) {
+          setAuth({
             ...auth,
-            user: response.data.updateduser,
-          })
-        );
-        toast.success(response.data.message);
-      } else {
-        toast.error(response.data.message);
+            user: response.updateduser,
+          });
+
+          localStorage.setItem(
+            "auth",
+            JSON.stringify({
+              ...auth,
+              user: response.updateduser,
+            })
+          );
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("An error occurred while updating user info");
       }
-    } catch (error) {
-      toast.error(response.data.message);
     }
   }
 
@@ -101,68 +99,28 @@ const Userinfo = () => {
     }
   }, [auth]);
 
-  // Handle image preview
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-  };
-
-  // Handle image change (limit to one image)
-  const handleChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList.slice(-1)); // Keep only the last uploaded file
-  };
-
-  const uploadButton = (
-    <button
-      style={{
-        border: 0,
-        background: "none",
-      }}
-      type="button"
-    >
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
-
   return (
-    <div className="w-full ">
-      <Toaster></Toaster>
-      <div className="flex flex-col justify-center gap-4  border-2 border-gray-300 m-auto w-[85%]  lg:w-3/4 xl:w-1/2 rounded-lg p-5">
+    <div className="w-full">
+      <Toaster />
+      <div className="flex flex-col justify-center gap-4 border-2 border-gray-300 m-auto w-[85%] lg:w-3/4 xl:w-1/2 rounded-lg p-5">
         <p className="text-2xl font-medium">Personal Information</p>
         <hr />
-        <div className="flex flex-col justify-center">
-          <p className="font-medium">Upload Image</p>
-          <Upload
-            action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-            listType="picture-circle"
-            fileList={fileList}
-            onPreview={handlePreview}
-            onChange={handleChange}
-            maxCount={1} // Restrict upload to one file
-          >
-            {fileList.length >= 1 ? null : uploadButton}
-          </Upload>
-          {previewImage && (
-            <Image
-              wrapperStyle={{ display: "none" }}
-              preview={{
-                visible: previewOpen,
-                onVisibleChange: (visible) => setPreviewOpen(visible),
-                afterOpenChange: (visible) => !visible && setPreviewImage(""),
-              }}
-              src={previewImage}
-            />
-          )}
+
+        {/* Image Upload Field */}
+        <div className="flex flex-col gap-2">
+          <label className="font-medium">Profile Image</label>
+          <Input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            size="md"
+          />
         </div>
 
         <hr />
         <div className="flex flex-col gap-2">
           {/* Name and mobile number */}
-          <div className="flex sm:flex-row  flex-col  gap-4">
+          <div className="flex sm:flex-row flex-col gap-4">
             <div className="flex flex-col gap-2 sm:w-1/2 ">
               <label className="font-medium">Name</label>
               <Input
@@ -184,7 +142,7 @@ const Userinfo = () => {
           </div>
 
           {/* Email and address */}
-          <div className="flex sm:flex-row  flex-col  gap-4">
+          <div className="flex sm:flex-row flex-col gap-4">
             <div className="flex flex-col gap-2 sm:w-1/2">
               <label className="font-medium">Email</label>
               <Input
@@ -207,7 +165,7 @@ const Userinfo = () => {
           </div>
 
           {/* Pincode */}
-          <div className="flex sm:flex-row  flex-col  gap-4">
+          <div className="flex sm:flex-row flex-col gap-4">
             <div className="flex flex-col gap-2 sm:w-1/2">
               <label className="font-medium">Pincode</label>
               <Input
@@ -218,8 +176,7 @@ const Userinfo = () => {
               />
             </div>
             <div className="flex flex-col gap-2 w-1/4 justify-end">
-              <Button>Save</Button>
-              {/* onClick={updateuserdata} */}
+              <Button onClick={updateuserdata}>Save</Button>
             </div>
           </div>
         </div>

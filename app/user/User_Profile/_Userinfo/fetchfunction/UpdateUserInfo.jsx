@@ -1,20 +1,17 @@
-export async function UpdatesuerInfo(uid, formData) {
+export async function UpdateUserInfo(uid, formData) {
   try {
-    // formData.append("Name", Name);
-    // formData.append("MobileNo", MobileNo);
-    // formData.append("Address", Address);
-    // formData.append("Pincode", Pincode);
-
     const response = await fetch(
-      `http://localhost:8000/api/v1/users//UpdateUserInfo/${uid}`,
+      `http://localhost:8000/api/v1/users/UpdateUserInfo/${uid}`,
       {
         method: "POST",
+
         body: formData,
       }
     );
+
     const data = await response.json();
+
     if (response.status === 200) {
-      const data = await response.json();
       return {
         success: data.success,
         message: data.message,
@@ -29,7 +26,7 @@ export async function UpdatesuerInfo(uid, formData) {
   } catch (error) {
     return {
       success: false,
-      message: "error",
+      message: "An error occurred while updating user info",
     };
   }
 }

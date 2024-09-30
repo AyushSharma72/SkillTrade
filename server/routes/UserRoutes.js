@@ -4,7 +4,7 @@ const {
   RegisterUser,
   UserLogin,
   GetUserInfo,
-  // UpdateUserInfo,
+  UpdateUserInfo,
 } = require("../controllers/UserController");
 
 const Isloggedin = require("../middleware/Isloggedin");
@@ -20,6 +20,6 @@ router.get("/userAuth", Isloggedin, (req, res) => {
 
 router.get("/Userinfo/:uid", GetUserInfo);
 
-// router.post("/UpdateUserInfo/:uid", formidable(), UpdateUserInfo);
+router.post("/UpdateUserInfo/:uid", formidable(), UpdateUserInfo);
 
 module.exports = router;

@@ -144,65 +144,52 @@ async function GetUserInfo(req, resp) {
   }
 }
 
-// async function UpdateUserInfo(req, resp) {
-//   try {
-//     const { uid } = req.params;
+async function UpdateUserInfo(req, resp) {
+  const { uid } = req.params;
 
-//     // Find the user by ID
-//     const user = await UserModal.findById(uid);
-//     if (!user) {
-//       return resp.status(404).send({
-//         success: false,
-//         message: "User not found",
-//       });
-//     }
+  // Ensure the user exists
+  const user = await UserModal.findById(uid);
+  if (!user) {
+    return resp.status(404).send({
+      success: false,
+      message: "User not found",
+    });
+  }
 
-//     // Destructure image from files and other fields from req
-//     const { image } = req.files || {};
-//     const { Name, MobileNo, Address, Pincode } = req.fields;
+  // Parse the form data
+  const { fields } = req;
+  const { image } = req.files;
 
-//     // Update user fields
-//     const updatedUser = await UserModal.findByIdAndUpdate(
-//       uid,
-//       {
-//         Name: Name || user.Name,
-//         MobileNo: MobileNo || user.MobileNo,
-//         Address: Address || user.Address, // Fixed typo from Addres to Address
-//         Pincode: Pincode || user.Pincode,
-//       },
-//       { new: true }
-//     );
+  const updatedData = {
+    Name: fields.Name || user.Name,
+    MobileNo: fields.MobileNo || user.MobileNo,
+    Address: fields.Address || user.Address,
+    Pincode: fields.Pincode || user.Pincode,
+  };
 
-//     // Handle image update
-//     if (image && image.path) {
-//       try {
-//         updatedUser.image.data = await fs.readFile(image.path);
-//         updatedUser.image.contentType = image.type;
-//       } catch (error) {
-//         return resp.status(400).send({
-//           success: false,
-//           message: "Image processing failed",
-//         });
-//       }
-//     }
+  const updatedUser = await UserModal.findByIdAndUpdate(uid, updatedData, {
+    new: true,
+  });
 
-//     // Save the updated user
-//     await updatedUser.save();
+  if (image && image[0]) {
+    try {
+      updatedUser.image.data = await fs.readFile(image[0].path);
+      updatedUser.image.contentType = image[0].type;
+    } catch (error) {
+      return resp.status(400).send({
+        success: false,
+        message: "Image processing failed",
+      });
+    }
+  }
 
-//     // Send successful response
-//     return resp.status(200).send({
-//       success: true,
-//       message: "User updated successfully",
-//       updateduser: updatedUser,
-//     });
-//   } catch (error) {
-//     // Send error response
-//     return resp.status(500).send({
-//       success: false,
-//       message: "Internal server error",
-//       error: error.message,
-//     });
-//   }
-// }
+  await updatedUser.save();
 
-module.exports = { RegisterUser, UserLogin, GetUserInfo };
+  return resp.status(200).send({
+    success: true,
+    message: "User updated successfully",
+    updateduser: updatedUser,
+  });
+}
+
+module.exports = { RegisterUser, UserLogin, GetUserInfo, UpdateUserInfo };
