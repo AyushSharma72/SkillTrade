@@ -6,6 +6,10 @@ import { GetUserInfo } from "./fetchfunction/GetUserInfo";
 import { useAuth } from "../../../_context/UserAuthContent";
 import { UpdateUserInfo } from "./fetchfunction/UpdateUserInfo";
 import { Toaster, toast } from "react-hot-toast";
+import Image from "next/image";
+import Link from "next/link";
+import Backdrop from "@mui/material/Backdrop"; // Import Backdrop
+import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
 
 const Userinfo = () => {
   const [auth, setAuth] = useAuth();
@@ -19,6 +23,8 @@ const Userinfo = () => {
   });
 
   const [imageFile, setImageFile] = useState(null);
+
+  const [openBackdrop, setOpenBackdrop] = useState(false); // State to manage backdrop visibility
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,6 +61,7 @@ const Userinfo = () => {
   async function updateuserdata() {
     if (auth?.user?._id) {
       try {
+        setOpenBackdrop(true); // Show the backdrop
         const data = new FormData();
 
         data.append("Name", formData.name);
@@ -64,6 +71,7 @@ const Userinfo = () => {
         data.append("Pincode", formData.pincode);
 
         if (imageFile) {
+          console.log(imageFile);
           data.append("image", imageFile);
         }
 
@@ -89,6 +97,8 @@ const Userinfo = () => {
       } catch (error) {
         console.log(error);
         toast.error("An error occurred while updating user info");
+      } finally {
+        setOpenBackdrop(false); // Hide the backdrop once the process is complete
       }
     }
   }
@@ -100,15 +110,22 @@ const Userinfo = () => {
   }, [auth]);
 
   return (
-    <div className="w-full">
+    <div className="w-full mb-2">
       <Toaster />
       <div className="flex flex-col justify-center gap-4 border-2 border-gray-300 m-auto w-[85%] lg:w-3/4 xl:w-1/2 rounded-lg p-5">
-        <p className="text-2xl font-medium">Personal Information</p>
+        <p className="text-3xl text-center font-medium">Personal Information</p>
         <hr />
 
         {/* Image Upload Field */}
         <div className="flex flex-col gap-2">
-          <label className="font-medium">Profile Image</label>
+          <Image
+            src={`http://localhost:8000/api/v1/users/GetUserImage/${auth?.user?._id}`}
+            className="object-cover rounded-md responsive-image"
+            alt="user image"
+            width={200}
+            height={200}
+          />
+          <label className="font-medium">Profile photo</label>
           <Input
             type="file"
             accept="image/*"
@@ -117,7 +134,6 @@ const Userinfo = () => {
           />
         </div>
 
-        <hr />
         <div className="flex flex-col gap-2">
           {/* Name and mobile number */}
           <div className="flex sm:flex-row flex-col gap-4">
@@ -181,6 +197,17 @@ const Userinfo = () => {
           </div>
         </div>
       </div>
+
+      <div className="text-center mt-4 mb-2 ">
+        <Link href="/" className="w-[100px]">
+          <Button className="w-[100px]">Home</Button>
+        </Link>
+      </div>
+
+      {/* Backdrop Component */}
+      <Backdrop open={openBackdrop} className="backdrop-color">
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

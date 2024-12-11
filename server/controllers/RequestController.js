@@ -89,7 +89,7 @@ async function GetUserRequest(req, resp) {
         requests,
       });
     } else {
-      return resp.status(400).send({
+      return resp.status(404).send({
         success: false,
         message: "No requests found",
       });

@@ -4,13 +4,14 @@ export default async function GetRequestData(id, pageNumber) {
       `http://localhost:8000/api/v1/request/GetUserRequest/${id}/${pageNumber}`
     );
 
-    if (response.status === 200) {
-      const info = await response.json();
-      return  info ;
+    const info = await response.json();
+    if (response.ok) {
+      return info;
     } else {
-      return info ;
+      return info;
     }
   } catch (error) {
+    console.log(error);
     return {
       success: false,
       message: "Error try again",

@@ -2,6 +2,8 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const WorkerModal = require("../modals/WorkerModal");
 const UserModal = require("../modals/UserModal");
+const { message } = require("antd");
+const fs = require("fs").promises;
 
 async function RegisterUser(req, resp) {
   try {
@@ -124,7 +126,7 @@ async function UserLogin(req, resp) {
 async function GetUserInfo(req, resp) {
   try {
     const { uid } = req.params;
-    const user = await UserModal.findById(uid);
+    const user = await UserModal.findById(uid).select("-image");
     if (user) {
       return resp.status(200).send({
         success: true,
@@ -147,7 +149,6 @@ async function GetUserInfo(req, resp) {
 async function UpdateUserInfo(req, resp) {
   const { uid } = req.params;
 
-  // Ensure the user exists
   const user = await UserModal.findById(uid);
   if (!user) {
     return resp.status(404).send({
@@ -156,9 +157,9 @@ async function UpdateUserInfo(req, resp) {
     });
   }
 
-  // Parse the form data
-  const { fields } = req;
-  const { image } = req.files;
+  const { fields, files } = req;
+
+  // console.log("All fields:", fields);
 
   const updatedData = {
     Name: fields.Name || user.Name,
@@ -171,16 +172,23 @@ async function UpdateUserInfo(req, resp) {
     new: true,
   });
 
-  if (image && image[0]) {
+  const image = files.image;
+
+  if (image) {
     try {
-      updatedUser.image.data = await fs.readFile(image[0].path);
-      updatedUser.image.contentType = image[0].type;
+      // Read image data and attach it to the user's record
+      updatedUser.image = {
+        data: await fs.readFile(image.filepath || image.path),
+        contentType: image.mimetype || image.type,
+      };
     } catch (error) {
       return resp.status(400).send({
         success: false,
         message: "Image processing failed",
       });
     }
+  } else {
+    console.log("No image exists");
   }
 
   await updatedUser.save();
@@ -192,4 +200,80 @@ async function UpdateUserInfo(req, resp) {
   });
 }
 
-module.exports = { RegisterUser, UserLogin, GetUserInfo, UpdateUserInfo };
+async function GetUserImage(req, resp) {
+  try {
+    const user = await UserModal.findById(req.params.uid).select("image");
+
+    if (!user || !user.image || !user.image.data) {
+      return resp.status(404).send({
+        success: false,
+        message: "Image not found",
+      });
+    }
+    resp.set("Content-Type", user.image.contentType);
+    return resp.status(200).send(user.image.data);
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    return resp.status(500).send({
+      success: false,
+      message: "Error fetching image",
+      error,
+    });
+  }
+}
+
+async function UserPassword(req, resp) {
+  try {
+    const { uid } = req.params;
+
+    const user = await UserModal.findById(uid);
+    if (!user) {
+      return resp.status(404).send({
+        success: false,
+        message: "No such user found",
+      });
+    } else {
+      if (!req.body.passwords.oldpassword || !req.body.passwords.newpass) {
+        return resp.status(400).send({
+          message: "All fields are required",
+        });
+      }
+      // console.log(req.body.passwords.newpassword);
+      // check the old password is correct or not
+      const verify = await bcrypt.compare(
+        req.body.passwords.oldpassword,
+        user.Password
+      );
+      if (verify) {
+        //if yes then update the pass with the new password
+        const newpassword = await bcrypt.hash(req.body.passwords.newpass, 10);
+        user.Password = newpassword;
+        user.save();
+        return resp.status(200).send({
+          success: true,
+          message: "password was changed",
+        });
+      } else {
+        return resp.status(400).send({
+          success: false,
+          message: "incorrect password",
+        });
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    return resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
+module.exports = {
+  RegisterUser,
+  UserLogin,
+  GetUserInfo,
+  UpdateUserInfo,
+  GetUserImage,
+  UserPassword,
+};

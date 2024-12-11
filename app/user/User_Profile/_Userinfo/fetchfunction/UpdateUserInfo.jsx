@@ -4,7 +4,6 @@ export async function UpdateUserInfo(uid, formData) {
       `http://localhost:8000/api/v1/users/UpdateUserInfo/${uid}`,
       {
         method: "POST",
-
         body: formData,
       }
     );
