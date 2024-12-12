@@ -97,6 +97,12 @@ const Navbar = () => {
           ) : (
             <>
               <Link
+                href="/"
+                className={`${pathname === "/" ? "border-b-2 " : ""}`}
+              >
+                Home
+              </Link>{" "}
+              <Link
                 href="/register"
                 className={`${pathname === "/register" ? "border-b-2 " : ""}`}
               >

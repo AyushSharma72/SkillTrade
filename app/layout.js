@@ -1,6 +1,6 @@
 import "./globals.css";
 import Navbar from "./_components/Navbar";
-import { AuthProvider } from "./_context/UserAuthContent"; // Import the AuthProvider
+import { AuthProvider } from "./_context/UserAuthContent"; 
 
 export const metadata = {
   title: "Skill Trade",

@@ -25,23 +25,19 @@ export default function UserPrivateRoutes(WrappedComponent) {
           );
 
           if (res.ok) {
-            /// status 200
             const data = await res.json();
             if (data.success) {
-              //  success true or false
               setIsAuthenticated(true);
-              setLoading(false);
             } else {
               setIsAuthenticated(false);
-              setLoading(false);
             }
           } else {
             setIsAuthenticated(false);
-            setLoading(false);
           }
         } catch (error) {
-          setIsAuthenticated(false);
           console.error("Error checking authentication:", error);
+          setIsAuthenticated(false);
+        } finally {
           setLoading(false);
         }
       };
@@ -52,29 +48,27 @@ export default function UserPrivateRoutes(WrappedComponent) {
         setIsAuthenticated(false);
         setLoading(false);
       }
-    }, [auth?.token, router]);
+    }, [auth?.token]);
 
-    // Show loading spinner while checking authentication
     if (loading) {
       return (
         <div className="flex justify-center w-100 h-screen items-center gap-4">
-          <p className="font-bold text-3xl">Checking Authentication</p>
-          {console.log("loading ", loading)}
-          {console.log("auth ", isAuthenticated)}
+          <p className="font-bold text-3xl">
+            {loading ? "Checking Authentication" : null}
+          </p>
           <PulseLoader />
         </div>
       );
     }
-    if (!isAuthenticated) {
-      router.push("/");
 
-      return (
-        <div className="flex justify-center w-100 h-screen items-center">
-          <p className="font-bold text-3xl">Redirecting...</p>
-        </div>
-      );
-    } else {
+    if (isAuthenticated) {
       return <WrappedComponent {...props} />;
     }
+    router.push("/login");
+    return (
+      <div className="flex justify-center w-100 h-screen items-center">
+        <p className="font-bold text-3xl">Redirecting...</p>
+      </div>
+    );
   };
 }

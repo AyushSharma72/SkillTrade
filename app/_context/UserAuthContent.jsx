@@ -4,7 +4,7 @@ import { useState, useEffect, useContext, createContext } from "react";
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
-  const [auth, Setauth] = useState({
+  const [auth, setAuth] = useState({
     user: null,
     token: "",
   });
@@ -13,17 +13,21 @@ function AuthProvider({ children }) {
     const data = localStorage.getItem("auth");
 
     if (data) {
-      const ParseData = JSON.parse(data);
-      Setauth({
-        ...auth,
-        user: ParseData.user ? ParseData.user : ParseData.worker,
-        token: ParseData.token,
-      });
+      try {
+        const parsedData = JSON.parse(data);
+        setAuth((prevAuth) => ({
+          ...prevAuth,
+          user: parsedData.user || parsedData.worker || null,
+          token: parsedData.token || "",
+        }));
+      } catch (error) {
+        console.error("Failed to parse auth data from localStorage:", error);
+      }
     }
-    //eslint-disable-next-line
   }, []);
+
   return (
-    <AuthContext.Provider value={[auth, Setauth]}>
+    <AuthContext.Provider value={[auth, setAuth]}>
       {children}
     </AuthContext.Provider>
   );

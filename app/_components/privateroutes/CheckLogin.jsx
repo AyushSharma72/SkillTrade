@@ -10,7 +10,7 @@ export default function CheckLogin(WrappedComponent) {
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const router = useRouter();
-    
+
     useEffect(() => {
       const checkAuth = async () => {
         try {
@@ -27,6 +27,7 @@ export default function CheckLogin(WrappedComponent) {
             const data = await res.json();
             if (data.success) {
               setIsAuthenticated(true);
+              setLoading(false);
             } else {
               setIsAuthenticated(false);
               setLoading(false);
@@ -42,7 +43,8 @@ export default function CheckLogin(WrappedComponent) {
         }
       };
 
-      if (auth?.token) {
+      if (localStorage.getItem("auth") && auth?.token) {
+        console.log(auth);
         checkAuth();
       } else {
         setIsAuthenticated(false);
