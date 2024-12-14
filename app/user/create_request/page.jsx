@@ -39,6 +39,9 @@ const CreateRequest = () => {
   // useful states
   const [isCustomService, setIsCustomService] = useState(false);
   const [isCustomLocation, setIsCustomLocation] = useState(false);
+  const [pincode, Setpincode] = useState(null);
+  const [city, Setcity] = useState("");
+
   const minDate = new Date();
   const [auth, setAuth] = useAuth();
 
@@ -152,6 +155,8 @@ const CreateRequest = () => {
         ? customLocation
         : location?.value
     );
+    formData.append("pincode", pincode);
+    formData.append("city", city);
     formData.append("coordinates", JSON.stringify(coordinates));
     try {
       const request = await fetch(
@@ -184,7 +189,10 @@ const CreateRequest = () => {
       <p className="w-full text-center mt-2 font-bold text-3xl">
         Create Request
       </p>
-      <Stepper activeStep={activeStep} className="w-1/2 m-auto mt-10">
+      <Stepper
+        activeStep={activeStep}
+        className="xl:w-1/2 sm:w-3/4 w-[90%] m-auto mt-10"
+      >
         {steps.map((label, index) => (
           <Step key={label}>
             <StepLabel>{label}</StepLabel>
@@ -203,7 +211,7 @@ const CreateRequest = () => {
         <React.Fragment>
           <form
             onSubmit={handleSubmit}
-            className="w-1/2 mt-4 mb-10 flex flex-col gap-y-3 justify-center p-4 formshadow items-center rounded-md m-auto"
+            className="xl:w-1/2 sm:w-3/4 w-[90%] mt-4 mb-10 flex flex-col gap-y-3 justify-center p-4 formshadow items-center rounded-md m-auto"
           >
             {activeStep === 0 && (
               <React.Fragment>
@@ -327,6 +335,24 @@ const CreateRequest = () => {
                     className="w-full"
                   />
                 )}
+                <input
+                  type="number"
+                  className="p-2 border-2 border-gray-300 rounded-md"
+                  value={pincode}
+                  onChange={(e) => {
+                    Setpincode(e.target.value);
+                  }}
+                  placeholder="Area Pincode"
+                />
+                <input
+                  type="text"
+                  className="p-2 border-2 border-gray-300 rounded-md"
+                  value={city}
+                  onChange={(e) => {
+                    Setcity(e.target.value);
+                  }}
+                  placeholder="City"
+                />
 
                 <DatePicker
                   onChange={(date) => setdate(date)}

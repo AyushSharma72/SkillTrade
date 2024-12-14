@@ -9,8 +9,23 @@ export default function UserPrivateRoutes(WrappedComponent) {
     const [auth, setAuth] = useAuth();
     const [loading, setLoading] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [initializing, setInitializing] = useState(true);
 
     const router = useRouter();
+
+    useEffect(() => {
+      const initializeAuth = () => {
+        if (!auth?.token) {
+          const storedAuth = localStorage.getItem("auth");
+          if (storedAuth) {
+            setAuth(JSON.parse(storedAuth));
+          }
+        }
+        setInitializing(false);
+      };
+
+      initializeAuth();
+    }, [auth, setAuth]);
 
     useEffect(() => {
       const checkAuth = async () => {
@@ -42,33 +57,36 @@ export default function UserPrivateRoutes(WrappedComponent) {
         }
       };
 
-      if (auth?.token) {
+      if (!initializing && auth?.token) {
         checkAuth();
-      } else {
-        setIsAuthenticated(false);
+      } else if (!initializing) {
         setLoading(false);
       }
-    }, [auth?.token]);
+    }, [auth?.token, initializing]);
 
-    if (loading) {
+    // Show loading spinner while initializing or checking authentication
+    if (loading || initializing) {
       return (
         <div className="flex justify-center w-100 h-screen items-center gap-4">
           <p className="font-bold text-3xl">
-            {loading ? "Checking Authentication" : null}
+            {initializing
+              ? "Initializing Authentication"
+              : "Checking Authentication"}
           </p>
           <PulseLoader />
         </div>
       );
     }
 
-    if (isAuthenticated) {
-      return <WrappedComponent {...props} />;
+    if (!isAuthenticated) {
+      router.push("/");
+      return (
+        <div className="flex justify-center w-100 h-screen items-center">
+          <p className="font-bold text-3xl">Redirecting...</p>
+        </div>
+      );
     }
-    router.push("/login");
-    return (
-      <div className="flex justify-center w-100 h-screen items-center">
-        <p className="font-bold text-3xl">Redirecting...</p>
-      </div>
-    );
+
+    return <WrappedComponent {...props} />;
   };
 }

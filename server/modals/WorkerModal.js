@@ -22,9 +22,16 @@ const WorkerSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  Pincode: {
+  pincode: {
     type: Number,
     required: true,
+  },
+  city: {
+    type: String,
+  },
+  role: {
+    type: Number,
+    default: 1,
   },
 });
 

@@ -31,6 +31,10 @@ const UserSchema = mongoose.Schema({
     data: Buffer,
     contentType: String,
   },
+  role: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = mongoose.model("Users", UserSchema);

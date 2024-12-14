@@ -4,13 +4,20 @@ const UserModal = require("../modals/UserModal");
 
 async function RegisterWorker(req, resp) {
   try {
-    const { Name, MobileNo, ServiceType, Password, Address, Pincode } =
+    const { Name, MobileNo, ServiceType, Password, Address, pincode } =
       req.body;
 
-    if (!Name || !MobileNo || !ServiceType || !Password || !Address) {
+    if (
+      !Name ||
+      !MobileNo ||
+      !ServiceType ||
+      !Password ||
+      !Address ||
+      !pincode
+    ) {
       return resp.status(400).send({
         success: false,
-        error: "All fields are required",
+        message: "All fields are required",
       });
     }
 
@@ -31,7 +38,7 @@ async function RegisterWorker(req, resp) {
       ServiceType,
       Password: hashedPassword,
       Address,
-      Pincode,
+      pincode,
     });
     await newWorker.save();
 
@@ -44,4 +51,29 @@ async function RegisterWorker(req, resp) {
   }
 }
 
-module.exports = { RegisterWorker };
+async function CheckCity(req, resp) {
+  try {
+    const { wid } = req.params;
+    const city = await WorkerModal.find({ _id: wid }).select("city");
+
+    if (city && city.length > 0) {
+      return resp.status(200).send({
+        success: true,
+        message: "city exist",
+      });
+    } else {
+      return resp.status(200).send({
+        success: false,
+        message: "city do not exist",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return resp.status(500).send({
+      success: false,
+      message: "internal server error ",
+    });
+  }
+}
+
+module.exports = { RegisterWorker, CheckCity };

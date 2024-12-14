@@ -1,9 +1,10 @@
-export default async function UpdateRequest(date, time, address, rid) {
+export default async function UpdateRequest(date, time, address, pincode, rid) {
   try {
     const formData = new FormData();
     formData.append("date", date);
     formData.append("time", time);
     formData.append("address", address);
+    formData.append("pincode", pincode);
 
     const response = await fetch(
       `http://localhost:8000/api/v1/request/EditRequest/${rid}`,
@@ -12,20 +13,14 @@ export default async function UpdateRequest(date, time, address, rid) {
         body: formData,
       }
     );
-
+    const data = await response.json();
     if (response.status === 200) {
-      return {
-        success: true,
-        message: "request updated",
-      };
+      return data;
     } else {
-      return {
-        success: false,
-        message: "request not found",
-      };
+      return data;
     }
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return {
       success: false,
       message: "please try again",

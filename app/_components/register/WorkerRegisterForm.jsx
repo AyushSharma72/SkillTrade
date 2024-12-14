@@ -38,7 +38,7 @@ const WorkerRegisterForm = () => {
     const MobileNo = formData.get("MobileNumber");
     const Address = formData.get("Address");
     const Password = formData.get("Password");
-    const Pincode = formData.get("Pincode");
+    const pincode = formData.get("pincode");
 
     // Ensure that the service type is selected
     if (!serviceType) {
@@ -61,7 +61,7 @@ const WorkerRegisterForm = () => {
             Address,
             Password,
             ServiceType: serviceType,
-            Pincode,
+            pincode,
           }),
         }
       );
@@ -132,7 +132,7 @@ const WorkerRegisterForm = () => {
           className="w-3/4"
           required
           type="number"
-          name="Pincode"
+          name="pincode"
         />
         <TextField
           id="standard-password"

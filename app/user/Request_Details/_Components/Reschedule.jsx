@@ -19,29 +19,29 @@ const Reschedule = () => {
   const [date, setdate] = useState("");
   const [time, settime] = useState("");
   const [address, setAddress] = useState("");
+  const [pincode, Setpincode] = useState("");
   const { rid } = useParams();
 
   async function Update(e) {
-    if (!time && !date && !address) {
+    e.preventDefault();
+    if (!time && !date && !address && !pincode) {
       toast.error("please enter atleast one field");
       return;
     }
+    if (pincode.length != 6) {
+      toast.error("please enter valid pincode");
+      return;
+    }
 
-    e.preventDefault();
     setLoading(true);
     try {
-      const response = await UpdateRequest(date, time, address, rid);
+      const response = await UpdateRequest(date, time, address, pincode, rid);
       if (response.success) {
         toast.success(response.message);
-
-        setdate(null);
-        settime("");
-        setAddress("");
       } else {
         toast.error(response.message);
       }
     } catch (error) {
-      console.log(error);
       toast.error("An error occurred while updating the request.");
     } finally {
       setLoading(false);
@@ -57,6 +57,7 @@ const Reschedule = () => {
         setdate(info.requestdetails.date);
         settime(info.requestdetails.time);
         setAddress(info.requestdetails.location);
+        Setpincode(info.requestdetails.pincode);
       } else {
         toast.error(info.message);
       }
@@ -132,12 +133,12 @@ const Reschedule = () => {
           <div className="w-full flex flex-col gap-2 justify-center items-center">
             <label
               className="block mb-2 font-medium text-start w-3/4"
-              htmlFor="address"
+              htmlFor="Address"
             >
               Edit Address
             </label>
             <TextField
-              id="standard-basic"
+              id="Address"
               label="Edit Address"
               variant="outlined"
               className="w-3/4"
@@ -145,6 +146,24 @@ const Reschedule = () => {
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               name="Address"
+            />
+          </div>
+          <div className="w-full flex flex-col gap-2 justify-center items-center">
+            <label
+              className="block mb-2 font-medium text-start w-3/4"
+              htmlFor="Pincode"
+            >
+              Edit Pincode
+            </label>
+            <TextField
+              id="Pincode"
+              label="Edit Pincode"
+              variant="outlined"
+              className="w-3/4"
+              type="number"
+              value={pincode}
+              onChange={(e) => Setpincode(e.target.value)}
+              name="Pincode"
             />
           </div>
 

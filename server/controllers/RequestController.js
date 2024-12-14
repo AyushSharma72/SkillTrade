@@ -1,13 +1,32 @@
 const RequestModal = require("../modals/RequestModal");
+const WorkerModal = require("../modals/WorkerModal");
 const fs = require("fs").promises;
 
 async function CreateRequest(req, resp) {
   try {
-    const { user, service, description, time, date, location, coordinates } =
-      req.fields;
+    const {
+      user,
+      service,
+      description,
+      time,
+      date,
+      location,
+      coordinates,
+      pincode,
+      city,
+    } = req.fields;
 
     // Check if required fields are present
-    if (!user || !service || !description || !time || !date || !location) {
+    if (
+      !user ||
+      !service ||
+      !description ||
+      !time ||
+      !date ||
+      !location ||
+      !pincode ||
+      !city
+    ) {
       return resp.status(400).send({
         success: false,
         message: "All required fields must be provided",
@@ -34,6 +53,8 @@ async function CreateRequest(req, resp) {
       time,
       date,
       location,
+      pincode,
+      city,
     };
 
     // If geoCoordinates is defined, add it to the request data
@@ -52,7 +73,7 @@ async function CreateRequest(req, resp) {
       request.image.data = await fs.readFile(req.files.image.path);
       request.image.contentType = req.files.image.type;
       await fs.unlink(req.files.image.path);
-      await request.save(); // Save the image data to the request
+      await request.save(); // Save the image
     }
 
     return resp.status(201).send({
@@ -106,7 +127,12 @@ async function GetUserRequest(req, resp) {
 async function GetSingleUserRequest(req, resp) {
   try {
     const { rid } = req.params;
-    const requestdetails = await RequestModal.findById({ _id: rid });
+    const requestdetails = await RequestModal.findById({ _id: rid })
+      .select("-image")
+      .populate({
+        path: "user",
+        select: "Name",
+      });
 
     if (requestdetails) {
       return resp.status(200).send({
@@ -152,7 +178,7 @@ async function GetRequestPhotoController(req, resp) {
 
 async function EditRequestController(req, resp) {
   try {
-    const { date, time, address } = req.fields;
+    const { date, time, address, pincode } = req.fields;
     const { rid } = req.params;
     const request = await RequestModal.findById(rid);
     if (request) {
@@ -162,6 +188,7 @@ async function EditRequestController(req, resp) {
           date: date || request.date,
           time: time || request.time,
           location: address || request.location,
+          pincode: pincode || request.pincode,
         },
         { new: true }
       );
@@ -170,7 +197,6 @@ async function EditRequestController(req, resp) {
       return resp.status(200).send({
         success: true,
         message: "request updated",
-        updatedRequest,
       });
     } else {
       return resp.status(404).send({
@@ -179,9 +205,92 @@ async function EditRequestController(req, resp) {
       });
     }
   } catch (error) {
+    console.log(error);
     return resp.status(400).send({
       success: false,
       message: "Error in Updation",
+    });
+  }
+}
+
+async function GetAllRequests(req, resp) {
+  try {
+    const pagenumber = req.params.pagenumber;
+
+    const totalrequests = await RequestModal.find();
+    const requests = await RequestModal.find()
+      .select("-image")
+      .skip((pagenumber - 1) * 5)
+      .limit(5);
+    if (requests && requests.length >= 1) {
+      return resp.status(200).send({
+        totalrequests,
+        requests,
+        success: true,
+        message: "all request fetched",
+      });
+    } else {
+      return resp.status(200).send({
+        success: true,
+        message: "no request found",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    return resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+    {
+    }
+  }
+}
+
+async function FilterRequests(req, resp) {
+  try {
+    const { wid } = req.params;
+    const { nearBy, yourCity, ServiceType } = req.query;
+
+    const worker = await WorkerModal.findById(wid).select("pincode city");
+    // console.log(worker);
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+    let query = {};
+
+    // Add dynamic filtering based on query parameters
+    if (nearBy === "true" && worker.pincode) {
+      query.pincode = worker.pincode;
+    }
+    if (ServiceType) {
+      query.service = ServiceType;
+    }
+    if (yourCity === "true" && worker.city) {
+      query.city = worker.city;
+    }
+    // console.log(worker.city);
+    const requests = await RequestModal.find(query).select("-image");
+
+    if (requests.length > 0) {
+      return resp.status(200).send({
+        success: true,
+        requests,
+        message: "All requests fetched",
+      });
+    } else {
+      return resp.status(200).send({
+        success: true,
+        message: "No requests found",
+      });
+    }
+  } catch (error) {
+    console.error("Error in FilterRequests:", error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
     });
   }
 }
@@ -192,4 +301,6 @@ module.exports = {
   GetSingleUserRequest,
   GetRequestPhotoController,
   EditRequestController,
+  GetAllRequests,
+  FilterRequests,
 };

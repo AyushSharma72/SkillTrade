@@ -22,7 +22,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "../_context/UserAuthContent";
 import Menu from "../_components/NavBarComponenets/menu";
-
+import WorkerMenu from "./NavBarComponenets/WorkerMenu";
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -76,7 +76,7 @@ const Navbar = () => {
       <div className="w-full  xl:w-3/4 justify-between sm:flex hidden">
         <Image src={logo} className="w-[200px] h-[70px]"></Image>
         <div className=" xl:w-1/2 sm:w-1/2 flex items-center justify-around xl:justify-around font-bold">
-          {auth.user ? (
+          {auth?.user?.role == 0 ? (
             <>
               <Link
                 href="/"
@@ -93,6 +93,24 @@ const Navbar = () => {
                 Create request
               </Link>
               <Menu />
+            </>
+          ) : auth?.user?.role == 1 ? (
+            <>
+              <Link
+                href="/"
+                className={`${pathname === "/" ? "border-b-2 " : ""}`}
+              >
+                Home
+              </Link>{" "}
+              <Link
+                href="/worker/all_request"
+                className={`${
+                  pathname === "/worker/all_request" ? "border-b-2 " : ""
+                }`}
+              >
+                All Requests
+              </Link>
+              <WorkerMenu />
             </>
           ) : (
             <>

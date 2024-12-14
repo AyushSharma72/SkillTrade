@@ -38,3 +38,15 @@ body::-webkit-scrollbar {
   text-align: center;
   cursor: pointer;
 }
+
+.ant-image {
+  height: 300px !important;
+  width: 400px !important;
+}
+
+@media screen and (max-width: 639px) {
+  .ant-image {
+    height: 300px !important;
+    width: 280px !important;
+  }
+}

@@ -33,6 +33,14 @@ const RequestSchema = new mongoose.Schema(
         type: [Number], // Array of numbers for [longitude, latitude]
       },
     },
+    pincode: {
+      type: Number,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
     status: {
       type: String,
       default: "Pending",
