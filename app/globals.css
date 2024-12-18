@@ -1,4 +1,7 @@
 @import "../dist/output.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 .formshadow {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
@@ -44,7 +47,7 @@ body::-webkit-scrollbar {
   width: 400px !important;
 }
 
-@media screen and (max-width: 639px) {
+@media screen and (max-width: 400px) {
   .ant-image {
     height: 300px !important;
     width: 280px !important;

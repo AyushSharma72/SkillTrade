@@ -53,6 +53,20 @@ const RequestSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
+    acceptedBy: [
+      {
+        worker: {
+          type: Schema.Types.ObjectId,
+          ref: "Worker",
+        },
+        estimatedPrice: {
+          type: Number,
+        },
+        priceJustification: {
+          type: String,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

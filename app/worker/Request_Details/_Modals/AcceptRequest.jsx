@@ -1,0 +1,87 @@
+"use client";
+import React, { useState } from "react";
+import Box from "@mui/material/Box";
+import { Input, Textarea } from "@mui/joy";
+import { Button } from "../../../../components/ui/button";
+import { AcceptRequestFetchFunction } from "../_FetchFunction/AcceptRequest";
+import { toast } from "react-hot-toast";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 3,
+};
+
+const AcceptRequest = ({ handleClose, rid }) => {
+  const [EstimatedPrice, SetEstimatedPrice] = useState("");
+  const [description, setDescription] = useState("");
+
+  async function AcceptRequestFunction() {
+    try {
+      if (!EstimatedPrice) {
+        toast.error("price is missing");
+        return;
+      }
+      const authString = localStorage.getItem("auth");
+      const auth = JSON.parse(authString);
+      const data = await AcceptRequestFetchFunction(
+        auth?.user?._id,
+        rid,
+        EstimatedPrice,
+        description
+      );
+
+      if (data.success) {
+        toast.success(data.message);
+        handleClose();
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.error("Error while reporting:", error);
+      toast.error(
+        "An error occurred while submitting the report. Please try again."
+      );
+    }
+  }
+
+  return (
+    <Box sx={style} className="w-[280px] sm:w-[400px]">
+      <p className="w-full text-center mb-2 text-2xl font-bold">
+        Accept Request
+      </p>
+      <div className="flex flex-col items-center justify-center gap-3">
+        <Input
+          type="number"
+          name="Estimated Price "
+          value={EstimatedPrice}
+          onChange={(e) => SetEstimatedPrice(e.target.value)}
+          placeholder="Enter estimated price in Rs"
+          className="w-full"
+          required
+        />
+        <Textarea
+          name="description"
+          placeholder="justify your price (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full h-40 overflow-y-scroll scrollbar-hide"
+        />
+        <Button
+          onClick={() => {
+            AcceptRequestFunction();
+          }}
+        >
+          Accept Request
+        </Button>
+      </div>
+    </Box>
+  );
+};
+
+export default AcceptRequest;

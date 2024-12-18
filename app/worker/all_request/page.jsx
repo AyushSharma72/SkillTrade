@@ -21,9 +21,12 @@ import { PulseLoader } from "react-spinners";
 import Empty from "../../assests/Empty.svg";
 import Image from "next/image";
 import Link from "next/link";
-import UserPrivateRoutes from "./../../_components/privateroutes/UserPrivateRoutes";
+// import UserPrivateRoutes from "./../../_components/privateroutes/UserPrivateRoutes"; // use later
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import SmallScreennmodal from "./SmallScreenmodal";
+import Paper from "@mui/material/Paper";
+
 import {
   Select,
   SelectContent,
@@ -66,12 +69,14 @@ function ViewRequest() {
   });
   const [Disabled, setDisabled] = useState(null);
 
-  const handlePageChange = (event, value) => {
-    SetPageNumber(value);
-  };
-
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const handleServiceTypeChange = (value) => {
     setServiceType(value);
+  };
+  const handlePageChange = (event, value) => {
+    SetPageNumber(value);
   };
 
   async function GetData() {
@@ -151,14 +156,41 @@ function ViewRequest() {
   return (
     <div>
       <Toaster />
-      <div className="flex p-5">
+      <div className="lg:flex lg:flex-row p-5 flex flex-col ">
         {/* Filters */}
-        <div className="w-1/4 flex flex-col gap-2 items-start">
-          <span className="flex items-center gap-2 font-bold">
+        <div className="lg:w-1/4 flex flex-row lg:flex lg:flex-col gap-2 items-start mt-20 sm:mt-0">
+          <span
+            className="flex sm:hidden lg:flex items-center gap-1 font-bold cursor-pointer sm:pointer-events-none"
+            onClick={handleOpen}
+          >
             <TbFilterSearch />
-            Apply Filters
+            Apply Filters{" "}
+            <span>
+              {ServiceType ? <Tag color="default">{ServiceType}</Tag> : null}
+            </span>
+            <span>
+              {checkedValues.nearBy ? <Tag color="default">NearBy</Tag> : null}
+            </span>
+            <span>
+              {checkedValues.yourCity ? (
+                <Tag color="default">YourCity</Tag>
+              ) : null}
+            </span>
           </span>
-          <div className="w-full flex flex-col gap-2">
+
+          {/* modal filter small screen */}
+          <SmallScreennmodal
+            open={open}
+            handleClose={handleClose}
+            handleOpen={handleOpen}
+            handleServiceTypeChange={handleServiceTypeChange}
+            ServiceType={ServiceType}
+            handleChange={handleChange}
+            Disabled={Disabled}
+            checkedValues={checkedValues}
+          />
+
+          <div className="w-full sm:flex flex-col gap-4 hidden">
             <p className="font-semibold">Service type</p>
             <Select
               required
@@ -199,7 +231,7 @@ function ViewRequest() {
             </Button>
           </div>
 
-          <div className="w-full flex flex-col">
+          <div className="w-full sm:flex flex-col hidden  mt-3">
             <p className="font-semibold">Location</p>
             <FormControlLabel
               name="nearBy"
@@ -220,33 +252,32 @@ function ViewRequest() {
                 update your city to enable this filter
               </p>
             ) : null}
+            <Button
+              className="w-1/2"
+              onClick={() => {
+                setCheckedValues({
+                  nearBy: false,
+                  yourCity: false,
+                });
+              }}
+            >
+              Clear Locations
+            </Button>
           </div>
-
-          <Button
-            className="w-1/2"
-            onClick={() => {
-              setCheckedValues({
-                nearBy: false,
-                yourCity: false,
-              });
-            }}
-          >
-            Clear Locations
-          </Button>
         </div>
 
         {loading ? (
-          <div className="h-[600px] w-3/4 flex">
+          <div className="h-[600px] w-full flex">
             <PulseLoader size={20} className="m-auto" />
           </div>
         ) : data?.length > 0 ? (
           // Requests
-          <div className="w-3/4">
-            <p className="text-3xl text-center sm:mt-3 mt-20 font-bold">
+          <div className="lg:w-3/4 w-full ">
+            <p className="text-3xl text-center sm:mt-3 mt-10 font-bold">
               All Requests
             </p>
-            <TableContainer className="cursor-pointerjustify-center flex flex-col items-center">
-              <Table aria-label="customized table">
+            <TableContainer className="cursor-pointer mt-2 " component={Paper}>
+              <Table aria-label="customized table" sx={{ minWidth: 500 }}>
                 <TableHead>
                   <TableRow>
                     <StyledTableCell align="center">
@@ -300,17 +331,21 @@ function ViewRequest() {
                   ))}
                 </TableBody>
               </Table>
+            </TableContainer>
+            {ServiceType ||
+            checkedValues.nearBy ||
+            checkedValues.yourCity ? null : (
               <Pagination
-                className="mt-5"
+                className="mt-5 flex justify-center"
                 count={pages}
                 page={pageNumber}
                 color="primary"
                 onChange={handlePageChange}
               />
-            </TableContainer>
+            )}
           </div>
         ) : (
-          <div className="w-3/4 flex flex-col justify-center items-center">
+          <div className="sm:w-3/4 flex flex-col justify-center items-center">
             <p className="font-bold text-3xl text-center mt-10">No Data</p>
             <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
             <Link href="/">
@@ -323,4 +358,4 @@ function ViewRequest() {
   );
 }
 
-export default UserPrivateRoutes(ViewRequest);
+export default ViewRequest;

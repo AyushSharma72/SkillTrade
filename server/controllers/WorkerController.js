@@ -1,6 +1,8 @@
 const WorkerModal = require("../modals/WorkerModal");
 const bcrypt = require("bcryptjs");
 const UserModal = require("../modals/UserModal");
+const ReportModal = require("../modals/ReportModal");
+const RequestModal = require("../modals/RequestModal");
 
 async function RegisterWorker(req, resp) {
   try {
@@ -75,5 +77,115 @@ async function CheckCity(req, resp) {
     });
   }
 }
+async function Report(req, resp) {
+  try {
+    const { wid, rid } = req.params;
+    const { IssueType, description } = req.body;
 
-module.exports = { RegisterWorker, CheckCity };
+    if (!IssueType && !description) {
+      return resp.status(400).send({
+        success: false,
+        message: "Provide at least one field",
+      });
+    }
+
+    const existingReport = await ReportModal.findOne({
+      worker: wid,
+      requestId: rid,
+    });
+    if (existingReport) {
+      return resp.status(400).send({
+        success: false,
+        message: "You have already reported this request",
+      });
+    }
+
+    const report = await ReportModal({
+      IssueType: IssueType,
+      Description: description,
+      worker: wid,
+      requestId: rid,
+    }).save();
+
+    if (report) {
+      return resp.status(200).send({
+        success: true,
+        report,
+        message: "Request reported",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    return resp.status(500).send({
+      message: "Internal server error",
+    });
+  }
+}
+
+async function AcceptRequest(req, resp) {
+  try {
+    const { wid, rid } = req.params;
+    const { EstimatedPrice, description } = req.body;
+
+    if (!wid || !rid) {
+      return resp.status(400).send({
+        success: false,
+        message: "Worker ID or Request ID is missing.",
+      });
+    }
+    if (!EstimatedPrice) {
+      return resp.status(400).send({
+        success: false,
+        message: "Estimated price is missing.",
+      });
+    }
+
+    const existingAcceptance = await RequestModal.findOne({
+      _id: rid,
+      "acceptedBy.worker": wid,
+    });
+
+    if (existingAcceptance) {
+      return resp.status(400).send({
+        success: false,
+        message: "You have already accepted this request.",
+      });
+    }
+
+    const updatedRequest = await RequestModal.findByIdAndUpdate(
+      rid,
+      {
+        $push: {
+          acceptedBy: {
+            worker: wid,
+            estimatedPrice: EstimatedPrice,
+            priceJustification: description,
+          },
+        },
+        status: "Accepted",
+      },
+      { new: true }
+    );
+
+    if (!updatedRequest) {
+      return resp.status(404).send({
+        success: false,
+        message: "Request not found.",
+      });
+    }
+
+    return resp.status(200).send({
+      success: true,
+      message: "You accepted the request successfully.",
+      request: updatedRequest,
+    });
+  } catch (error) {
+    console.error(error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error.",
+    });
+  }
+}
+
+module.exports = { RegisterWorker, CheckCity, Report, AcceptRequest };
