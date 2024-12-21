@@ -68,14 +68,15 @@ const RequestDetails = () => {
               <div className="flex flex-col gap-2 justify-center items-center">
                 <Image
                   src={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
-                  className="object-cover rounded-md responsive-image"
+                  className="object-cover rounded-md !h-[300px]"
                   alt="image not provided"
                 />
+
                 <p className="font-bold text-xl text-center">
                   {data.description}
                 </p>
               </div>
-              <div className="flex flex-col sm:w-[90%] xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg  mt-5 relative">
+              <div className="flex flex-col sm:w-[90%] xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg   relative">
                 <div className="flex items-center  sm:justify-normal">
                   <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
                     <MdOutlineHandyman /> Service type :
@@ -151,6 +152,17 @@ const RequestDetails = () => {
                       </Flex>
                     )}
                   </div>
+                </div>
+                <hr />
+                <div className="flex items-center sm:justify-normal">
+                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                    <FaLocationDot />
+                    Created by :
+                  </span>
+                  <p className="text-lg flex">
+                    {data.user.Name} on{" "}
+                    {moment(data.createdAt).format("MMMM Do YYYY, h:mm A")}
+                  </p>
                 </div>
                 <Button onClick={handleOpen2}>Accept Request</Button>
                 {/* report modal */}

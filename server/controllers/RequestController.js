@@ -295,6 +295,63 @@ async function FilterRequests(req, resp) {
   }
 }
 
+async function UpdateRequestPhoto(req, resp) {
+  try {
+    const requestId = req.params.rid;
+    const request = await RequestModal.findById(requestId);
+
+    if (!request) {
+      return resp.status(404).json({ message: "Request not found" });
+    }
+    if (req.files && req.files.image) {
+      request.image.data = await fs.readFile(req.files.image.path);
+      request.image.contentType = req.files.image.type;
+      await fs.unlink(req.files.image.path);
+      await request.save();
+      return resp
+        .status(200)
+        .json({ message: "Photo updated successfully", request });
+    } else {
+      return resp.status(400).json({ message: "No image file provided" });
+    }
+  } catch (error) {
+    console.log(error);
+    console.error("Error updating request photo:", error);
+    return resp.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function GetAcceptedRequest(req, resp) {
+  try {
+    const { uid, page } = req.params;
+    const requests = await RequestModal.find(
+      {
+        user: uid,
+        status: { $in: ["Accepted", "Confirmed"] },
+      },
+      "acceptedBy"
+    )
+      .populate("acceptedBy.worker")
+      .limit(5)
+      .skip((page - 1) * 5);
+
+    if (!requests || requests.length === 0) {
+      return resp.status(404).json({
+        success: false,
+        message: "No accepted or confirmed requests found for this request.",
+      });
+    }
+    return resp
+      .status(200)
+      .send({ success: true, requests, total: requests.length });
+  } catch (error) {
+    console.error("Error fetching accepted or confirmed requests:", error);
+    return resp
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+}
+
 module.exports = {
   CreateRequest,
   GetUserRequest,
@@ -303,4 +360,6 @@ module.exports = {
   EditRequestController,
   GetAllRequests,
   FilterRequests,
+  UpdateRequestPhoto,
+  GetAcceptedRequest,
 };

@@ -44,6 +44,7 @@ const RequestSchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
+      enum: ["Pending", "Accepted", "Confirmed"], // Allowed status values
     },
     time: {
       type: String,
@@ -57,7 +58,7 @@ const RequestSchema = new mongoose.Schema(
       {
         worker: {
           type: Schema.Types.ObjectId,
-          ref: "Worker",
+          ref: "Workers",
         },
         estimatedPrice: {
           type: Number,
@@ -65,8 +66,14 @@ const RequestSchema = new mongoose.Schema(
         priceJustification: {
           type: String,
         },
+        acceptedAt: {
+          type: Date,
+        },
       },
     ],
+    confirmedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

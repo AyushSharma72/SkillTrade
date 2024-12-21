@@ -96,22 +96,40 @@ const TimeLine = () => {
               </Typography>
             </TimelineContent>
           </TimelineItem>
-
-          <TimelineItem>
-            <TimelineSeparator>
-              <TimelineConnector />
-              <TimelineDot color="success">
-                <FaCheck />
-              </TimelineDot>
-              <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
-            </TimelineSeparator>
-            <TimelineContent sx={{ py: "12px", px: 2 }}>
-              <Typography variant="h6" component="span">
-                Accepted
-              </Typography>
-              <Typography>Your request was accepted</Typography>
-            </TimelineContent>
-          </TimelineItem>
+          {data.status === "Pending" ? null : (
+            <TimelineItem>
+              <TimelineSeparator>
+                <TimelineConnector />
+                <TimelineDot color="success">
+                  <FaCheck />
+                </TimelineDot>
+                <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
+              </TimelineSeparator>
+              <TimelineContent sx={{ py: "12px", px: 2 }}>
+                <Typography variant="h6" component="span">
+                  Accepted
+                </Typography>
+                <Typography>Request was accepted by a worker</Typography>
+              </TimelineContent>
+            </TimelineItem>
+          )}
+          {data.status === "Confirmed" ? (
+            <TimelineItem>
+              <TimelineSeparator>
+                <TimelineConnector />
+                <TimelineDot color="success">
+                  <FaCheck />
+                </TimelineDot>
+                <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
+              </TimelineSeparator>
+              <TimelineContent sx={{ py: "12px", px: 2 }}>
+                <Typography variant="h6" component="span">
+                  Confirmed
+                </Typography>
+                <Typography>Accepted request was confirmed by you </Typography>
+              </TimelineContent>
+            </TimelineItem>
+          ) : null}
         </Timeline>
       )}
     </>
