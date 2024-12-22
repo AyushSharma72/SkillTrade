@@ -9,6 +9,7 @@ const {
   FilterRequests,
   UpdateRequestPhoto,
   GetAcceptedRequest,
+  DeleteRequest,
 } = require("../controllers/RequestController");
 const formidable = require("express-formidable");
 
@@ -31,5 +32,7 @@ router.get("/Filterrequest/:wid", FilterRequests);
 router.post("/UpdateRequestPhoto/:rid", formidable(), UpdateRequestPhoto);
 
 router.get("/GetUpdatedRequest/:uid/:page", GetAcceptedRequest);
+
+router.delete("/DeleteRequest/:rid", DeleteRequest);
 
 module.exports = router;

@@ -20,6 +20,7 @@ const style = {
 const AcceptRequest = ({ handleClose, rid }) => {
   const [EstimatedPrice, SetEstimatedPrice] = useState("");
   const [description, setDescription] = useState("");
+  const currentDate = new Date();
 
   async function AcceptRequestFunction() {
     try {
@@ -33,7 +34,8 @@ const AcceptRequest = ({ handleClose, rid }) => {
         auth?.user?._id,
         rid,
         EstimatedPrice,
-        description
+        description,
+        currentDate
       );
 
       if (data.success) {

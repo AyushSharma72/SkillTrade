@@ -56,12 +56,13 @@ function ViewRequest() {
   async function GetData() {
     try {
       setloading(true);
-      const info = await GetRequestData(auth?.user?._id, pageNumber);
-
-      if (info.success) {
+      const response = await GetRequestData(auth?.user?._id, pageNumber);
+      const info = await response.json();
+      if (response.status === 200) {
         setdata(info.requests);
-
         SetPages(Math.ceil(info.totalRequests / 5));
+        setloading(false);
+      } else if (response.status === 404) {
         setloading(false);
       } else {
         toast.error(info.message);
@@ -86,7 +87,7 @@ function ViewRequest() {
         <div className="h-[600px] w-full  flex  ">
           <PulseLoader size={20} className="m-auto" />
         </div>
-      ) : data.length > 0 ? (
+      ) : data?.length > 0 ? (
         <div>
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
             Requests

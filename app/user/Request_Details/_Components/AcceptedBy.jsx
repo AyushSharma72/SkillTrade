@@ -38,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 function AcceptedBy() {
-  const [auth, setAuth] = useAuth();
+  const [auth] = useAuth();
   const [data, setData] = useState([]);
   const [pages, setPages] = useState(1);
   const [pageNumber, setPageNumber] = useState(1);
@@ -49,6 +49,8 @@ function AcceptedBy() {
   };
 
   async function fetchData() {
+    if (loading) return; // Prevent duplicate requests during loading
+
     try {
       setLoading(true);
       const info = await GetAcceptedByData(auth?.user?._id, pageNumber);
@@ -71,7 +73,7 @@ function AcceptedBy() {
     if (auth?.user?._id && pageNumber) {
       fetchData();
     }
-  }, [pageNumber, auth]);
+  }, [pageNumber, auth?.user?._id]); // Updated dependencies
 
   return (
     <div>
@@ -83,9 +85,9 @@ function AcceptedBy() {
       ) : data.length > 0 ? (
         <div>
           <p className="text-3xl text-center sm:mt-3 mt-20 font-bold">
-            Requests
+            Requests Accepted By
           </p>
-          <TableContainer className="cursor-pointer sm:mt-5 mt-10 m-auto xl:!w-3/4 justify-center flex flex-col items-center pb-3">
+          <TableContainer className="cursor-pointer sm:mt-5 mt-10 m-auto xl:!w-3/4 justify-center flex flex-col pb-3">
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -102,7 +104,7 @@ function AcceptedBy() {
               <TableBody>
                 {data.map((request) =>
                   request.acceptedBy.map((accepted) => (
-                    <StyledTableRow>
+                    <StyledTableRow key={accepted.worker.Name}>
                       <StyledTableCell align="center">
                         {accepted.worker.Name}
                       </StyledTableCell>
@@ -128,13 +130,15 @@ function AcceptedBy() {
                 )}
               </TableBody>
             </Table>
-            <Pagination
-              className="mt-5"
-              count={pages}
-              page={pageNumber}
-              color="primary"
-              onChange={handlePageChange}
-            />
+            <div className="flex justify-center">
+              <Pagination
+                className="mt-5"
+                count={pages}
+                page={pageNumber}
+                color="primary"
+                onChange={handlePageChange}
+              />
+            </div>
           </TableContainer>
         </div>
       ) : (

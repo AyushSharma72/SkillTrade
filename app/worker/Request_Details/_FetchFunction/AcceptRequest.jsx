@@ -2,8 +2,10 @@ export async function AcceptRequestFetchFunction(
   wid,
   rid,
   EstimatedPrice,
-  description
+  description,
+  date
 ) {
+  console.log(date);
   try {
     const response = await fetch(
       `http://localhost:8000/api/v1/workers/AcceptRequest/${wid}/${rid}`,
@@ -13,6 +15,7 @@ export async function AcceptRequestFetchFunction(
         body: JSON.stringify({
           EstimatedPrice,
           description,
+          date,
         }),
       }
     );

@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Flex, Tag, Image } from "antd";
+import { useRouter } from "next/navigation";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import GetRequestData from "../_FetchFunction/GetRequestData";
 import { MdOutlineHandyman } from "react-icons/md";
@@ -15,6 +16,8 @@ import { TbMapPinCode } from "react-icons/tb";
 import { FaAddressCard } from "react-icons/fa";
 import { Button } from "../../../../components/ui/button";
 import { toast, Toaster } from "react-hot-toast";
+import { DeleteRequestFetchFunction } from "../_FetchFunction/DeleteRequest";
+import Modal from "@mui/material/Modal";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -22,6 +25,22 @@ const RequestDetails = () => {
   const { rid } = useParams();
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
+  const [open, setOpen] = React.useState(false);
+  const router = useRouter();
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
 
   async function GetData() {
     try {
@@ -74,6 +93,19 @@ const RequestDetails = () => {
     }
   }
 
+  async function DeleteRequest() {
+    try {
+      const response = await DeleteRequestFetchFunction(rid);
+      if (response.success) {
+        toast.success(response.message);
+        router.push("/user/view_request");
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      toast.error("Error try again");
+    }
+  }
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
@@ -181,6 +213,28 @@ const RequestDetails = () => {
                     )}
                   </div>
                 </div>
+                <Button onClick={handleOpen}>Delete request</Button>
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box sx={style} className="flex flex-col gap-2">
+                    <p className="font-bold text-center">
+                      Are you sure you want to delete this request ?
+                    </p>{" "}
+                    <Button
+                      className="bg-red-600 hover:bg-red-700"
+                      onClick={() => {
+                        DeleteRequest();
+                      }}
+                    >
+                      Delete
+                    </Button>
+                    <Button onClick={handleClose}>Cancel</Button>
+                  </Box>
+                </Modal>
               </div>
             </div>
           )}

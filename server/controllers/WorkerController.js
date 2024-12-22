@@ -125,7 +125,7 @@ async function Report(req, resp) {
 async function AcceptRequest(req, resp) {
   try {
     const { wid, rid } = req.params;
-    const { EstimatedPrice, description } = req.body;
+    const { EstimatedPrice, description, date } = req.body;
 
     if (!wid || !rid) {
       return resp.status(400).send({
@@ -160,6 +160,7 @@ async function AcceptRequest(req, resp) {
             worker: wid,
             estimatedPrice: EstimatedPrice,
             priceJustification: description,
+            acceptedAt: date,
           },
         },
         status: "Accepted",

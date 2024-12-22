@@ -112,7 +112,6 @@ async function GetUserRequest(req, resp) {
     } else {
       return resp.status(404).send({
         success: false,
-        message: "No requests found",
       });
     }
   } catch (error) {
@@ -232,7 +231,6 @@ async function GetAllRequests(req, resp) {
     } else {
       return resp.status(200).send({
         success: true,
-        message: "no request found",
       });
     }
   } catch (error) {
@@ -352,6 +350,30 @@ async function GetAcceptedRequest(req, resp) {
   }
 }
 
+async function DeleteRequest(req, resp) {
+  try {
+    const { rid } = req.params;
+    const response = await RequestModal.deleteOne({ _id: rid });
+    if (response.deletedCount > 0) {
+      resp.status(200).send({
+        success: true,
+        message: "Request deleted",
+      });
+    } else {
+      resp.status(400).send({
+        success: false,
+        message: "Request not found ",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
 module.exports = {
   CreateRequest,
   GetUserRequest,
@@ -362,4 +384,5 @@ module.exports = {
   FilterRequests,
   UpdateRequestPhoto,
   GetAcceptedRequest,
+  DeleteRequest,
 };

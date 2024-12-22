@@ -69,7 +69,7 @@ const TimeLine = () => {
                 A request was created by you
                 <Typography>
                   {data.date
-                    ? moment(data.date).format("MMMM Do YYYY")
+                    ? moment(data.createdAt).format("MMMM Do YYYY, h:mm A")
                     : "No date available"}
                 </Typography>
               </Typography>
@@ -91,7 +91,7 @@ const TimeLine = () => {
               <Typography>Waiting till someone accepts your request</Typography>
               <Typography>
                 {data.date
-                  ? moment(data.date).format("MMMM Do YYYY")
+                  ? moment(data.createdAt).format("MMMM Do YYYY, h:mm A")
                   : "No date available"}
               </Typography>
             </TimelineContent>
@@ -110,6 +110,13 @@ const TimeLine = () => {
                   Accepted
                 </Typography>
                 <Typography>Request was accepted by a worker</Typography>
+                <Typography>
+                  {data.date
+                    ? moment(data.acceptedBy.acceptedAt).format(
+                        "MMMM Do YYYY, h:mm A"
+                      )
+                    : "No date available"}
+                </Typography>
               </TimelineContent>
             </TimelineItem>
           )}

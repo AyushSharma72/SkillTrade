@@ -4,11 +4,8 @@ export default async function GetRequestData(id, pageNumber) {
       `http://localhost:8000/api/v1/request/GetUserRequest/${id}/${pageNumber}`
     );
 
-    const info = await response.json();
-    if (response.ok) {
-      return info;
-    } else {
-      return info;
+    if (response) {
+      return response;
     }
   } catch (error) {
     console.log(error);
