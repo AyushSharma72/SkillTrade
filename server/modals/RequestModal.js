@@ -44,7 +44,7 @@ const RequestSchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
-      enum: ["Pending", "Accepted", "Confirmed"], // Allowed status values
+      enum: ["Pending", "Accepted", "Confirmed"],
     },
     time: {
       type: String,
@@ -73,6 +73,10 @@ const RequestSchema = new mongoose.Schema(
     ],
     confirmedAt: {
       type: Date,
+    },
+    assignedTo: {
+      type: Schema.Types.ObjectId,
+      ref: "Workers",
     },
   },
   {

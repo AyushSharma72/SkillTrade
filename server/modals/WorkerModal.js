@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const Schema = mongoose.Schema;
 const WorkerSchema = mongoose.Schema({
   Name: {
     type: String,
@@ -33,6 +33,22 @@ const WorkerSchema = mongoose.Schema({
     type: Number,
     default: 1,
   },
+  assignedRequest: [
+    {
+      request: {
+        type: Schema.Types.ObjectId,
+        ref: "Requests",
+      },
+      unassignReason: {
+        type: String,
+        default: null,
+      },
+      unassignesAt: {
+        type: Date,
+        default: null,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model("Workers", WorkerSchema);

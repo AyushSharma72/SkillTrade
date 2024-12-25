@@ -151,7 +151,7 @@ async function AcceptRequest(req, resp) {
         message: "You have already accepted this request.",
       });
     }
-
+    const existingrequest = await RequestModal.findOne({ _id: rid });
     const updatedRequest = await RequestModal.findByIdAndUpdate(
       rid,
       {
@@ -163,7 +163,10 @@ async function AcceptRequest(req, resp) {
             acceptedAt: date,
           },
         },
-        status: "Accepted",
+        status:
+          existingrequest.status == "Pending"
+            ? "Accepted"
+            : existingrequest.status,
       },
       { new: true }
     );

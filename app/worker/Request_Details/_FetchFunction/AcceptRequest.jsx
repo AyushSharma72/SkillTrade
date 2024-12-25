@@ -5,7 +5,6 @@ export async function AcceptRequestFetchFunction(
   description,
   date
 ) {
-  console.log(date);
   try {
     const response = await fetch(
       `http://localhost:8000/api/v1/workers/AcceptRequest/${wid}/${rid}`,

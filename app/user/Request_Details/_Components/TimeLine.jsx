@@ -111,8 +111,8 @@ const TimeLine = () => {
                 </Typography>
                 <Typography>Request was accepted by a worker</Typography>
                 <Typography>
-                  {data.date
-                    ? moment(data.acceptedBy.acceptedAt).format(
+                  {data.acceptedBy[0].acceptedAt
+                    ? moment(data.acceptedBy[0].acceptedAt).format(
                         "MMMM Do YYYY, h:mm A"
                       )
                     : "No date available"}
@@ -134,6 +134,11 @@ const TimeLine = () => {
                   Confirmed
                 </Typography>
                 <Typography>Accepted request was confirmed by you </Typography>
+                <Typography>
+                  {data.confirmedAt
+                    ? moment(data.confirmedAt).format("MMMM Do YYYY, h:mm A")
+                    : "No date available"}
+                </Typography>
               </TimelineContent>
             </TimelineItem>
           ) : null}

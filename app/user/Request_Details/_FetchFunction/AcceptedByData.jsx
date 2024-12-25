@@ -1,7 +1,7 @@
-export async function GetAcceptedByData(uid, pageNumber) {
+export async function GetAcceptedByData(rid, pageNumber) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/GetUpdatedRequest/${uid}/${pageNumber}`
+      `http://localhost:8000/api/v1/request/GetWhoAcceptedRequest/${rid}/${pageNumber}`
     );
     if (response) {
       const data = await response.json();
@@ -17,4 +17,3 @@ export async function GetAcceptedByData(uid, pageNumber) {
     };
   }
 }
-  

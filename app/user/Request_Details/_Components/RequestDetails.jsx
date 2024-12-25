@@ -18,14 +18,18 @@ import { Button } from "../../../../components/ui/button";
 import { toast, Toaster } from "react-hot-toast";
 import { DeleteRequestFetchFunction } from "../_FetchFunction/DeleteRequest";
 import Modal from "@mui/material/Modal";
+import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
+import { Textarea } from "@mui/joy";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(true);
   const { rid } = useParams();
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(null);
   const [open, setOpen] = React.useState(false);
+  const [unassignModal, SetunassignModal] = useState(false);
   const router = useRouter();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -106,10 +110,22 @@ const RequestDetails = () => {
       toast.error("Error try again");
     }
   }
+
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
-
+  async function UnassignWorker() {
+    if (!description || description.length < 30) {
+      toast.error("please give description of atleast 30 characters");
+    }
+    try {
+    } catch (error) {}
+  }
+  const handleChange = (event) => {
+    if (event.target.value.length <= 100) {
+      setDescription(event.target.value);
+    }
+  };
   useEffect(() => {
     GetData();
   }, []);
@@ -147,23 +163,23 @@ const RequestDetails = () => {
                   {data.description}
                 </p>
               </div>
-              <div className="flex flex-col sm:w-[90%] xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg mt-5">
-                <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+              <div className="flex flex-col w-full xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg ">
+                <div className="flex items-center sm:justify-normal ">
+                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <MdOutlineHandyman /> Service type :
                   </span>
                   <p className="text-lg">{data.service}</p>
                 </div>
                 <hr />
                 <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <FaAddressCard /> Address :
                   </span>
                   <p className="text-lg">{data.location}</p>
                 </div>
                 <hr />
                 <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <TbMapPinCode />
                     Pincode :
                   </span>
@@ -171,7 +187,7 @@ const RequestDetails = () => {
                 </div>
                 <hr />
                 <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <FaLocationDot />
                     City :
                   </span>
@@ -179,7 +195,7 @@ const RequestDetails = () => {
                 </div>
                 <hr />
                 <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <FaCalendarCheck />
                     Visiting Date :
                   </span>
@@ -193,7 +209,7 @@ const RequestDetails = () => {
                 </div>
                 <hr />
                 <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <SiStatuspage />
                     Status :
                   </span>
@@ -213,7 +229,33 @@ const RequestDetails = () => {
                     )}
                   </div>
                 </div>
-                <Button onClick={handleOpen}>Delete request</Button>
+                <hr />
+                {data.assignedTo ? (
+                  <div className="flex items-center sm:justify-normal">
+                    <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
+                      <MdOutlineAssignmentTurnedIn />
+                      Assigned to :
+                    </span>
+                    <div className="text-lg flex justify-between items-center gap-5">
+                      <span> {data.assignedTo?.Name}</span>
+                      <Button
+                        onClick={() => {
+                          SetunassignModal(true);
+                        }}
+                      >
+                        unassign
+                      </Button>
+                    </div>
+                  </div>
+                ) : null}
+                <div className="flex gap-1 justify-around">
+                  <Button className="w-1/2">Mark as completed</Button>
+                  <Button onClick={handleOpen} className="w-1/2">
+                    Delete request
+                  </Button>
+                </div>
+
+                {/* modal */}
                 <Modal
                   open={open}
                   onClose={handleClose}
@@ -233,6 +275,42 @@ const RequestDetails = () => {
                       Delete
                     </Button>
                     <Button onClick={handleClose}>Cancel</Button>
+                  </Box>
+                </Modal>
+
+                {/* unassign modal */}
+                <Modal
+                  open={unassignModal}
+                  onClose={() => {
+                    SetunassignModal(false);
+                  }}
+                >
+                  <Box sx={style} className="flex flex-col gap-2">
+                    <p className="font-bold text-center">
+                      Are you sure you want to unassign this worker ?
+                    </p>{" "}
+                    <div>
+                      {" "}
+                      <Textarea
+                        name="description"
+                        placeholder="Type reason"
+                        value={description}
+                        onChange={handleChange}
+                        className="w-full h-20 overflow-y-scroll scrollbar-hide"
+                        required
+                      />
+                      <p className="text-gray-400">
+                        {100 - description.length} characters remaining
+                      </p>
+                    </div>
+                    <Button onClick={() => {}}>Unassign</Button>
+                    <Button
+                      onClick={() => {
+                        SetunassignModal(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
                   </Box>
                 </Modal>
               </div>

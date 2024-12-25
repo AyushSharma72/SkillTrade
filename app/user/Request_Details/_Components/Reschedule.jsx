@@ -28,8 +28,8 @@ const Reschedule = () => {
       toast.error("please enter atleast one field");
       return;
     }
-    if (pincode.length != 6) {
-      toast.error("please enter valid pincode");
+    if (pincode.toString().length !== 6) {
+      toast.error("Please enter a valid pincode");
       return;
     }
 
@@ -58,6 +58,8 @@ const Reschedule = () => {
         settime(info.requestdetails.time);
         setAddress(info.requestdetails.location);
         Setpincode(info.requestdetails.pincode);
+
+        console.log(pincode);
       } else {
         toast.error(info.message);
       }
@@ -123,7 +125,7 @@ const Reschedule = () => {
             <input
               id="time"
               type="time"
-              className="p-2 border-2 border-gray-300 rounded-md w-3/4"
+              className="p-2 border-2 border-gray-300 rounded-md w-3/4 cursor-pointer"
               value={time}
               onChange={(e) => settime(e.target.value)}
               placeholder="Select time"

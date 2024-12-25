@@ -128,10 +128,16 @@ async function GetSingleUserRequest(req, resp) {
     const { rid } = req.params;
     const requestdetails = await RequestModal.findById({ _id: rid })
       .select("-image")
-      .populate({
-        path: "user",
-        select: "Name",
-      });
+      .populate([
+        {
+          path: "user",
+          select: "Name",
+        },
+        {
+          path: "assignedTo",
+          select: "Name",
+        },
+      ]);
 
     if (requestdetails) {
       return resp.status(200).send({
@@ -319,17 +325,18 @@ async function UpdateRequestPhoto(req, resp) {
   }
 }
 
-async function GetAcceptedRequest(req, resp) {
+async function GetWhoAcceptedRequest(req, resp) {
   try {
-    const { uid, page } = req.params;
+    const { rid, page } = req.params;
     const requests = await RequestModal.find(
       {
-        user: uid,
+        _id: rid,
         status: { $in: ["Accepted", "Confirmed"] },
       },
       "acceptedBy"
     )
-      .populate("acceptedBy.worker")
+      .populate("acceptedBy.worker", "Name")
+      .populate("assignedTo", "_id")
       .limit(5)
       .skip((page - 1) * 5);
 
@@ -374,6 +381,59 @@ async function DeleteRequest(req, resp) {
   }
 }
 
+async function AssignRequest(req, resp) {
+  try {
+    const { wid, rid } = req.params;
+    const { date } = req.body;
+
+    if (!wid || !rid) {
+      return resp.status(400).send({
+        success: false,
+        message: "Worker ID and Request ID are required",
+      });
+    }
+
+    const request = await RequestModal.findById(rid);
+    const worker = await WorkerModal.findById(wid);
+
+    if (!request) {
+      return resp.status(404).send({
+        success: false,
+        message: "Request not found",
+      });
+    }
+
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+
+    request.assignedTo = wid;
+    request.confirmedAt = date;
+    request.status = "Confirmed";
+
+    worker.assignedRequest.push({
+      request: rid,
+      unassignReason: null,
+      unassignesAt: null,
+    });
+
+    await Promise.all([worker.save(), request.save()]);
+
+    return resp.status(200).send({
+      success: true,
+      message: "Request assigned successfully",
+    });
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
 module.exports = {
   CreateRequest,
   GetUserRequest,
@@ -383,6 +443,7 @@ module.exports = {
   GetAllRequests,
   FilterRequests,
   UpdateRequestPhoto,
-  GetAcceptedRequest,
+  GetWhoAcceptedRequest,
   DeleteRequest,
+  AssignRequest,
 };
