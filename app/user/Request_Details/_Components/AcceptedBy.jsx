@@ -113,6 +113,7 @@ function AcceptedBy() {
       toast.error("error try again");
     } finally {
       setLoading2(false);
+      fetchData();
     }
   }
   useEffect(() => {

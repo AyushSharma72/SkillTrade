@@ -11,6 +11,7 @@ const {
   GetWhoAcceptedRequest,
   DeleteRequest,
   AssignRequest,
+  UnassignRequest,
 } = require("../controllers/RequestController");
 const formidable = require("express-formidable");
 
@@ -37,4 +38,7 @@ router.get("/GetWhoAcceptedRequest/:rid/:page", GetWhoAcceptedRequest);
 router.delete("/DeleteRequest/:rid", DeleteRequest);
 
 router.put("/AssignRequest/:rid/:wid", AssignRequest);
+
+router.post("/Unassignrequest/:rid/:wid", UnassignRequest);
+
 module.exports = router;

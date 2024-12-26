@@ -14,6 +14,14 @@ const WorkerSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  image: {
+    data: Buffer,
+    contentType: String,
+  },
+  id: {
+    data: Buffer,
+    contentType: String,
+  },
   Password: {
     type: String,
     required: true,
@@ -33,6 +41,9 @@ const WorkerSchema = mongoose.Schema({
     type: Number,
     default: 1,
   },
+  gender: {
+    type: String,
+  },
   assignedRequest: [
     {
       request: {
@@ -46,6 +57,24 @@ const WorkerSchema = mongoose.Schema({
       unassignesAt: {
         type: Date,
         default: null,
+      },
+    },
+  ],
+  OverallRaitngs: {
+    type: Number,
+    default: 0,
+  },
+  Ratings: [
+    {
+      stars: {
+        type: Number,
+      },
+      comment: {
+        type: String,
+      },
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "users",
       },
     },
   ],

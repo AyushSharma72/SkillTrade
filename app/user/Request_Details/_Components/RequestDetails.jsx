@@ -20,6 +20,7 @@ import { DeleteRequestFetchFunction } from "../_FetchFunction/DeleteRequest";
 import Modal from "@mui/material/Modal";
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { Textarea } from "@mui/joy";
+import { UnAssign } from "../_FetchFunction/UnassignWorker";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -114,12 +115,28 @@ const RequestDetails = () => {
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
-  async function UnassignWorker() {
+  async function UnassignWorker(e, wid) {
+    e.preventDefault();
     if (!description || description.length < 30) {
       toast.error("please give description of atleast 30 characters");
+      return;
     }
     try {
-    } catch (error) {}
+      const response = await UnAssign(rid, wid, description);
+      const data = await response.json();
+      if (response.status === 200) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("error making this request");
+    } finally {
+      SetunassignModal(false);
+      setDescription("");
+      GetData();
+    }
   }
   const handleChange = (event) => {
     if (event.target.value.length <= 100) {
@@ -303,7 +320,13 @@ const RequestDetails = () => {
                         {100 - description.length} characters remaining
                       </p>
                     </div>
-                    <Button onClick={() => {}}>Unassign</Button>
+                    <Button
+                      onClick={(e) => {
+                        UnassignWorker(e, data.assignedTo?._id);
+                      }}
+                    >
+                      Unassign
+                    </Button>
                     <Button
                       onClick={() => {
                         SetunassignModal(false);

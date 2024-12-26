@@ -434,6 +434,63 @@ async function AssignRequest(req, resp) {
   }
 }
 
+async function UnassignRequest(req, resp) {
+  try {
+    const { reason, date } = req.body;
+    const { rid, wid } = req.params;
+
+    // Validate inputs
+    if (!reason || !date) {
+      return resp.status(400).send({
+        message: "Reason and date are required for unassigning the request",
+        success: false,
+      });
+    }
+
+    // Find request and worker
+    const request = await RequestModal.findOne({ _id: rid });
+    const worker = await WorkerModal.findOne({ _id: wid });
+
+    if (!request || !worker) {
+      return resp.status(404).send({
+        message: "Either request or worker not found",
+        success: false,
+      });
+    }
+
+    request.confirmedAt = null;
+    request.assignedTo = null;
+    request.status = "Accepted";
+    const assignedRequestIndex = worker.assignedRequest.findIndex(
+      (item) => item.request.toString() === rid
+    );
+
+    if (assignedRequestIndex !== -1) {
+      worker.assignedRequest[assignedRequestIndex].unassignReason = reason;
+      worker.assignedRequest[assignedRequestIndex].unassignesAt = date;
+    } else {
+      return resp.status(404).send({
+        message: "Assigned request not found in worker's records",
+        success: false,
+      });
+    }
+
+    await request.save();
+    await worker.save();
+
+    return resp.status(200).send({
+      message: "Unassigned successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error in UnassignRequest:", error);
+    return resp.status(500).send({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+}
+
 module.exports = {
   CreateRequest,
   GetUserRequest,
@@ -446,4 +503,5 @@ module.exports = {
   GetWhoAcceptedRequest,
   DeleteRequest,
   AssignRequest,
+  UnassignRequest,
 };
