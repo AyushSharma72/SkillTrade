@@ -192,4 +192,33 @@ async function AcceptRequest(req, resp) {
   }
 }
 
-module.exports = { RegisterWorker, CheckCity, Report, AcceptRequest };
+async function GetWorkerData(req, resp) {
+  try {
+    const { wid } = req.params;
+    const worker = await WorkerModal.findOne({ _id: wid }).select("-Password");
+    if (worker) {
+      resp.status(200).send({
+        success: true,
+        worker,
+      });
+    } else {
+      resp.status(404).send({
+        success: true,
+        message: "worker not found",
+      });
+    }
+  } catch (error) {
+    resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
+module.exports = {
+  RegisterWorker,
+  CheckCity,
+  Report,
+  AcceptRequest,
+  GetWorkerData,
+};
