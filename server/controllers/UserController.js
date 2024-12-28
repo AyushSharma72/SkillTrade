@@ -2,7 +2,6 @@ const bcrypt = require("bcryptjs");
 const JWT = require("jsonwebtoken");
 const WorkerModal = require("../modals/WorkerModal");
 const UserModal = require("../modals/UserModal");
-const { message } = require("antd");
 const fs = require("fs").promises;
 
 async function RegisterUser(req, resp) {

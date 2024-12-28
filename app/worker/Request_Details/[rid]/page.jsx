@@ -15,7 +15,7 @@ import { FaAddressCard } from "react-icons/fa";
 import { PulseLoader } from "react-spinners";
 import { toast, Toaster } from "react-hot-toast";
 import { GoReport } from "react-icons/go";
-import ModalComponent from "../Modal";
+import ModalComponent from "../../../_components/Modal";
 import ReportModal from "./../_Modals/ReportModal";
 import AcceptRequest from "../_Modals/AcceptRequest";
 
@@ -170,14 +170,14 @@ const RequestDetails = () => {
                   open={open}
                   handleClose={handleClose}
                   ModalType={ReportModal}
-                  rid={rid}
+                  id={rid}
                 />
                 {/* Accept request modal */}
                 <ModalComponent
                   open={open2}
                   handleClose={handleClose2}
                   ModalType={AcceptRequest}
-                  rid={rid}
+                  id={rid}
                 />
               </div>
             </div>

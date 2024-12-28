@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const UserModal = require("../modals/UserModal");
 const ReportModal = require("../modals/ReportModal");
 const RequestModal = require("../modals/RequestModal");
+const fs = require("fs").promises;
 
 async function RegisterWorker(req, resp) {
   try {
@@ -215,10 +216,81 @@ async function GetWorkerData(req, resp) {
   }
 }
 
+async function UpdateProfile(req, resp) {
+  const { wid } = req.params;
+
+  const worker = await WorkerModal.findById(wid);
+  if (!worker) {
+    return resp.status(404).send({
+      success: false,
+      message: "worker not found",
+    });
+  }
+
+  const { fields, files } = req;
+
+  const updatedData = {
+    Name: fields.Name || worker.Name,
+    MobileNo: fields.MobileNo || worker.MobileNo,
+    ServiceType: fields.ServiceType || worker.ServiceType,
+  };
+
+  const updatedWorker = await WorkerModal.findByIdAndUpdate(wid, updatedData, {
+    new: true,
+  });
+
+  const image = files.image;
+
+  if (image) {
+    try {
+      updatedWorker.image = {
+        data: await fs.readFile(image.filepath || image.path),
+        contentType: image.mimetype || image.type,
+      };
+    } catch (error) {
+      return resp.status(400).send({
+        success: false,
+        message: "Image processing failed",
+      });
+    }
+  } else {
+    console.log("No image exists");
+  }
+
+  await updatedWorker.save();
+
+  return resp.status(200).send({
+    success: true,
+    message: "Worker updated successfully",
+  });
+}
+
+async function GetWorkerImage(req, resp) {
+  try {
+    const worker = await WorkerModal.findById(req.params.wid).select("image");
+
+    if (!worker || !worker.image || !worker.image.data) {
+      return resp.status(404).send({
+        success: false,
+        message: "Image not found",
+      });
+    }
+    resp.set("Content-Type", worker.image.contentType);
+    return resp.status(200).send(worker.image.data);
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "Error fetching image",
+    });
+  }
+}
+
 module.exports = {
   RegisterWorker,
   CheckCity,
   Report,
   AcceptRequest,
   GetWorkerData,
+  UpdateProfile,
+  GetWorkerImage,
 };

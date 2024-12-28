@@ -20,7 +20,7 @@ export default function Loading() {
         width={200}
         isClickToPauseDisabled={true}
       />
-      <p className="font-bold tracking-wider">LOADING.....</p>
+      <p className="font-bold tracking-wider">LOADING PAGE.....</p>
     </div>
   );
 }

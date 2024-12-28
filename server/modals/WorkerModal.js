@@ -19,10 +19,7 @@ const WorkerSchema = mongoose.Schema(
       data: Buffer,
       contentType: String,
     },
-    image: {
-      data: Buffer,
-      contentType: String,
-    },
+
     Password: {
       type: String,
       required: true,
@@ -82,6 +79,10 @@ const WorkerSchema = mongoose.Schema(
     Verified: {
       type: Boolean,
       default: false,
+    },
+    VerifyId: {
+      data: Buffer,
+      contentType: String,
     },
   },
   {

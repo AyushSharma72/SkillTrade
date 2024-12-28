@@ -16,11 +16,24 @@ import { PiCityFill } from "react-icons/pi";
 import { FaCodePullRequest } from "react-icons/fa6";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoIosTime } from "react-icons/io";
+import { FaEdit } from "react-icons/fa";
 import moment from "moment";
-import { Badge, Card, Space } from "antd";
+import { Badge, Space } from "antd";
+import ModalComponent from "./Modal";
+import ImageEditModal from "./Modals/ImageEditModal";
+import EditProfileModal from "./Modals/EditProfileModal";
+
 const WorkerProfile = () => {
   const [auth, SetAuth] = useAuth();
   const [WorkerData, SetWorkerData] = useState([]);
+  const [open, setOpen] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleOpen2 = () => setOpen2(true);
+  const handleClose = () => setOpen(false);
+  const handleClose2 = () => setOpen2(false);
+  const [imageError, setImageError] = useState(false);
+
   <Space
     direction="vertical"
     size="middle"
@@ -71,33 +84,44 @@ const WorkerProfile = () => {
           width={200}
           isClickToPauseDisabled={true}
         />
-        <p className="font-bold tracking-wider">LOADING.....</p>
+        <p className="font-bold tracking-wider">Loading auth.....</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center  h-screen bg-gray-200">
-      <p className="font-semibold text-3xl mt-2"> WorkerProfile</p>
+    <div className="flex flex-col items-center md:h-screen  bg-gray-200 ">
+      <p className="font-semibold text-3xl sm:mt-2 mt-20"> WorkerProfile</p>
 
-      <div className="flex justify-center gap-20 items-center mt-5 w-full ">
+      <div className="flex justify-center md:gap-5 items-center md:items-start  mt-5 w-full md:flex-row flex-col  gap-5">
         {/* left div  */}
-        <div className="w-[20%]  h-[550px]">
+        <div className="xl:w-[20%] lg:w-[25%] sm:w-1/2 w-[90%] ">
           {" "}
           <Badge.Ribbon
             text={`${WorkerData.verfied ? "Verified" : "Unverified"}`}
             color={`${WorkerData.verfied ? "" : "red"}`}
+            placement="start"
           >
-            {" "}
-            <div className="flex flex-col justify-between gap-3">
+            <FaEdit
+              className="absolute right-3 top-2 cursor-pointer"
+              title="edit profile"
+              onClick={handleOpen}
+            />
+            <div className="flex flex-col justify-start gap-3">
               {/* image */}
-              <div className="flex flex-col justify-center items-center p-3  gap-1 rounded-lg shadow-lg bg-white">
+
+              <div className="flex flex-col justify-center items-center p-3 gap-1 rounded-lg shadow-lg bg-white">
                 <Image
-                  src={demouserimage}
-                  alt="Sample"
+                  src={
+                    imageError
+                      ? demouserimage // Fallback image if error occurs
+                      : `http://localhost:8000/api/v1/workers/GetWorkerImage/${auth?.user?._id}`
+                  }
+                  alt="Worker"
                   width={200}
                   height={200}
                   className="rounded-[50%] shadow-md"
+                  onError={() => setImageError(true)}
                 />
                 <p className="text-2xl font-semibold">{WorkerData?.Name}</p>
                 <p>{WorkerData?.ServiceType}</p>
@@ -110,7 +134,6 @@ const WorkerProfile = () => {
                   />
                 </p>
                 <p>
-                  {" "}
                   {WorkerData?.OverallRaitngs === 0 ? (
                     <span className="text-sm text-gray-600">
                       No rating given
@@ -122,7 +145,6 @@ const WorkerProfile = () => {
                   )}
                 </p>
               </div>
-
               <div className="bg-white p-3  rounded-lg  flex flex-col gap-3 shadow-lg">
                 <div
                   className="flex  items-center gap-2 cursor-pointer"
@@ -149,12 +171,28 @@ const WorkerProfile = () => {
             </div>
           </Badge.Ribbon>
         </div>
-
+        <ModalComponent
+          open={open}
+          handleClose={handleClose}
+          ModalType={ImageEditModal}
+          GetWorkerData={GetWorkerData}
+        />
+        <ModalComponent
+          open={open2}
+          handleClose={handleClose2}
+          ModalType={EditProfileModal}
+          GetWorkerData={GetWorkerData}
+        />
         {/* right div  */}
-        <div className="bg-white w-1/2 h-[550px] p-5 rounded-lg flex flex-col gap-5 shadow-lg">
+        <div className="bg-white xl:w-1/2 lg:w-[60%] w-[90%] p-5 rounded-lg flex flex-col gap-5 shadow-lg relative mb-2 h-[550px]">
+          <FaEdit
+            className="absolute right-3 top-2 cursor-pointer"
+            title="edit profile"
+            onClick={handleOpen2}
+          />
           <hr className="mt-4" />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <FaCircleUser className="text-xl" />
               Role
             </span>
@@ -164,7 +202,7 @@ const WorkerProfile = () => {
           {/* address */}
           <hr />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <FaAddressCard className="text-xl" />
               Address
             </span>
@@ -175,7 +213,7 @@ const WorkerProfile = () => {
 
           <hr />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <TbMapPinCode className="text-xl" />
               Pincode
             </span>
@@ -186,7 +224,7 @@ const WorkerProfile = () => {
 
           <hr />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <PiCityFill className="text-xl" />
               City
             </span>
@@ -196,7 +234,7 @@ const WorkerProfile = () => {
           {/* Assigned Request */}
           <hr />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <FaCodePullRequest className="text-xl" />
               Assigned requests
             </span>
@@ -206,7 +244,7 @@ const WorkerProfile = () => {
           {/* Completed Request */}
           <hr />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <FaCheckCircle className="text-xl" />
               Completed requests
             </span>
@@ -217,7 +255,7 @@ const WorkerProfile = () => {
           {/* joined  */}
           <hr />
           <div className="flex ">
-            <span className="w-[35%] flex gap-2 items-center font-bold">
+            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <IoIosTime className="text-xl" />
               Joined
             </span>
