@@ -1,7 +1,13 @@
 import React from "react";
 import Modal from "@mui/material/Modal";
 
-const ModalComponent = ({ handleClose, open, ModalType, GetWorkerData }) => {
+const ModalComponent = ({
+  handleClose,
+  open,
+  ModalType,
+  GetWorkerData,
+  data,
+}) => {
   return (
     <div>
       <Modal
@@ -10,7 +16,11 @@ const ModalComponent = ({ handleClose, open, ModalType, GetWorkerData }) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <ModalType handleClose={handleClose} GetWorkerData={GetWorkerData} />
+        <ModalType
+          handleClose={handleClose}
+          GetWorkerData={GetWorkerData}
+          data={data}
+        />
       </Modal>
     </div>
   );

@@ -171,17 +171,21 @@ const WorkerProfile = () => {
             </div>
           </Badge.Ribbon>
         </div>
+        {/* modal 1 */}
         <ModalComponent
           open={open}
           handleClose={handleClose}
           ModalType={ImageEditModal}
           GetWorkerData={GetWorkerData}
+          data={WorkerData}
         />
+        {/* modal 2 */}
         <ModalComponent
           open={open2}
           handleClose={handleClose2}
           ModalType={EditProfileModal}
           GetWorkerData={GetWorkerData}
+          data={WorkerData}
         />
         {/* right div  */}
         <div className="bg-white xl:w-1/2 lg:w-[60%] w-[90%] p-5 rounded-lg flex flex-col gap-5 shadow-lg relative mb-2 h-[550px]">

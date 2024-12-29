@@ -233,6 +233,9 @@ async function UpdateProfile(req, resp) {
     Name: fields.Name || worker.Name,
     MobileNo: fields.MobileNo || worker.MobileNo,
     ServiceType: fields.ServiceType || worker.ServiceType,
+    Address: fields.address || worker.Address,
+    pincode: fields.pincode || worker.pincode,
+    city: fields.city || worker.city,
   };
 
   const updatedWorker = await WorkerModal.findByIdAndUpdate(wid, updatedData, {
@@ -240,7 +243,7 @@ async function UpdateProfile(req, resp) {
   });
 
   const image = files.image;
-
+  const vimage = files.vimage;
   if (image) {
     try {
       updatedWorker.image = {
@@ -255,6 +258,21 @@ async function UpdateProfile(req, resp) {
     }
   } else {
     console.log("No image exists");
+  }
+  if (vimage) {
+    try {
+      updatedWorker.VerifyId = {
+        data: await fs.readFile(vimage.filepath || vimage.path),
+        contentType: vimage.mimetype || vimage.type,
+      };
+    } catch (error) {
+      return resp.status(400).send({
+        success: false,
+        message: "verification image processing failed",
+      });
+    }
+  } else {
+    console.log("No verification image exists");
   }
 
   await updatedWorker.save();
