@@ -14,7 +14,12 @@ export default function Loading() {
   };
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <Lottie options={defaultOptions} height={150} width={200} />
+      <Lottie
+        options={defaultOptions}
+        height={150}
+        width={200}
+        isClickToPauseDisabled={true}
+      />
       <p className="font-bold tracking-wider">LOADING.....</p>
     </div>
   );

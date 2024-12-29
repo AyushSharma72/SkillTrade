@@ -196,7 +196,9 @@ async function AcceptRequest(req, resp) {
 async function GetWorkerData(req, resp) {
   try {
     const { wid } = req.params;
-    const worker = await WorkerModal.findOne({ _id: wid }).select("-Password");
+    const worker = await WorkerModal.findOne({ _id: wid }).select(
+      "-Password -image -VerifyId"
+    );
     if (worker) {
       resp.status(200).send({
         success: true,

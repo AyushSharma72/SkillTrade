@@ -40,7 +40,7 @@ const WorkerMenu = () => {
         </Link>
         <Link href="/worker/requests">
           <CustomButton className="w-full flex gap-2" onClick={onClose}>
-            <FaCodePullRequest /> View Requests
+            <FaCodePullRequest /> Assigned Requests
           </CustomButton>
         </Link>
 

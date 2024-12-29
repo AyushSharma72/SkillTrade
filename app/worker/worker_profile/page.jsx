@@ -120,7 +120,7 @@ const WorkerProfile = () => {
                   alt="Worker"
                   width={200}
                   height={200}
-                  className="rounded-[50%] shadow-md"
+                  className="rounded-[50%] shadow-md !h-[200px]"
                   onError={() => setImageError(true)}
                 />
                 <p className="text-2xl font-semibold">{WorkerData?.Name}</p>

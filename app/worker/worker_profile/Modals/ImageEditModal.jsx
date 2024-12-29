@@ -1,6 +1,8 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 import { Input, Textarea } from "@mui/joy";
 import Button from "@mui/joy/Button";
 import { toast, Toaster } from "react-hot-toast";
@@ -24,23 +26,27 @@ const style = {
   p: 3,
 };
 
-const ImageEditModal = ({ handleClose, GetWorkerData }) => {
+const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
   const [image, setImage] = useState(null);
-  const [name, SetName] = useState("");
-  const [service, setService] = useState(null);
-  const [MobileNo, SetMobileNo] = useState(null);
+  const [name, SetName] = useState(data.Name);
+  const [service, setService] = useState(data.ServiceType);
+  const [MobileNo, SetMobileNo] = useState(data.MobileNo);
+  const [loading, setLoading] = useState(false);
 
   async function UpdateUser() {
+    setLoading(true);
     try {
       const authString = localStorage.getItem("auth");
       if (!authString) {
         toast.error("User authentication not found.");
+        setLoading(false);
         return;
       }
 
       const auth = JSON.parse(authString);
       if (!auth?.user?._id) {
         toast.error("User ID is missing. Please re-login.");
+        setLoading(false);
         return;
       }
 
@@ -66,7 +72,9 @@ const ImageEditModal = ({ handleClose, GetWorkerData }) => {
         toast.error(result.message || "Failed to update profile.");
       }
     } catch (error) {
-      toast.error("An unexpected error occurred  Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+      setLoading(false); // Hide Backdrop
     }
   }
 
@@ -94,10 +102,17 @@ const ImageEditModal = ({ handleClose, GetWorkerData }) => {
     const inputValue = e.target.value;
     if (inputValue.toString().length <= 10) {
       SetMobileNo(e.target.value);
-    } else {
-      return;
     }
   }
+  useEffect(() => {
+    // Set the initial value of the service dropdown
+    const initialService = services.find(
+      (option) => option.value === data.ServiceType
+    );
+    if (initialService) {
+      setService(initialService);
+    }
+  }, [data.ServiceType]);
 
   return (
     <Box
@@ -105,8 +120,13 @@ const ImageEditModal = ({ handleClose, GetWorkerData }) => {
       className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
     >
       <Toaster />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
       <p className="text-xl font-semibold text-center">Edit your profile</p>
-
       <hr />
 
       <div className="flex flex-col items-center w-full mt-2">
@@ -166,7 +186,6 @@ const ImageEditModal = ({ handleClose, GetWorkerData }) => {
       </div>
 
       <div>
-        {" "}
         <label htmlFor="service" className="text-sm font-medium text-gray-700">
           Change Expertise
         </label>
@@ -182,7 +201,6 @@ const ImageEditModal = ({ handleClose, GetWorkerData }) => {
       </div>
 
       <div>
-        {" "}
         <label htmlFor="MobileNo" className="text-sm font-medium text-gray-700">
           Edit Mobile Number
         </label>
@@ -197,7 +215,6 @@ const ImageEditModal = ({ handleClose, GetWorkerData }) => {
       </div>
 
       <div className="flex flex-col gap-1">
-        {" "}
         <CustomButton
           onClick={() => {
             UpdateUser();

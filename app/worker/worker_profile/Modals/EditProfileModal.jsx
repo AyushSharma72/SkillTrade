@@ -15,9 +15,9 @@ import CircularProgress from "@mui/material/CircularProgress";
 
 const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [vimage, setImage] = useState(null);
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [pincode, setPincode] = useState("");
+  const [address, setAddress] = useState(data.Address);
+  const [city, setCity] = useState(data.city);
+  const [pincode, setPincode] = useState(data.pincode);
   const [backdrop, Setbackdrop] = useState(false);
 
   const style = {
@@ -101,10 +101,6 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
       GetWorkerData();
     }
   }
-
-  useEffect(() => {
-    setAddress(data.Address);
-  });
 
   return (
     <Box
