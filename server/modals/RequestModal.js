@@ -78,6 +78,9 @@ const RequestSchema = new mongoose.Schema(
       type: Schema.Types.ObjectId,
       ref: "Workers",
     },
+    actualPrice: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

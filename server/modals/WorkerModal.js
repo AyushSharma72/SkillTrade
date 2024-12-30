@@ -58,6 +58,10 @@ const WorkerSchema = mongoose.Schema(
         },
       },
     ],
+    CompletedRequest: {
+      type: Number,
+      default: 0,
+    },
     OverallRaitngs: {
       type: Number,
       default: 0,
@@ -65,7 +69,7 @@ const WorkerSchema = mongoose.Schema(
     Ratings: [
       {
         stars: {
-          type: Number,
+          type: Number,   
         },
         comment: {
           type: String,
@@ -73,6 +77,9 @@ const WorkerSchema = mongoose.Schema(
         user: {
           type: Schema.Types.ObjectId,
           ref: "users",
+        },
+        date: {
+          type: Date,
         },
       },
     ],

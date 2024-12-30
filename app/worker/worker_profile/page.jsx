@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+// import Image from "next/image";
 import demouserimage from "../../assests/demouserimage.jpg";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import toast from "react-hot-toast";
@@ -19,9 +19,11 @@ import { IoIosTime } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import moment from "moment";
 import { Badge, Space } from "antd";
-import ModalComponent from "./Modal";
+import ModalComponent from "./_Components/Modal";
 import ImageEditModal from "./Modals/ImageEditModal";
 import EditProfileModal from "./Modals/EditProfileModal";
+import Chip from "@mui/material/Chip";
+import Ratings from "./_Components/Ratings";
 
 const WorkerProfile = () => {
   const [auth, SetAuth] = useAuth();
@@ -75,22 +77,22 @@ const WorkerProfile = () => {
     }
   }, [auth]);
 
-  if (!auth?.user) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center">
-        <Lottie
-          options={defaultOptions}
-          height={150}
-          width={200}
-          isClickToPauseDisabled={true}
-        />
-        <p className="font-bold tracking-wider">Loading auth.....</p>
-      </div>
-    );
-  }
+  // if (!auth?.user) {
+  //   return (
+  //     <div className="h-screen flex flex-col items-center justify-center">
+  //       <Lottie
+  //         options={defaultOptions}
+  //         height={150}
+  //         width={200}
+  //         isClickToPauseDisabled={true}
+  //       />
+  //       <p className="font-bold tracking-wider">Loading auth.....</p>
+  //     </div>
+  //   );
+  // }
 
   return (
-    <div className="flex flex-col items-center md:h-screen  bg-gray-200 ">
+    <div className="flex flex-col items-center   bg-gray-200 ">
       <p className="font-semibold text-3xl sm:mt-2 mt-20"> WorkerProfile</p>
 
       <div className="flex justify-center md:gap-5 items-center md:items-start  mt-5 w-full md:flex-row flex-col  gap-5">
@@ -103,47 +105,47 @@ const WorkerProfile = () => {
             placement="start"
           >
             <FaEdit
-              className="absolute right-3 top-2 cursor-pointer"
+              className="absolute right-3 top-[50%] cursor-pointer"
               title="edit profile"
               onClick={handleOpen}
             />
             <div className="flex flex-col justify-start gap-3">
               {/* image */}
 
-              <div className="flex flex-col justify-center items-center p-3 gap-1 rounded-lg shadow-lg bg-white">
-                <Image
+              <div className="flex flex-col justify-center items-center  gap-1 rounded-lg shadow-lg bg-white">
+                {" "}
+                <img
                   src={
                     imageError
                       ? demouserimage // Fallback image if error occurs
                       : `http://localhost:8000/api/v1/workers/GetWorkerImage/${auth?.user?._id}`
                   }
                   alt="Worker"
-                  width={200}
-                  height={200}
-                  className="rounded-[50%] shadow-md !h-[200px]"
+                  className="shadow-md !h-[200px] w-[200px] object-cover rounded-[50%]"
                   onError={() => setImageError(true)}
                 />
-                <p className="text-2xl font-semibold">{WorkerData?.Name}</p>
-                <p>{WorkerData?.ServiceType}</p>
-                <p className="flex items-center">
-                  <Rating
-                    name="half-rating-read"
-                    defaultValue={WorkerData?.OverallRaitngs}
-                    precision={0.5}
-                    readOnly
-                  />
-                </p>
-                <p>
-                  {WorkerData?.OverallRaitngs === 0 ? (
-                    <span className="text-sm text-gray-600">
-                      No rating given
+                <div className="flex flex-col w-full pl-3 pb-3 gap-3">
+                  {" "}
+                  <p className="text-2xl font-semibold">{WorkerData?.Name}</p>
+                  <p className="flex  items-center gap-3">
+                    <span className="flex items-center font-semibold">
+                      {WorkerData?.OverallRaitngs}
+                      <Rating max={1} defaultValue={1} />
                     </span>
-                  ) : (
-                    <span className="text-sm text-gray-600">
-                      {WorkerData?.Ratings?.length} Ratings
-                    </span>
-                  )}
-                </p>
+
+                    {WorkerData?.OverallRaitngs === 0 ? (
+                      <span className="text-sm font-bold">No rating given</span>
+                    ) : (
+                      <span className="text-sm font-semibold">
+                        {WorkerData?.Ratings?.length} Reviews
+                      </span>
+                    )}
+                  </p>
+                  <div className="flex flex-col gap-2 items-start">
+                    <p className="font-semibold tracking-wider">Expertise</p>
+                    <Chip label={`${WorkerData.ServiceType}`} />
+                  </div>
+                </div>
               </div>
               <div className="bg-white p-3  rounded-lg  flex flex-col gap-3 shadow-lg">
                 <div
@@ -252,8 +254,7 @@ const WorkerProfile = () => {
               <FaCheckCircle className="text-xl" />
               Completed requests
             </span>
-            {/* <p>{WorkerData?.CompletedRequest?.length}</p> */}
-            <p>{WorkerData?.assignedRequest?.length}</p>
+            <p>{WorkerData?.CompletedRequest}</p>
           </div>
 
           {/* joined  */}
@@ -269,6 +270,8 @@ const WorkerProfile = () => {
           <hr />
         </div>
       </div>
+
+      <Ratings />
     </div>
   );
 };

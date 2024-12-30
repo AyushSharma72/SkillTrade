@@ -47,6 +47,25 @@ body::-webkit-scrollbar {
   width: 400px !important;
 }
 
+.swiper-button-next::after {
+  content: url("./assests/arrowsvgicon.svg") !important;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+}
+
+.swiper-button-prev::after {
+  content: url("./assests/arrowsvgiconleft.svg") !important;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+}
+.swiper-button-next {
+  top: 90% !important;
+}
+.swiper-button-prev {
+  top: 90% !important;
+}
 @media screen and (max-width: 400px) {
   .ant-image {
     height: 300px !important;

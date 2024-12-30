@@ -21,6 +21,9 @@ import Modal from "@mui/material/Modal";
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { Textarea } from "@mui/joy";
 import { UnAssign } from "../_FetchFunction/UnassignWorker";
+import Rating from "@mui/material/Rating";
+import { Input } from "@mui/joy";
+import StarIcon from "@mui/icons-material/Star";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -31,9 +34,14 @@ const RequestDetails = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [unassignModal, SetunassignModal] = useState(false);
+  const [completed, SetCompleted] = useState(false);
   const router = useRouter();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [price, SetPrice] = useState(null);
+  const [comment, SetComment] = useState("");
+  const [value, setValue] = React.useState(2);
+  const [hover, setHover] = React.useState(-1);
 
   const style = {
     position: "absolute",
@@ -46,7 +54,20 @@ const RequestDetails = () => {
     boxShadow: 24,
     p: 4,
   };
+  const labels = {
+    1: "Very Poor 😭",
 
+    2: "Poor 🥲",
+
+    3: "Ok 🥱",
+
+    4: "Good👍",
+
+    5: "Excellent 😍",
+  };
+  function getLabelText(value) {
+    return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
+  }
   async function GetData() {
     try {
       setLoading(true);
@@ -141,6 +162,11 @@ const RequestDetails = () => {
   const handleChange = (event) => {
     if (event.target.value.length <= 100) {
       setDescription(event.target.value);
+    }
+  };
+  const handleCommentChange = (event) => {
+    if (event.target.value.length <= 200) {
+      SetComment(event.target.value);
     }
   };
   useEffect(() => {
@@ -266,7 +292,14 @@ const RequestDetails = () => {
                   </div>
                 ) : null}
                 <div className="flex gap-1 justify-around">
-                  <Button className="w-1/2">Mark as completed</Button>
+                  <Button
+                    className="w-1/2"
+                    onClick={() => {
+                      SetCompleted(true);
+                    }}
+                  >
+                    Mark as completed
+                  </Button>
                   <Button onClick={handleOpen} className="w-1/2">
                     Delete request
                   </Button>
@@ -334,6 +367,107 @@ const RequestDetails = () => {
                     >
                       Cancel
                     </Button>
+                  </Box>
+                </Modal>
+
+                {/* mark as completed modal  */}
+                <Modal
+                  open={completed}
+                  onClose={() => {
+                    SetCompleted(false);
+                  }}
+                >
+                  <Box sx={style} className="flex flex-col gap-2">
+                    <p className="text-center font-semibold">
+                      Rate you experience with the worker
+                    </p>
+                    <hr />
+                    <div className="flex flex-col gap-1">
+                      <label className="text-sm m-0 font-medium text-gray-700">
+                        Rating
+                      </label>{" "}
+                      <div className="flex">
+                        {" "}
+                        <Rating
+                          name="hover-feedback"
+                          value={value}
+                          precision={1}
+                          getLabelText={getLabelText}
+                          onChange={(event, newValue) => {
+                            setValue(newValue);
+                          }}
+                          onChangeActive={(event, newHover) => {
+                            setHover(newHover);
+                          }}
+                          emptyIcon={
+                            <StarIcon
+                              style={{ opacity: 0.55 }}
+                              fontSize="inherit"
+                            />
+                          }
+                        />
+                        {value !== null && (
+                          <Box sx={{ ml: 2 }}>
+                            {labels[hover !== -1 ? hover : value]}
+                          </Box>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      {" "}
+                      <label
+                        htmlFor="description"
+                        className="text-sm m-0 font-medium text-gray-700"
+                      >
+                        Comment
+                      </label>
+                      <Textarea
+                        name="description"
+                        id="description"
+                        placeholder="Add comment"
+                        value={comment}
+                        onChange={handleCommentChange}
+                        className="w-full h-20 overflow-y-scroll scrollbar-hide"
+                        required
+                      />
+                      <p className="text-gray-400">
+                        {200 - comment.length} characters remaining
+                      </p>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="price"
+                        className="text-sm m-0 font-medium text-gray-700"
+                      >
+                        Price charged by the worker
+                      </label>
+                      <Input
+                        id="address"
+                        name="address"
+                        value={price}
+                        onChange={(e) => SetPrice(e.target.value)}
+                        placeholder="Price"
+                        className="w-full"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <Button
+                        onClick={() => {
+                          SetCompleted(false);
+                        }}
+                      >
+                        Submit
+                      </Button>
+                      <Button
+                        onClick={() => {
+                          SetCompleted(false);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
                   </Box>
                 </Modal>
               </div>
