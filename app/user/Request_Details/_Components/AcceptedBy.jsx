@@ -65,6 +65,7 @@ function AcceptedBy() {
   const handleClose = () => setOpen(false);
   const { rid } = useParams();
   const currentDate = new Date();
+
   const handlePageChange = (event, value) => {
     setPageNumber(value);
   };
@@ -186,7 +187,12 @@ function AcceptedBy() {
                           </Button>
                         )}
 
-                        <Button>View profile</Button>
+                        <Link
+                          href={`/worker/worker_profile/${accepted.worker._id}`}
+                        >
+                          {" "}
+                          <Button>View profile</Button>
+                        </Link>
 
                         {/* modal */}
                         <Modal

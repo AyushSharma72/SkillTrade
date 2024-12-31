@@ -157,8 +157,8 @@ const TimeLine = () => {
                 </Typography>
                 <Typography>The request was completed </Typography>
                 <Typography>
-                  {data.confirmedAt
-                    ? moment(data.confirmedAt).format("MMMM Do YYYY, h:mm A")
+                  {data.completedAt
+                    ? moment(data.completedAt).format("MMMM Do YYYY, h:mm A")
                     : "No date available"}
                 </Typography>
               </TimelineContent>

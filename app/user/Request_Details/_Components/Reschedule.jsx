@@ -12,7 +12,7 @@ import { useParams } from "next/navigation";
 import reschedule from "../../../assests/reschedule.svg";
 import Image from "next/image";
 import GetRequestData from "../_FetchFunction/GetRequestData";
-
+import completedimage from "../../../assests/requestcompletedimage.svg";
 const Reschedule = () => {
   const [loading, setLoading] = useState(false);
   const minDate = new Date();
@@ -76,7 +76,17 @@ const Reschedule = () => {
 
   return (
     <>
-      {status === "Completed" ? null : (
+      {status === "Completed" ? (
+        <div className="flex flex-col justify-center items-center w-full ">
+          <p className="text-2xl font-semibold mt-10 text-center">
+            You cannot reschedule because this request was completed
+          </p>
+          <Image
+            src={completedimage}
+            className="lg:w-[400px] lg:h-[300px] w-[300px] h-[300px] md:w-[300px] md:h-[300px]"
+          />
+        </div>
+      ) : (
         <div className="flex-col flex justify-around items-center sm:flex-col md:flex-row p-3">
           <Toaster />
           <Backdrop

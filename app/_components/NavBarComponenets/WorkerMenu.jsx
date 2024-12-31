@@ -6,10 +6,12 @@ import { FaRegUser } from "react-icons/fa";
 import { FaCodePullRequest } from "react-icons/fa6";
 import { TbLogout2 } from "react-icons/tb";
 import LogoutModal from "./LogoutModal";
+import { useAuth } from "../../_context/UserAuthContent";
 
 const WorkerMenu = () => {
   const [open, setOpen] = useState(false);
   const [modal, setModalState] = useState(false);
+  const [auth,SetAuth] = useAuth();
   const showDrawer = () => {
     setOpen(true);
   };
@@ -33,7 +35,7 @@ const WorkerMenu = () => {
       </Button>
 
       <Drawer title="Dashboard" closable={true} onClose={onClose} open={open}>
-        <Link href="/worker/worker_profile">
+        <Link href={`/worker/worker_profile/${auth?.user?._id}`}>
           <CustomButton className="w-full flex gap-2" onClick={onClose}>
             <FaRegUser /> Profile
           </CustomButton>

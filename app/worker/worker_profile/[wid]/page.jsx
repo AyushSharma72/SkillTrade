@@ -1,11 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// import Image from "next/image";
-import demouserimage from "../../assests/demouserimage.jpg";
+import demouserimage from "../../../assests/demouserimage.jpg";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import toast from "react-hot-toast";
-import Lottie from "react-lottie";
-import animationData from "../../assests/loading.json";
 import Rating from "@mui/material/Rating";
 import { FaSquareWhatsapp } from "react-icons/fa6";
 import { FaSquarePhone } from "react-icons/fa6";
@@ -19,11 +16,12 @@ import { IoIosTime } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
 import moment from "moment";
 import { Badge, Space } from "antd";
-import ModalComponent from "./_Components/Modal";
-import ImageEditModal from "./Modals/ImageEditModal";
-import EditProfileModal from "./Modals/EditProfileModal";
+import ModalComponent from "../_Components/Modal";
+import ImageEditModal from "../Modals/ImageEditModal";
+import EditProfileModal from "../Modals/EditProfileModal";
 import Chip from "@mui/material/Chip";
-import Ratings from "./_Components/Ratings";
+import Ratings from "../_Components/Ratings";
+import { useParams } from "next/navigation";
 
 const WorkerProfile = () => {
   const [auth, SetAuth] = useAuth();
@@ -35,6 +33,7 @@ const WorkerProfile = () => {
   const handleClose = () => setOpen(false);
   const handleClose2 = () => setOpen2(false);
   const [imageError, setImageError] = useState(false);
+  const { wid } = useParams();
 
   <Space
     direction="vertical"
@@ -43,18 +42,11 @@ const WorkerProfile = () => {
       width: "100%",
     }}
   ></Space>;
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+
   async function GetWorkerData() {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/workers/GetWorkerData/${auth?.user._id}`
+        `http://localhost:8000/api/v1/workers/GetWorkerData/${wid}`
       );
       if (response) {
         const data = await response.json();
@@ -70,26 +62,9 @@ const WorkerProfile = () => {
       toast.error("error try again");
     }
   }
-
   useEffect(() => {
-    if (auth?.user?._id) {
-      GetWorkerData();
-    }
-  }, [auth]);
-
-  // if (!auth?.user) {
-  //   return (
-  //     <div className="h-screen flex flex-col items-center justify-center">
-  //       <Lottie
-  //         options={defaultOptions}
-  //         height={150}
-  //         width={200}
-  //         isClickToPauseDisabled={true}
-  //       />
-  //       <p className="font-bold tracking-wider">Loading auth.....</p>
-  //     </div>
-  //   );
-  // }
+    GetWorkerData();
+  }, []);
 
   return (
     <div className="flex flex-col items-center   bg-gray-200 ">
@@ -104,11 +79,13 @@ const WorkerProfile = () => {
             color={`${WorkerData.verfied ? "" : "red"}`}
             placement="start"
           >
-            <FaEdit
-              className="absolute right-3 top-[50%] cursor-pointer"
-              title="edit profile"
-              onClick={handleOpen}
-            />
+            {auth?.user?.role === 1 ? (
+              <FaEdit
+                className="absolute right-3 top-[50%] cursor-pointer"
+                title="edit profile"
+                onClick={handleOpen}
+              />
+            ) : null}
             <div className="flex flex-col justify-start gap-3">
               {/* image */}
 
@@ -118,7 +95,7 @@ const WorkerProfile = () => {
                   src={
                     imageError
                       ? demouserimage // Fallback image if error occurs
-                      : `http://localhost:8000/api/v1/workers/GetWorkerImage/${auth?.user?._id}`
+                      : `http://localhost:8000/api/v1/workers/GetWorkerImage/${wid}`
                   }
                   alt="Worker"
                   className="shadow-md !h-[200px] w-[200px] object-cover rounded-[50%]"
@@ -137,7 +114,7 @@ const WorkerProfile = () => {
                       <span className="text-sm font-bold">No rating given</span>
                     ) : (
                       <span className="text-sm font-semibold">
-                        {WorkerData?.Ratings?.length} Reviews
+                        {WorkerData?.Reviews?.length} Review
                       </span>
                     )}
                   </p>
@@ -191,11 +168,13 @@ const WorkerProfile = () => {
         />
         {/* right div  */}
         <div className="bg-white xl:w-1/2 lg:w-[60%] w-[90%] p-5 rounded-lg flex flex-col gap-5 shadow-lg relative mb-2 h-[550px]">
-          <FaEdit
-            className="absolute right-3 top-2 cursor-pointer"
-            title="edit profile"
-            onClick={handleOpen2}
-          />
+          {auth?.user.role === 1 ? (
+            <FaEdit
+              className="absolute right-3 top-2 cursor-pointer"
+              title="edit profile"
+              onClick={handleOpen2}
+            />
+          ) : null}
           <hr className="mt-4" />
           <div className="flex ">
             <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
