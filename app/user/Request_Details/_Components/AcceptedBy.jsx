@@ -136,9 +136,13 @@ function AcceptedBy() {
           </p>
           {data[0].assignedTo ? (
             <div className="text-center p-2 sm:w-1/2 md:w-1/4  m-auto rounded-md bg-green-300 mt-2">
-              <p className="font-semibold">
-                This request is already assigned to a worker !
-              </p>
+              {data[0].status === "Completed" ? (
+                <p className="font-semibold">This request was completed !</p>
+              ) : (
+                <p className="font-semibold">
+                  This request is already assigned to a worker !
+                </p>
+              )}
             </div>
           ) : null}
           <TableContainer className="cursor-pointer sm:mt-5 mt-10 m-auto xl:!w-3/4 justify-center flex flex-col pb-3">

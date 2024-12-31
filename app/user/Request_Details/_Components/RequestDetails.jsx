@@ -24,6 +24,8 @@ import { UnAssign } from "../_FetchFunction/UnassignWorker";
 import Rating from "@mui/material/Rating";
 import { Input } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
+import { CompleteRequest } from "../_FetchFunction/CompleteRequest";
+import { useAuth } from "@/app/_context/UserAuthContent";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -38,9 +40,11 @@ const RequestDetails = () => {
   const router = useRouter();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [auth, setAuth] = useAuth();
   const [price, SetPrice] = useState(null);
   const [comment, SetComment] = useState("");
-  const [value, setValue] = React.useState(2);
+
+  const [stars, setValue] = React.useState(2);
   const [hover, setHover] = React.useState(-1);
 
   const style = {
@@ -65,8 +69,8 @@ const RequestDetails = () => {
 
     5: "Excellent 😍",
   };
-  function getLabelText(value) {
-    return `${value} Star${value !== 1 ? "s" : ""}, ${labels[value]}`;
+  function getLabelText(stars) {
+    return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
   }
   async function GetData() {
     try {
@@ -86,7 +90,37 @@ const RequestDetails = () => {
       setLoading(false);
     }
   }
+  async function HandleCompleteRequest(wid) {
+    try {
+      const uid = auth?.user?._id;
+      if (stars === 0) {
+        toast.error("please give stars");
+      }
+      if (!price || !comment) {
+        toast.error("price and comment are required");
+      }
+      if (!uid) {
+        toast.error("user is missing try agian later");
+      }
 
+      const response = await CompleteRequest(
+        rid,
+        uid,
+        wid,
+        comment,
+        price,
+        stars
+      );
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("error try again");
+    }
+  }
   async function updateRequestImage(e) {
     e.preventDefault();
     try {
@@ -281,29 +315,33 @@ const RequestDetails = () => {
                     </span>
                     <div className="text-lg flex justify-between items-center gap-5">
                       <span> {data.assignedTo?.Name}</span>
-                      <Button
-                        onClick={() => {
-                          SetunassignModal(true);
-                        }}
-                      >
-                        unassign
-                      </Button>
+                      {data.status != "Completed" ? (
+                        <Button
+                          onClick={() => {
+                            SetunassignModal(true);
+                          }}
+                        >
+                          unassign
+                        </Button>
+                      ) : null}
                     </div>
                   </div>
                 ) : null}
-                <div className="flex gap-1 justify-around">
-                  <Button
-                    className="w-1/2"
-                    onClick={() => {
-                      SetCompleted(true);
-                    }}
-                  >
-                    Mark as completed
-                  </Button>
-                  <Button onClick={handleOpen} className="w-1/2">
-                    Delete request
-                  </Button>
-                </div>
+                {data.status != "Completed" ? (
+                  <div className="flex gap-1 justify-around">
+                    <Button
+                      className="w-1/2"
+                      onClick={() => {
+                        SetCompleted(true);
+                      }}
+                    >
+                      Mark as completed
+                    </Button>
+                    <Button onClick={handleOpen} className="w-1/2">
+                      Delete request
+                    </Button>
+                  </div>
+                ) : null}
 
                 {/* modal */}
                 <Modal
@@ -390,7 +428,7 @@ const RequestDetails = () => {
                         {" "}
                         <Rating
                           name="hover-feedback"
-                          value={value}
+                          value={stars}
                           precision={1}
                           getLabelText={getLabelText}
                           onChange={(event, newValue) => {
@@ -406,9 +444,9 @@ const RequestDetails = () => {
                             />
                           }
                         />
-                        {value !== null && (
+                        {stars !== null && (
                           <Box sx={{ ml: 2 }}>
-                            {labels[hover !== -1 ? hover : value]}
+                            {labels[hover !== -1 ? hover : stars]}
                           </Box>
                         )}
                       </div>
@@ -449,12 +487,14 @@ const RequestDetails = () => {
                         value={price}
                         onChange={(e) => SetPrice(e.target.value)}
                         placeholder="Price"
+                        type="number"
                         className="w-full"
                       />
                     </div>
                     <div className="flex flex-col gap-1">
                       <Button
                         onClick={() => {
+                          HandleCompleteRequest(data.assignedTo._id);
                           SetCompleted(false);
                         }}
                       >

@@ -12,6 +12,7 @@ const {
   DeleteRequest,
   AssignRequest,
   UnassignRequest,
+  RequestCompleted,
 } = require("../controllers/RequestController");
 const formidable = require("express-formidable");
 
@@ -40,5 +41,7 @@ router.delete("/DeleteRequest/:rid", DeleteRequest);
 router.put("/AssignRequest/:rid/:wid", AssignRequest);
 
 router.post("/Unassignrequest/:rid/:wid", UnassignRequest);
+
+router.post("/RequestCompleted/:rid/:uid/:wid", RequestCompleted);
 
 module.exports = router;

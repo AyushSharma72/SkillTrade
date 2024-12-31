@@ -81,6 +81,9 @@ const RequestSchema = new mongoose.Schema(
     actualPrice: {
       type: Number,
     },
+    completedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

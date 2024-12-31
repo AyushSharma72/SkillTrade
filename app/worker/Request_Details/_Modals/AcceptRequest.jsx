@@ -60,7 +60,7 @@ const AcceptRequest = ({ handleClose, rid }) => {
       <div className="flex flex-col items-center justify-center gap-3">
         <Input
           type="number"
-          name="Estimated Price "
+          name="Estimated Price"
           value={EstimatedPrice}
           onChange={(e) => SetEstimatedPrice(e.target.value)}
           placeholder="Enter estimated price in Rs"

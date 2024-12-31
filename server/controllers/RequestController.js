@@ -331,12 +331,13 @@ async function GetWhoAcceptedRequest(req, resp) {
     const requests = await RequestModal.find(
       {
         _id: rid,
-        status: { $in: ["Accepted", "Confirmed"] },
+        status: { $in: ["Accepted", "Confirmed", "Completed"] },
       },
       "acceptedBy"
     )
       .populate("acceptedBy.worker", "Name")
       .populate("assignedTo", "_id")
+      .populate("status")
       .limit(5)
       .skip((page - 1) * 5);
 
@@ -491,6 +492,73 @@ async function UnassignRequest(req, resp) {
   }
 }
 
+async function RequestCompleted(req, resp) {
+  try {
+    const { rid, wid, uid } = req.params;
+    const { stars, comment, price } = req.body;
+    if (!rid || !wid || !uid) {
+      return resp.status(400).send({
+        success: false,
+        message: "request id or worker id is missing",
+      });
+    }
+    if (!stars || !comment || !price) {
+      return resp.status(400).send({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+    const request = await RequestModal.findById(rid);
+    if (!request) {
+      return resp.status(404).send({
+        success: false,
+        message: "request not found",
+      });
+    }
+    if (request.status === "Completed") {
+      return resp.status(400).send({
+        success: false,
+        message: "request was already completed",
+      });
+    }
+    const worker = await WorkerModal.findById(wid);
+    if (!worker) {
+      return resp
+        .status(404)
+        .send({ success: false, message: "Worker not found" });
+    }
+
+    request.status = "Completed";
+    request.actualPrice = price;
+    request.completedAt = new Date();
+    await request.save();
+
+    worker.TotalStars = worker.TotalStars || 0; // Ensure TotalStars is initialized
+    worker.TotalStars += stars;
+    worker.OverallRaitngs = worker.TotalStars / (worker.Reviews.length + 1);
+    worker.Reviews.push({
+      stars: stars,
+      comment: comment,
+      user: uid,
+      date: new Date(),
+    });
+    worker.CompletedRequest += 1;
+
+    await worker.save();
+
+    resp.status(200).send({
+      success: true,
+      message: "Request was completed",
+    });
+  } catch (error) {
+    console.log(error);
+    resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
 module.exports = {
   CreateRequest,
   GetUserRequest,
@@ -504,4 +572,5 @@ module.exports = {
   DeleteRequest,
   AssignRequest,
   UnassignRequest,
+  RequestCompleted,
 };

@@ -120,7 +120,7 @@ const TimeLine = () => {
               </TimelineContent>
             </TimelineItem>
           )}
-          {data.status === "Confirmed" ? (
+          {data.status === "Confirmed" || data.status == "Completed" ? (
             <TimelineItem>
               <TimelineSeparator>
                 <TimelineConnector />
@@ -134,6 +134,28 @@ const TimeLine = () => {
                   Confirmed
                 </Typography>
                 <Typography>Accepted request was confirmed by you </Typography>
+                <Typography>
+                  {data.confirmedAt
+                    ? moment(data.confirmedAt).format("MMMM Do YYYY, h:mm A")
+                    : "No date available"}
+                </Typography>
+              </TimelineContent>
+            </TimelineItem>
+          ) : null}
+          {data.status == "Completed" ? (
+            <TimelineItem>
+              <TimelineSeparator>
+                <TimelineConnector />
+                <TimelineDot color="success">
+                  <FaCheck />
+                </TimelineDot>
+                <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
+              </TimelineSeparator>
+              <TimelineContent sx={{ py: "12px", px: 2 }}>
+                <Typography variant="h6" component="span">
+                  Completed
+                </Typography>
+                <Typography>The request was completed </Typography>
                 <Typography>
                   {data.confirmedAt
                     ? moment(data.confirmedAt).format("MMMM Do YYYY, h:mm A")

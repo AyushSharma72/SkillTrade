@@ -66,10 +66,10 @@ const WorkerSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
-    Ratings: [
+    Reviews: [
       {
         stars: {
-          type: Number,   
+          type: Number,
         },
         comment: {
           type: String,
@@ -83,6 +83,9 @@ const WorkerSchema = mongoose.Schema(
         },
       },
     ],
+    TotalStars: {
+      type: Number,
+    },
     Verified: {
       type: Boolean,
       default: false,

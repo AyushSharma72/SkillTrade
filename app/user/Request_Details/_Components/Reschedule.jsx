@@ -20,6 +20,7 @@ const Reschedule = () => {
   const [time, settime] = useState("");
   const [address, setAddress] = useState("");
   const [pincode, Setpincode] = useState("");
+  const [status, SetStatus] = useState(null);
   const { rid } = useParams();
 
   async function Update(e) {
@@ -58,8 +59,7 @@ const Reschedule = () => {
         settime(info.requestdetails.time);
         setAddress(info.requestdetails.location);
         Setpincode(info.requestdetails.pincode);
-
-        console.log(pincode);
+        SetStatus(info.requestdetails.status);
       } else {
         toast.error(info.message);
       }
@@ -75,104 +75,108 @@ const Reschedule = () => {
   }, []);
 
   return (
-    <div className="flex-col flex justify-around items-center sm:flex-col md:flex-row p-3">
-      <Toaster />
-      <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={loading}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+    <>
+      {status === "Completed" ? null : (
+        <div className="flex-col flex justify-around items-center sm:flex-col md:flex-row p-3">
+          <Toaster />
+          <Backdrop
+            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+            open={loading}
+          >
+            <CircularProgress color="inherit" />
+          </Backdrop>
 
-      <Image
-        src={reschedule}
-        className="lg:w-[400px] lg:h-[400px] w-[200px] h-[200px] md:w-[300px] md:h-[300px]"
-      />
-      <div className="w-full sm:w-[90%] lg:w-1/2">
-        <p className="font-bold text-2xl text-center">Reschedule Request</p>
+          <Image
+            src={reschedule}
+            className="lg:w-[400px] lg:h-[400px] w-[200px] h-[200px] md:w-[300px] md:h-[300px]"
+          />
+          <div className="w-full sm:w-[90%] lg:w-1/2">
+            <p className="font-bold text-2xl text-center">Reschedule Request</p>
 
-        <form
-          onSubmit={Update}
-          className="flex justify-center flex-col items-center gap-y-5 mt-5 formshadow py-5 rounded-md"
-        >
-          <div className="w-full flex flex-col gap-2 justify-center items-center">
-            <label
-              className="block mb-2 font-medium text-start w-3/4"
-              htmlFor="date"
+            <form
+              onSubmit={Update}
+              className="flex justify-center flex-col items-center gap-y-5 mt-5 formshadow py-5 rounded-md"
             >
-              Edit Date
-            </label>
-            <div className="w-3/4">
-              <DatePicker
-                id="date"
-                onChange={(date) => setdate(date)}
-                selected={date}
-                className="border border-gray-300 w-64  p-2 rounded-md"
-                placeholderText="Select date"
-                minDate={minDate}
-                dateFormat="dd/MM/yyyy"
-              />
-            </div>
-          </div>
+              <div className="w-full flex flex-col gap-2 justify-center items-center">
+                <label
+                  className="block mb-2 font-medium text-start w-3/4"
+                  htmlFor="date"
+                >
+                  Edit Date
+                </label>
+                <div className="w-3/4">
+                  <DatePicker
+                    id="date"
+                    onChange={(date) => setdate(date)}
+                    selected={date}
+                    className="border border-gray-300 w-64  p-2 rounded-md"
+                    placeholderText="Select date"
+                    minDate={minDate}
+                    dateFormat="dd/MM/yyyy"
+                  />
+                </div>
+              </div>
 
-          <div className="w-full flex flex-col gap-2 justify-center items-center">
-            <label
-              className="block mb-2 font-medium text-start w-3/4"
-              htmlFor="time"
-            >
-              Edit Time
-            </label>
-            <input
-              id="time"
-              type="time"
-              className="p-2 border-2 border-gray-300 rounded-md w-3/4 cursor-pointer"
-              value={time}
-              onChange={(e) => settime(e.target.value)}
-              placeholder="Select time"
-            />
-          </div>
+              <div className="w-full flex flex-col gap-2 justify-center items-center">
+                <label
+                  className="block mb-2 font-medium text-start w-3/4"
+                  htmlFor="time"
+                >
+                  Edit Time
+                </label>
+                <input
+                  id="time"
+                  type="time"
+                  className="p-2 border-2 border-gray-300 rounded-md w-3/4 cursor-pointer"
+                  value={time}
+                  onChange={(e) => settime(e.target.value)}
+                  placeholder="Select time"
+                />
+              </div>
 
-          <div className="w-full flex flex-col gap-2 justify-center items-center">
-            <label
-              className="block mb-2 font-medium text-start w-3/4"
-              htmlFor="Address"
-            >
-              Edit Address
-            </label>
-            <TextField
-              id="Address"
-              label="Edit Address"
-              variant="outlined"
-              className="w-3/4"
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              name="Address"
-            />
-          </div>
-          <div className="w-full flex flex-col gap-2 justify-center items-center">
-            <label
-              className="block mb-2 font-medium text-start w-3/4"
-              htmlFor="Pincode"
-            >
-              Edit Pincode
-            </label>
-            <TextField
-              id="Pincode"
-              label="Edit Pincode"
-              variant="outlined"
-              className="w-3/4"
-              type="number"
-              value={pincode}
-              onChange={(e) => Setpincode(e.target.value)}
-              name="Pincode"
-            />
-          </div>
+              <div className="w-full flex flex-col gap-2 justify-center items-center">
+                <label
+                  className="block mb-2 font-medium text-start w-3/4"
+                  htmlFor="Address"
+                >
+                  Edit Address
+                </label>
+                <TextField
+                  id="Address"
+                  label="Edit Address"
+                  variant="outlined"
+                  className="w-3/4"
+                  type="text"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  name="Address"
+                />
+              </div>
+              <div className="w-full flex flex-col gap-2 justify-center items-center">
+                <label
+                  className="block mb-2 font-medium text-start w-3/4"
+                  htmlFor="Pincode"
+                >
+                  Edit Pincode
+                </label>
+                <TextField
+                  id="Pincode"
+                  label="Edit Pincode"
+                  variant="outlined"
+                  className="w-3/4"
+                  type="number"
+                  value={pincode}
+                  onChange={(e) => Setpincode(e.target.value)}
+                  name="Pincode"
+                />
+              </div>
 
-          <Button type="submit">Reschedule</Button>
-        </form>
-      </div>
-    </div>
+              <Button type="submit">Reschedule</Button>
+            </form>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
