@@ -22,6 +22,8 @@ import EditProfileModal from "../Modals/EditProfileModal";
 import Chip from "@mui/material/Chip";
 import Ratings from "../_Components/Ratings";
 import { useParams } from "next/navigation";
+import Lottie from "react-lottie";
+import animationData from "../../../assests/loading.json";
 
 const WorkerProfile = () => {
   const [auth, SetAuth] = useAuth();
@@ -42,6 +44,15 @@ const WorkerProfile = () => {
       width: "100%",
     }}
   ></Space>;
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   async function GetWorkerData() {
     try {
@@ -65,12 +76,24 @@ const WorkerProfile = () => {
   useEffect(() => {
     GetWorkerData();
   }, []);
-
+  if (!auth?.user) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center">
+        <Lottie
+          options={defaultOptions}
+          height={150}
+          width={200}
+          isClickToPauseDisabled={true}
+        />
+        <p className="font-bold tracking-wider">Loading auth.....</p>
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col items-center   bg-gray-200 ">
       <p className="font-semibold text-3xl sm:mt-2 mt-20"> WorkerProfile</p>
 
-      <div className="flex justify-center md:gap-5 items-center md:items-start  mt-5 w-full md:flex-row flex-col  gap-5">
+      <div className="flex justify-center md:gap-5 items-center md:items-start p-3 mt-5 w-full md:flex-row flex-col  gap-5">
         {/* left div  */}
         <div className="xl:w-[20%] lg:w-[25%] sm:w-1/2 w-[90%] ">
           {" "}
@@ -79,7 +102,7 @@ const WorkerProfile = () => {
             color={`${WorkerData.verfied ? "" : "red"}`}
             placement="start"
           >
-            {auth?.user?.role === 1 ? (
+            {auth.user.role === 1 ? (
               <FaEdit
                 className="absolute right-3 top-[50%] cursor-pointer"
                 title="edit profile"
@@ -113,8 +136,19 @@ const WorkerProfile = () => {
                     {WorkerData?.OverallRaitngs === 0 ? (
                       <span className="text-sm font-bold">No rating given</span>
                     ) : (
-                      <span className="text-sm font-semibold">
-                        {WorkerData?.Reviews?.length} Review
+                      <span
+                        className="text-sm font-semibold cursor-pointer text-blue-600"
+                        onClick={() => {
+                          const reviewsElement =
+                            document.getElementById("reviews");
+                          if (reviewsElement) {
+                            reviewsElement.scrollIntoView({
+                              behavior: "smooth",
+                            });
+                          }
+                        }}
+                      >
+                        {WorkerData?.Reviews?.length} Reviews
                       </span>
                     )}
                   </p>
@@ -167,7 +201,7 @@ const WorkerProfile = () => {
           data={WorkerData}
         />
         {/* right div  */}
-        <div className="bg-white xl:w-1/2 lg:w-[60%] w-[90%] p-5 rounded-lg flex flex-col gap-5 shadow-lg relative mb-2 h-[550px]">
+        <div className="bg-white xl:w-1/2 lg:w-[60%] w-[90%] p-5 rounded-lg flex flex-col gap-5 shadow-lg relative mb-2 ">
           {auth?.user.role === 1 ? (
             <FaEdit
               className="absolute right-3 top-2 cursor-pointer"
@@ -181,7 +215,9 @@ const WorkerProfile = () => {
               <FaCircleUser className="text-xl" />
               Role
             </span>
-            <p>{WorkerData?.role === 1 ? "Worker" : "User"}</p>
+            <p className="text-center">
+              {WorkerData?.role === 1 ? "Worker" : "User"}
+            </p>
           </div>
 
           {/* address */}
@@ -191,7 +227,7 @@ const WorkerProfile = () => {
               <FaAddressCard className="text-xl" />
               Address
             </span>
-            <p>{WorkerData?.Address}</p>
+            <p className="text-center">{WorkerData?.Address}</p>
           </div>
 
           {/* pincode  */}
@@ -202,7 +238,7 @@ const WorkerProfile = () => {
               <TbMapPinCode className="text-xl" />
               Pincode
             </span>
-            <p>{WorkerData?.pincode}</p>
+            <p className="text-center">{WorkerData?.pincode}</p>
           </div>
 
           {/* city  */}
@@ -213,7 +249,13 @@ const WorkerProfile = () => {
               <PiCityFill className="text-xl" />
               City
             </span>
-            <p>{WorkerData?.city}</p>
+            <p className="text-center">
+              {WorkerData?.city ? (
+                WorkerData?.city
+              ) : (
+                <span className="text-red-600">not provided</span>
+              )}
+            </p>
           </div>
 
           {/* Assigned Request */}
@@ -223,7 +265,7 @@ const WorkerProfile = () => {
               <FaCodePullRequest className="text-xl" />
               Assigned requests
             </span>
-            <p>{WorkerData?.assignedRequest?.length}</p>
+            <p className="text-center">{WorkerData?.assignedRequest?.length}</p>
           </div>
 
           {/* Completed Request */}
@@ -233,7 +275,7 @@ const WorkerProfile = () => {
               <FaCheckCircle className="text-xl" />
               Completed requests
             </span>
-            <p>{WorkerData?.CompletedRequest}</p>
+            <p className="text-center">{WorkerData?.CompletedRequest}</p>
           </div>
 
           {/* joined  */}
@@ -244,13 +286,15 @@ const WorkerProfile = () => {
               Joined
             </span>
 
-            <p>{moment(WorkerData.createdAt).format(" MMMM Do YYYY")}</p>
+            <p className="text-center">
+              {moment(WorkerData.createdAt).format(" MMMM Do YYYY")}
+            </p>
           </div>
           <hr />
         </div>
       </div>
 
-      <Ratings />
+      <Ratings Reviews={WorkerData.Reviews} />
     </div>
   );
 };

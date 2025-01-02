@@ -64,8 +64,8 @@ const RequestDetails = () => {
       ) : (
         <div className="w-full">
           {data && (
-            <div className="flex flex-col items-center lg:flex-row justify-around  m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
-              <div className="flex flex-col gap-2 justify-center items-center">
+            <div className="flex flex-col items-center xl:flex-row justify-around  m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
+              <div className="flex flex-col gap-2 justify-center items-center xl:w-[40%]">
                 <Image
                   src={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
                   className="object-cover rounded-md !h-[300px]"
@@ -76,7 +76,8 @@ const RequestDetails = () => {
                   {data.description}
                 </p>
               </div>
-              <div className="flex flex-col sm:w-[90%] xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg   relative">
+
+              <div className="flex flex-col w-[90%] mt-5 xl:mt-0 xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg   relative ">
                 <div className="flex items-center  sm:justify-normal">
                   <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
                     <MdOutlineHandyman /> Service type :
@@ -93,10 +94,10 @@ const RequestDetails = () => {
 
                 <hr />
                 <div className="flex items-center  sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
+                  <span className="flex items-center gap-2 font-bold text-lg md:w-[30%] ">
                     <FaAddressCard /> Address :
                   </span>
-                  <p className="text-lg flex ">{data.location}</p>
+                  <p className="text-lg flex text-center">{data.location}</p>
                 </div>
                 <hr />
                 <div className="flex items-center  sm:justify-normal">
@@ -104,7 +105,7 @@ const RequestDetails = () => {
                     <TbMapPinCode />
                     Pincode :
                   </span>
-                  <p className="text-lg flex ">{data.pincode}</p>
+                  <p className="text-lg flex text-center">{data.pincode}</p>
                 </div>
                 <hr />
                 <div className="flex items-center  sm:justify-normal">
@@ -112,7 +113,7 @@ const RequestDetails = () => {
                     <FaLocationDot />
                     City :
                   </span>
-                  <p className="text-lg flex ">{data.city}</p>
+                  <p className="text-lg flex text-center">{data.city}</p>
                 </div>
                 <hr />
                 <div className="flex items-center  sm:justify-normal">
@@ -120,7 +121,7 @@ const RequestDetails = () => {
                     <FaCalendarCheck />
                     Visiting Date :
                   </span>
-                  <p className="text-lg">
+                  <p className="text-lg text-center">
                     {data.date ? (
                       <>
                         {moment(data.date).format("MMMM Do YYYY")} at{" "}
@@ -137,7 +138,7 @@ const RequestDetails = () => {
                     <SiStatuspage />
                     Status :
                   </span>
-                  <div className="text-lg">
+                  <div className="text-lg text-center">
                     {data.status === "Pending" ? (
                       <Flex gap="4px 0" wrap>
                         <Tag icon={<ClockCircleOutlined />} color="warning">
@@ -159,12 +160,14 @@ const RequestDetails = () => {
                     <FaLocationDot />
                     Created by :
                   </span>
-                  <p className="text-lg flex">
+                  <p className="text-lg flex text-center">
                     {data.user.Name} on{" "}
                     {moment(data.createdAt).format("MMMM Do YYYY, h:mm A")}
                   </p>
                 </div>
-                <Button onClick={handleOpen2}>Accept Request</Button>
+                {data.status === "Completed" ? null : (
+                  <Button onClick={handleOpen2}>Accept Request</Button>
+                )}
                 {/* report modal */}
                 <ModalComponent
                   open={open}

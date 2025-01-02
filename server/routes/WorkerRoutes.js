@@ -8,6 +8,7 @@ const {
   GetWorkerData,
   UpdateProfile,
   GetWorkerImage,
+  GetWorkerAcceptedRequest,
 } = require("../controllers/WorkerController");
 
 const router = express.Router();
@@ -25,5 +26,7 @@ router.get("/GetWorkerData/:wid", GetWorkerData);
 router.post("/UpdateProfile/:wid", formidable(), UpdateProfile);
 
 router.get("/GetWorkerImage/:wid", GetWorkerImage);
+
+router.get("/GetWorkerAcceptedRequest/:wid", GetWorkerAcceptedRequest);
 
 module.exports = router;

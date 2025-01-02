@@ -196,9 +196,12 @@ async function AcceptRequest(req, resp) {
 async function GetWorkerData(req, resp) {
   try {
     const { wid } = req.params;
-    const worker = await WorkerModal.findOne({ _id: wid }).select(
-      "-Password -image -VerifyId"
-    );
+    const worker = await WorkerModal.findOne({ _id: wid })
+      .select("-Password -image -VerifyId")
+      .populate({
+        path: "Reviews.user",
+        select: "Name",
+      });
     if (worker) {
       resp.status(200).send({
         success: true,
@@ -211,6 +214,7 @@ async function GetWorkerData(req, resp) {
       });
     }
   } catch (error) {
+    console.log(error);
     resp.status(500).send({
       success: false,
       message: "internal server error",
@@ -305,6 +309,52 @@ async function GetWorkerImage(req, resp) {
   }
 }
 
+async function GetWorkerAcceptedRequest(req, resp) {
+  try {
+    const { wid } = req.params;
+    const { pagenumber } = req.query;
+
+    if (!wid) {
+      return resp.status(400).json({ message: "Worker ID is required" });
+    }
+
+    const page = parseInt(pagenumber, 10) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    const totalRequests = await RequestModal.countDocuments({
+      acceptedBy: { $elemMatch: { worker: wid } },
+    });
+
+    const response = await RequestModal.find({
+      acceptedBy: { $elemMatch: { worker: wid } },
+    })
+      .select("-image")
+      .skip(skip)
+      .limit(limit);
+
+    if (response.length === 0) {
+      return resp
+        .status(404)
+        .json({ message: "No requests found for this worker" });
+    }
+
+    return resp.status(200).json({
+      success: true,
+      data: response,
+      totalPages: Math.ceil(totalRequests / limit),
+      currentPage: page,
+    });
+  } catch (error) {
+    console.error("Error fetching accepted requests:", error);
+    return resp.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   RegisterWorker,
   CheckCity,
@@ -313,4 +363,5 @@ module.exports = {
   GetWorkerData,
   UpdateProfile,
   GetWorkerImage,
+  GetWorkerAcceptedRequest,
 };

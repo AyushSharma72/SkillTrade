@@ -1,0 +1,171 @@
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/app/_context/UserAuthContent";
+import { FetchAcceptedRequest } from "../_FetchFunction/FetchAcceptedRequest";
+import { Button } from "@/components/ui/button";
+import moment from "moment";
+import { Tag } from "antd";
+import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import Pagination from "@mui/material/Pagination";
+import { PulseLoader } from "react-spinners";
+import { styled } from "@mui/material/styles";
+import Link from "next/link";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Empty from "../../../assests/Empty.svg";
+import Image from "next/image";
+
+const AcceptedRequest = () => {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [auth, SetAuth] = useAuth();
+  const [error, setError] = useState(null);
+  const [pages, SetPages] = useState(1);
+  const [pageNumber, SetPageNumber] = useState(1);
+
+  const handlePageChange = (event, value) => {
+    SetPageNumber(value);
+  };
+
+  const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    [`&.${tableCellClasses.head}`]: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white,
+    },
+    [`&.${tableCellClasses.body}`]: {
+      fontSize: 14,
+    },
+  }));
+
+  const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    "&:nth-of-type(odd)": {
+      backgroundColor: theme.palette.action.hover,
+    },
+    // hide last border
+    "&:last-child td, &:last-child th": {
+      border: 0,
+    },
+  }));
+
+  useEffect(() => {
+    const fetchRequests = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const data = await FetchAcceptedRequest(auth?.user?._id, pageNumber);
+        setRequests(data.data);
+        SetPages(data.totalPages || 1);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (auth?.user?._id) {
+      fetchRequests();
+    }
+  }, [auth?.user?._id, pageNumber]);
+
+  return (
+    <div>
+      {loading ? (
+        <div className="h-[600px] w-full  flex  ">
+          <PulseLoader size={20} className="m-auto" />
+        </div>
+      ) : requests?.length > 0 ? (
+        <div>
+          <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
+            Requests Accepted By You
+          </p>
+          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col items-center pb-3">
+            <Table aria-label="customized table">
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell align="center">Service type</StyledTableCell>
+                  <StyledTableCell align="center">Location</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Visiting Date
+                  </StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                  <StyledTableCell align="center">Action</StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {requests.map((data) => (
+                  <StyledTableRow>
+                    <StyledTableCell component="th" scope="row" align="center">
+                      {data.service}
+                    </StyledTableCell>
+                    <StyledTableCell align="center">
+                      {data.location}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {" "}
+                      <div className="flex flex-col">
+                        <span className="font-bold">
+                          {moment(data.date).format("MMMM Do YYYY")}
+                        </span>
+                      </div>
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      {data.status === "Pending" ? (
+                        <Tag icon={<ClockCircleOutlined />} color="warning">
+                          {data.status}
+                        </Tag>
+                      ) : data.status === "Accepted" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="blue">
+                          {data.status}
+                        </Tag>
+                      ) : data.status === "Assigned" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="success">
+                          {data.status}
+                        </Tag>
+                      ) : data.status === "Completed" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="purple">
+                          {data.status}
+                        </Tag>
+                      ) : data.status === "Deleted" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="red">
+                          {data.status}
+                        </Tag>
+                      ) : null}
+                    </StyledTableCell>
+
+                    <StyledTableCell align="center">
+                      <Link href={`Request_Details/${data._id}`}>
+                        <Button>View</Button>
+                      </Link>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </Table>
+            <Pagination
+              className="mt-5"
+              count={pages}
+              page={pageNumber}
+              color="primary"
+              onChange={handlePageChange}
+            />
+          </TableContainer>
+        </div>
+      ) : (
+        <div className="w-full flex flex-col justify-center items-center">
+          <p className="font-bold text-3xl text-center mt-10">No Data</p>
+          <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
+          <Link href="/">
+            <Button>Home</Button>
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default AcceptedRequest;

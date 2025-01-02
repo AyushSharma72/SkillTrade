@@ -10,13 +10,13 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-const Ratings = () => {
+const Ratings = ({ Reviews }) => {
   return (
-    <div className="mt-8 mb-20 w-full">
-      <p className="text-xl font-bold tracking-wide  text-center">
-        {" "}
-        All Reviews
-      </p>
+    <div
+      className="mt-8 mb-20 w-full flex flex-col items-center justify-center "
+      id="reviews"
+    >
+      <p className="text-xl font-bold tracking-wide text-center">All Reviews</p>
 
       <Swiper
         effect={"coverflow"}
@@ -32,89 +32,44 @@ const Ratings = () => {
           slideShadows: true,
         }}
         modules={[EffectCoverflow, Pagination, Navigation]}
-        initialSlide={0}
         breakpoints={{
-          0: {
-            slidesPerView: 1,
-            initialSlide: 0,
-          },
-          480: {
-            slidesPerView: 1,
-            initialSlide: 0,
-          },
-          768: {
-            slidesPerView: 1,
-            initialSlide: 0,
-          },
-
-          1440: {
-            slidesPerView: 1,
-            initialSlide: 0,
-          },
+          0: { slidesPerView: 1 },
+          480: { slidesPerView: 1 },
+          768: { slidesPerView: 1 },
+          1440: { slidesPerView: 1 },
         }}
-        className="mt-5 flex justify-center w-[90%] lg:w-3/4"
+        className="mt-5 w-[90%] lg:w-1/2 m-auto"
       >
-        <SwiperSlide className="flex justify-center">
-          {" "}
-          <div className="flex flex-col items-ceter justify-start bg-white p-3 rounded-lg shadow-lg m-auto w-[90%] md:w-[600px]">
-            {" "}
-            <div className="flex items-center gap-2">
-              <Avatar alt="Ayush" src={demouserimage} />
-              <div>
-                <p className="flex items-center font-semibold">Ayush Sharma</p>
-                <p>user</p>
+        {Reviews?.map((data, index) => (
+          <SwiperSlide key={index} className="flex justify-center">
+            <div className="flex flex-col items-start  bg-white p-3 rounded-lg shadow-lg m-auto w-[90%] md:w-[450px]">
+              <div className="flex items-center gap-2">
+                <Avatar
+                  alt={data.user || "User"}
+                  src={`http://localhost:8000/api/v1/users/GetUserImage/${data?.user?._id}`}
+                />
+                <div>
+                  <p className="font-semibold">
+                    {data.user.Name || "Anonymous"}
+                  </p>
+                  <p>{data.userRole || "User"}</p>
+                </div>
+              </div>
+              <div className="mt-3">
+                <Rating
+                  name="half-rating-read"
+                  defaultValue={data.stars || 0}
+                  precision={0.5}
+                  readOnly
+                />
+                <p>{data.comment || "No comment provided."}</p>
+                <p className="text-sm text-gray-600 mt-2">
+                  {moment(data.date || new Date()).format("MMMM Do, YYYY")}
+                </p>
               </div>
             </div>
-            <div className="mt-3">
-              <Rating
-                name="half-rating-read"
-                defaultValue={4.5}
-                precision={0.5}
-                readOnly
-              />
-              <p>
-                The rating can display any float number with the value prop. Use
-                the precision prop to define the minimum increment value change
-                allowed.
-              </p>
-              <p className="text-sm text-gray-600 mt-2">
-                {moment("2024-12-22T04:33:47.127+00:00").format(
-                  "MMMM Do, YYYY"
-                )}
-              </p>
-            </div>
-          </div>
-        </SwiperSlide>
-        <SwiperSlide>
-          <div className="flex flex-col items-ceter justify-start bg-white p-3 rounded-lg shadow-lg w-[90%] md:w-[600px] m-auto">
-            {" "}
-            <div className="flex items-center gap-2">
-              <Avatar alt="Ayush" src={demouserimage} />
-              <div>
-                <p className="flex items-center font-semibold">Ayush Sharma</p>
-                <p>user</p>
-              </div>
-            </div>
-            <div className="mt-3">
-              <Rating
-                name="half-rating-read"
-                defaultValue={4.5}
-                precision={0.5}
-                readOnly
-              />
-              <p>
-                The rating can display any float number with the value prop. Use
-                the precision prop to define the minimum increment value change
-                allowed.
-              </p>
-              <p className="text-sm text-gray-600 mt-2">
-                {moment("2024-12-22T04:33:47.127+00:00").format(
-                  "MMMM Do, YYYY"
-                )}
-              </p>
-            </div>
-          </div>{" "}
-        </SwiperSlide>
+          </SwiperSlide>
+        ))}
       </Swiper>
     </div>
   );

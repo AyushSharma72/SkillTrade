@@ -76,7 +76,7 @@ const WorkerSchema = mongoose.Schema(
         },
         user: {
           type: Schema.Types.ObjectId,
-          ref: "users",
+          ref: "Users",
         },
         date: {
           type: Date,
