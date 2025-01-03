@@ -42,7 +42,7 @@ const WorkerSchema = mongoose.Schema(
     gender: {
       type: String,
     },
-    assignedRequest: [
+    UnAssignedRequest: [
       {
         request: {
           type: Schema.Types.ObjectId,

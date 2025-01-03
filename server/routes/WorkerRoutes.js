@@ -9,6 +9,7 @@ const {
   UpdateProfile,
   GetWorkerImage,
   GetWorkerAcceptedRequest,
+  GetWorkerAssignedRequest,
 } = require("../controllers/WorkerController");
 
 const router = express.Router();
@@ -28,5 +29,7 @@ router.post("/UpdateProfile/:wid", formidable(), UpdateProfile);
 router.get("/GetWorkerImage/:wid", GetWorkerImage);
 
 router.get("/GetWorkerAcceptedRequest/:wid", GetWorkerAcceptedRequest);
+
+router.get("/GetWorkerAssignedRequest/:wid", GetWorkerAssignedRequest);
 
 module.exports = router;

@@ -290,7 +290,6 @@ const WorkerProfile = () => {
               {moment(WorkerData.createdAt).format(" MMMM Do YYYY")}
             </p>
           </div>
-          <hr />
         </div>
       </div>
 

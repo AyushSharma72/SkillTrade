@@ -329,14 +329,16 @@ const RequestDetails = () => {
                 ) : null}
                 {data.status != "Completed" ? (
                   <div className="flex gap-1 justify-around">
-                    <Button
-                      className="w-1/2"
-                      onClick={() => {
-                        SetCompleted(true);
-                      }}
-                    >
-                      Mark as completed
-                    </Button>
+                    {data.status === "Pending" ? null : (
+                      <Button
+                        className="w-1/2"
+                        onClick={() => {
+                          SetCompleted(true);
+                        }}
+                      >
+                        Mark as completed
+                      </Button>
+                    )}
                     <Button onClick={handleOpen} className="w-1/2">
                       Delete request
                     </Button>

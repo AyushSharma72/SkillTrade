@@ -126,18 +126,10 @@ async function GetUserRequest(req, resp) {
 async function GetSingleUserRequest(req, resp) {
   try {
     const { rid } = req.params;
-    const requestdetails = await RequestModal.findById({ _id: rid })
-      .select("-image")
-      .populate([
-        {
-          path: "user",
-          select: "Name",
-        },
-        {
-          path: "assignedTo",
-          select: "Name",
-        },
-      ]);
+    const requestdetails = await RequestModal.findById(rid)
+      .select("-image") // Exclude the "image" field
+      .populate("user", "Name") // Populate the "user" field with the "Name" field only
+      .populate("assignedTo", "Name"); // Populate the "assignedTo" field with the "Name" field only
 
     if (requestdetails) {
       return resp.status(200).send({
@@ -395,7 +387,6 @@ async function AssignRequest(req, resp) {
     }
 
     const request = await RequestModal.findById(rid);
-    const worker = await WorkerModal.findById(wid);
 
     if (!request) {
       return resp.status(404).send({
@@ -404,24 +395,11 @@ async function AssignRequest(req, resp) {
       });
     }
 
-    if (!worker) {
-      return resp.status(404).send({
-        success: false,
-        message: "Worker not found",
-      });
-    }
-
     request.assignedTo = wid;
     request.confirmedAt = date;
     request.status = "Confirmed";
 
-    worker.assignedRequest.push({
-      request: rid,
-      unassignReason: null,
-      unassignesAt: null,
-    });
-
-    await Promise.all([worker.save(), request.save()]);
+    await request.save();
 
     return resp.status(200).send({
       success: true,
@@ -462,19 +440,12 @@ async function UnassignRequest(req, resp) {
     request.confirmedAt = null;
     request.assignedTo = null;
     request.status = "Accepted";
-    const assignedRequestIndex = worker.assignedRequest.findIndex(
-      (item) => item.request.toString() === rid
-    );
 
-    if (assignedRequestIndex !== -1) {
-      worker.assignedRequest[assignedRequestIndex].unassignReason = reason;
-      worker.assignedRequest[assignedRequestIndex].unassignesAt = date;
-    } else {
-      return resp.status(404).send({
-        message: "Assigned request not found in worker's records",
-        success: false,
-      });
-    }
+    worker.UnAssignedRequest.push({
+      request: rid,
+      unassignReason: reason,
+      unassignesAt: new Date(),
+    });
 
     await request.save();
     await worker.save();

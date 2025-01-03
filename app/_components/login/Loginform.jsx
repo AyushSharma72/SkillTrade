@@ -12,6 +12,10 @@ import toast, { Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth } from "@/app/_context/UserAuthContent";
+import Box from "@mui/material/Box";
+
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
@@ -21,6 +25,20 @@ const LoginForm = () => {
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "1px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   async function HandleLogin(event) {
     event.preventDefault();
@@ -75,7 +93,7 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="relative flex justify-around sm:mt-20 mt-28">
+    <div className="relative flex justify-around sm:mt-20 ">
       <Toaster />
 
       <Image
@@ -98,33 +116,49 @@ const LoginForm = () => {
             inputProps={{ maxLength: 10 }}
             name="MobileNo"
           />
-
-          <TextField
-            id="standard-password"
-            label="Password"
-            variant="outlined"
-            className="w-full"
-            name="Password"
-            required
-            type={showPassword ? "text" : "password"}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
+          <div className="w-full flex flex-col gap-2  items-end">
+            <TextField
+              id="standard-password"
+              label="Password"
+              variant="outlined"
+              className="w-full"
+              name="Password"
+              required
+              type={showPassword ? "text" : "password"}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <span
+              className="text-right w-[132px] cursor-pointer"
+              onClick={handleOpen}
+            >
+              Forgot password?
+            </span>
+          </div>
 
           <Button type="submit">Login</Button>
         </form>
-
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <p className="text-center text-xl">Forgot Password ?</p>
+          </Box>
+        </Modal>
         {/* backdrop */}
 
         {loading && (

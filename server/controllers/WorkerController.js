@@ -355,6 +355,62 @@ async function GetWorkerAcceptedRequest(req, resp) {
   }
 }
 
+async function GetWorkerAssignedRequest(req, resp) {
+  try {
+    const { wid } = req.params;
+    const { pagenumber } = req.query;
+
+    if (!wid) {
+      return resp.status(400).send({
+        success: false,
+        message: "Worker ID is required",
+      });
+    }
+
+    // Find the worker and populate the assignedRequest array's request field
+    const worker = await WorkerModal.findById(wid)
+      .populate("assignedRequest.request")
+      .select("-image");
+
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+
+    const page = parseInt(pagenumber, 10) || 1;
+    const pageSize = 5; // Number of items per page
+
+    const assignedRequests = worker.assignedRequest.filter(
+      (request) => request.unassignReason === null
+    );
+
+    const totalItems = assignedRequests.length;
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    // Paginate the filtered data
+    const paginatedRequests = assignedRequests.slice(
+      (page - 1) * pageSize,
+      page * pageSize
+    );
+
+    return resp.status(200).send({
+      success: true,
+      message: "Assigned requests retrieved successfully",
+      data: paginatedRequests,
+      totalPages,
+    });
+  } catch (error) {
+    console.error(error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+}
+
 module.exports = {
   RegisterWorker,
   CheckCity,
@@ -364,4 +420,5 @@ module.exports = {
   UpdateProfile,
   GetWorkerImage,
   GetWorkerAcceptedRequest,
+  GetWorkerAssignedRequest,
 };
