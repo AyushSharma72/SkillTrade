@@ -323,7 +323,7 @@ async function GetWhoAcceptedRequest(req, resp) {
     const requests = await RequestModal.find(
       {
         _id: rid,
-        status: { $in: ["Accepted", "Confirmed", "Completed"] },
+        status: { $in: ["Accepted", "Assigned", "Completed"] },
       },
       "acceptedBy"
     )
@@ -397,7 +397,7 @@ async function AssignRequest(req, resp) {
 
     request.assignedTo = wid;
     request.confirmedAt = date;
-    request.status = "Confirmed";
+    request.status = "Assigned";
 
     await request.save();
 

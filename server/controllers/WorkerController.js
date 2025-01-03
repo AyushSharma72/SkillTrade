@@ -355,62 +355,46 @@ async function GetWorkerAcceptedRequest(req, resp) {
   }
 }
 
-async function GetWorkerAssignedRequest(req, resp) {
+const GetWorkerAssignedRequest = async (req, resp) => {
   try {
     const { wid } = req.params;
-    const { pagenumber } = req.query;
+    const page = parseInt(req.query.pagenumber) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
 
     if (!wid) {
-      return resp.status(400).send({
-        success: false,
-        message: "Worker ID is required",
-      });
+      return resp
+        .status(400)
+        .json({ success: false, error: "Worker ID is required" });
     }
 
-    // Find the worker and populate the assignedRequest array's request field
-    const worker = await WorkerModal.findById(wid)
-      .populate("assignedRequest.request")
-      .select("-image");
+    const totalRequests = await RequestModal.countDocuments({
+      assignedTo: wid,
+    });
 
-    if (!worker) {
-      return resp.status(404).send({
-        success: false,
-        message: "Worker not found",
-      });
-    }
+    const requests = await RequestModal.find({
+      assignedTo: wid,
+      status: "Assigned",
+    })
+      .skip(skip)
+      .limit(limit)
+      .select("-image")
+      .sort({ createdAt: -1 });
 
-    const page = parseInt(pagenumber, 10) || 1;
-    const pageSize = 5; // Number of items per page
+    const totalPages = Math.ceil(totalRequests / limit);
 
-    const assignedRequests = worker.assignedRequest.filter(
-      (request) => request.unassignReason === null
-    );
-
-    const totalItems = assignedRequests.length;
-    const totalPages = Math.ceil(totalItems / pageSize);
-
-    // Paginate the filtered data
-    const paginatedRequests = assignedRequests.slice(
-      (page - 1) * pageSize,
-      page * pageSize
-    );
-
-    return resp.status(200).send({
+    return resp.status(200).json({
       success: true,
-      message: "Assigned requests retrieved successfully",
-      data: paginatedRequests,
+      data: requests,
       totalPages,
     });
   } catch (error) {
-    console.error(error);
-    return resp.status(500).send({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
+    console.error("Error fetching assigned requests:", error);
+    return resp
+      .status(500)
+      .json({ success: false, error: "Internal server error" });
   }
-}
-
+};
 module.exports = {
   RegisterWorker,
   CheckCity,

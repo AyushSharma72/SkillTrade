@@ -120,7 +120,7 @@ const TimeLine = () => {
               </TimelineContent>
             </TimelineItem>
           )}
-          {data.status === "Confirmed" || data.status == "Completed" ? (
+          {data.status === "Assigned" || data.status == "Completed" ? (
             <TimelineItem>
               <TimelineSeparator>
                 <TimelineConnector />
@@ -131,9 +131,9 @@ const TimeLine = () => {
               </TimelineSeparator>
               <TimelineContent sx={{ py: "12px", px: 2 }}>
                 <Typography variant="h6" component="span">
-                  Confirmed
+                  Assigned
                 </Typography>
-                <Typography>Accepted request was confirmed by you </Typography>
+                <Typography>Accepted request was Assigned by you </Typography>
                 <Typography>
                   {data.confirmedAt
                     ? moment(data.confirmedAt).format("MMMM Do YYYY, h:mm A")

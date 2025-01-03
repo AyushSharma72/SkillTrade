@@ -44,7 +44,7 @@ const RequestSchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
-      enum: ["Pending", "Accepted", "Confirmed", "Completed", "Deleted"],
+      enum: ["Pending", "Accepted", "Assigned", "Completed", "Deleted"],
     },
     time: {
       type: String,
