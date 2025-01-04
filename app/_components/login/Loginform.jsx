@@ -13,14 +13,22 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import Box from "@mui/material/Box";
-
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import { Input } from "@mui/joy";
+import { Typography } from "antd";
+import { Input as Otp } from "antd";
+const { Title } = Typography;
+import { RxCross1 } from "react-icons/rx";
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [OtpGenerate, SetOtpGenerate] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [SendingOtp, SetSendingOtp] = useState(false);
+  const [GeneratedOtp, SetGeneratedOtp] = useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -30,7 +38,6 @@ const LoginForm = () => {
     top: "50%",
     left: "50%",
     transform: "translate(-50%, -50%)",
-    width: 400,
     bgcolor: "background.paper",
     border: "1px solid #000",
     boxShadow: 24,
@@ -40,6 +47,14 @@ const LoginForm = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const onChange = (text) => {
+    setOtp(text);
+    console.log("onChange:", text);
+  };
+
+  const sharedProps = {
+    onChange,
+  };
   async function HandleLogin(event) {
     event.preventDefault();
     setLoading(true); // Start loading
@@ -89,6 +104,39 @@ const LoginForm = () => {
       toast.error("Something went wrong");
     } finally {
       setLoading(false); // Stop loading
+    }
+  }
+
+  function generateOTP(length = 6) {
+    SetGeneratedOtp(Math.floor(100000 + Math.random() * 900000).toString()); // Generates a 6-digit OTP
+  }
+  async function SendOtp() {
+    try {
+      SetSendingOtp(true);
+      SetOtpGenerate(false);
+      const response = await fetch(
+        `http://localhost:8000/api/v1/users/SendOtp`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ GeneratedOtp, email }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("OTP sent successfully");
+        SetOtpGenerate(true);
+      } else {
+        toast.error(data.message || "Failed to send OTP");
+      }
+    } catch (error) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      SetSendingOtp(false);
     }
   }
 
@@ -151,16 +199,54 @@ const LoginForm = () => {
         </form>
         <Modal
           open={open}
-          onClose={handleClose}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box sx={style}>
+          <Box
+            sx={style}
+            className="flex flex-col gap-3 sm:w-[400px] w-[300px]"
+          >
+            <RxCross1
+              className="absolute right-4 top-4 cursor-pointer"
+              title="close"
+              onClick={handleClose}
+            />
             <p className="text-center text-xl">Forgot Password ?</p>
+            <Input
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter Email"
+              className="w-full"
+              required
+            />
+            <Button
+              onClick={() => {
+                if (email) {
+                  generateOTP();
+                  if (GeneratedOtp) {
+                    SendOtp();
+                  }
+                } else {
+                  toast.error("Enter email");
+                }
+              }}
+            >
+              {SendingOtp ? "Generating..." : " Generate OTP"}
+            </Button>
+            {OtpGenerate ? (
+              <>
+                <Title level={5}>Enter OTP</Title>
+                <Otp.OTP
+                  formatter={(str) => str.toUpperCase()}
+                  {...sharedProps}
+                />
+                <Button onClick={() => {}}>Verify</Button>
+              </>
+            ) : null}
           </Box>
         </Modal>
         {/* backdrop */}
-
         {loading && (
           <Backdrop
             sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}

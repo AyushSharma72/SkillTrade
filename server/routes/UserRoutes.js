@@ -7,6 +7,7 @@ const {
   UpdateUserInfo,
   GetUserImage,
   UserPassword,
+  SendOtp,
 } = require("../controllers/UserController");
 
 const Isloggedin = require("../middleware/Isloggedin");
@@ -27,5 +28,7 @@ router.post("/UpdateUserInfo/:uid", formidable(), UpdateUserInfo);
 router.get("/GetUserImage/:uid", GetUserImage);
 
 router.post("/UserPassword/:uid", UserPassword);
+
+router.post("/SendOtp", SendOtp);
 
 module.exports = router;

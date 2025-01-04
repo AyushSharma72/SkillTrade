@@ -17,6 +17,7 @@
     "express-formidable": "^1.2.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.2",
+    "nodemailer": "^6.9.16",
     "nodemon": "^3.1.4"
   }
 }

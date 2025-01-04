@@ -3,6 +3,7 @@ const JWT = require("jsonwebtoken");
 const WorkerModal = require("../modals/WorkerModal");
 const UserModal = require("../modals/UserModal");
 const fs = require("fs").promises;
+const nodemailer = require("nodemailer");
 
 async function RegisterUser(req, resp) {
   try {
@@ -268,6 +269,90 @@ async function UserPassword(req, resp) {
   }
 }
 
+async function SendOtp(req, resp) {
+  const { GeneratedOtp, email } = req.body;
+
+  try {
+    if (!GeneratedOtp || !email) {
+      return resp.status(400).send({
+        success: false,
+        message: "OTP and Email are required",
+      });
+    }
+
+    const user = await UserModal.findOne({ Email: email });
+    if (!user) {
+      return resp.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    user.otp = GeneratedOtp;
+    await user.save();
+
+    if (!process.env.email_id || !process.env.pass_key) {
+      return resp.status(500).send({
+        success: false,
+        message: "Email configuration missing on the server",
+      });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.email_id,
+        pass: process.env.pass_key,
+      },
+    });
+
+    const emailTemplate = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <div style="text-align: center;">
+        <img src="https://yourdomain.com/path-to-your-image/skill-trade-logo.png" alt="Skill Trade Logo" style="width: 250px; margin-bottom: 10px; background-color: black;">
+
+          <h1 style="color: #333;">Your OTP Code</h1>
+          <p style="font-size: 18px; color: #555;">Hello,</p>
+          <p style="font-size: 16px; color: #555;">We received a request to reset your password. Use the OTP below to proceed:</p>
+          <p style="font-size: 24px; font-weight: bold; color: #007BFF;">${GeneratedOtp}</p>
+          <p style="font-size: 14px; color: #999; margin-top: 20px;">If you didn't request a password reset, you can safely ignore this email.</p>
+          <hr style="margin: 20px 0;">
+          <p style="font-size: 12px; color: #999;">© ${new Date().getFullYear()} Skill Trade. All rights reserved.</p>
+        </div>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: process.env.email_id,
+      to: email,
+      subject: "Reset Password - OTP Code",
+      html: emailTemplate, // No need for attachments, the image is now linked
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return resp.status(500).send({
+          success: false,
+          message: "Error sending email. Please try again later.",
+        });
+      } else {
+        console.log("Email sent:", info.response);
+        return resp.status(200).send({
+          success: true,
+          message: "OTP sent successfully to the provided email",
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    resp.status(500).send({
+      success: false,
+      message: "An unexpected error occurred. Please try again later.",
+    });
+  }
+}
+
 module.exports = {
   RegisterUser,
   UserLogin,
@@ -275,4 +360,5 @@ module.exports = {
   UpdateUserInfo,
   GetUserImage,
   UserPassword,
+  SendOtp,
 };
