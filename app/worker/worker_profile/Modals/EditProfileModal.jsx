@@ -12,6 +12,7 @@ import { Button as CustomButton } from "@/components/ui/button";
 import { UpdateProfile } from "../_FetchFunction/UpdateUserProfile";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import {style} from "../../../_Arrays/Arrays"
 
 const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [vimage, setImage] = useState(null);
@@ -20,17 +21,7 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [pincode, setPincode] = useState(data.pincode);
   const [backdrop, Setbackdrop] = useState(false);
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "1px solid #000",
-    boxShadow: 24,
-    p: 3,
-  };
-
+ 
   const VisuallyHiddenInput = styled("input")`
     clip: rect(0 0 0 0);
     clip-path: inset(50%);

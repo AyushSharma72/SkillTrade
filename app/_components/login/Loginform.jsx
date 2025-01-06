@@ -19,6 +19,7 @@ import { Typography } from "antd";
 import { Input as Otp } from "antd";
 const { Title } = Typography;
 import { RxCross1 } from "react-icons/rx";
+import {style } from "../../_Arrays/Arrays"
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
@@ -29,32 +30,65 @@ const LoginForm = () => {
   const [otp, setOtp] = useState("");
   const [SendingOtp, SetSendingOtp] = useState(false);
   const [GeneratedOtp, SetGeneratedOtp] = useState("");
-
+  const [ResetPass, SetResetPass] = useState(false);
+  const [VerifyOtp,SetVerifyOtp] = useState(false)
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    bgcolor: "background.paper",
-    border: "1px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
+ 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const verifyOtp = async () => {
+    if (!otp) {
+      toast.error("OTP is required");
+      return;
+    }
+    try {
+       SetVerifyOtp(true);
+      const response = await fetch(
+        "http://localhost:8000/api/v1/users/VerifyOtp",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            otp,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("verification successfull")
+        setTimeout(() => {
+        SetResetPass(true);
+        setOpen(false);
+        }, 3000);
+       
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+    finally{
+       SetVerifyOtp(false);
+    }
+  };
+
   const onChange = (text) => {
-    setOtp(text);
-    console.log("onChange:", text);
+    setOtp(text);  
   };
 
   const sharedProps = {
     onChange,
   };
+
   async function HandleLogin(event) {
     event.preventDefault();
     setLoading(true); // Start loading
@@ -110,12 +144,13 @@ const LoginForm = () => {
   function generateOTP(length = 6) {
     SetGeneratedOtp(Math.floor(100000 + Math.random() * 900000).toString()); // Generates a 6-digit OTP
   }
+
   async function SendOtp() {
     try {
       SetSendingOtp(true);
       SetOtpGenerate(false);
       const response = await fetch(
-        `http://localhost:8000/api/v1/users/SendOtp`,
+        "http://localhost:8000/api/v1/users/SendOtp",
         {
           method: "POST",
           headers: {
@@ -189,7 +224,9 @@ const LoginForm = () => {
             />
             <span
               className="text-right w-[132px] cursor-pointer"
-              onClick={handleOpen}
+              onClick={() => {
+                handleOpen();
+              }}
             >
               Forgot password?
             </span>
@@ -234,14 +271,18 @@ const LoginForm = () => {
             >
               {SendingOtp ? "Generating..." : " Generate OTP"}
             </Button>
+
             {OtpGenerate ? (
               <>
+                <p className="text-center text-red-600 m-0">
+                  If not received generate OTP again
+                </p>
                 <Title level={5}>Enter OTP</Title>
                 <Otp.OTP
                   formatter={(str) => str.toUpperCase()}
                   {...sharedProps}
                 />
-                <Button onClick={() => {}}>Verify</Button>
+                <Button onClick={() => { verifyOtp()}}>{VerifyOtp?"Verifying...":"Verify"}</Button>
               </>
             ) : null}
           </Box>

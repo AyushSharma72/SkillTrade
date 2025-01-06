@@ -288,7 +288,9 @@ async function SendOtp(req, resp) {
       });
     }
 
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes 
     user.otp = GeneratedOtp;
+    user.otpExpiry = otpExpiry;
     await user.save();
 
     if (!process.env.email_id || !process.env.pass_key) {
@@ -311,7 +313,7 @@ async function SendOtp(req, resp) {
         <div style="text-align: center;">
         <img src="https://yourdomain.com/path-to-your-image/skill-trade-logo.png" alt="Skill Trade Logo" style="width: 250px; margin-bottom: 10px; background-color: black;">
 
-          <h1 style="color: #333;">Your OTP Code</h1>
+          <h1 style="color: #333;">Your Otp To Reset Password</h1>
           <p style="font-size: 18px; color: #555;">Hello,</p>
           <p style="font-size: 16px; color: #555;">We received a request to reset your password. Use the OTP below to proceed:</p>
           <p style="font-size: 24px; font-weight: bold; color: #007BFF;">${GeneratedOtp}</p>
@@ -325,7 +327,7 @@ async function SendOtp(req, resp) {
     const mailOptions = {
       from: process.env.email_id,
       to: email,
-      subject: "Reset Password - OTP Code",
+      subject: "Reset Password - Skill Trade",
       html: emailTemplate, // No need for attachments, the image is now linked
     };
 
@@ -353,6 +355,60 @@ async function SendOtp(req, resp) {
   }
 }
 
+async function VerifyOtp(req, resp) {
+  try {
+    const { email, otp } = req.body;
+
+    
+    if (!email || !otp) {
+      return resp.status(400).send({
+        success: false,
+        message: "Email or OTP not received",
+      });
+    }
+
+   
+    const user = await UserModal.findOne({ Email: email });
+
+    if (!user) {
+      return resp.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+  
+    if (user.otp !== otp) {
+      return resp.status(400).send({
+        success: false,
+        message: "Incorrect OTP. Please try again.",
+      });
+    }
+
+  
+    if (new Date() > user.otpExpiry) {
+      return resp.status(400).send({
+        success: false,
+        message: "OTP has expired. Please request a new one.",
+      });
+    }
+   
+    return resp.status(200).send({
+      success: true,
+      message: "Valid OTP",
+    });
+
+  }
+   catch (error) {
+    console.error("Error verifying OTP:", error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
+
 module.exports = {
   RegisterUser,
   UserLogin,
@@ -361,4 +417,5 @@ module.exports = {
   GetUserImage,
   UserPassword,
   SendOtp,
+  VerifyOtp,
 };

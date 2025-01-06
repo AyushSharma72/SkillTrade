@@ -8,6 +8,7 @@ const {
   GetUserImage,
   UserPassword,
   SendOtp,
+  VerifyOtp,
 } = require("../controllers/UserController");
 
 const Isloggedin = require("../middleware/Isloggedin");
@@ -30,5 +31,8 @@ router.get("/GetUserImage/:uid", GetUserImage);
 router.post("/UserPassword/:uid", UserPassword);
 
 router.post("/SendOtp", SendOtp);
+
+
+router.post("/VerifyOtp", VerifyOtp);
 
 module.exports = router;

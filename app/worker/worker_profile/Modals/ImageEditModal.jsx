@@ -14,17 +14,8 @@ import "react-datepicker/dist/react-datepicker.css";
 import { services } from "../../../_Arrays/Arrays";
 import { Button as CustomButton } from "@/components/ui/button";
 import { UpdateProfile } from "../_FetchFunction/UpdateUserProfile";
+import { style } from "../../../_Arrays/Arrays";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  border: "1px solid #000",
-  boxShadow: 24,
-  p: 3,
-};
 
 const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
   const [image, setImage] = useState(null);
