@@ -288,7 +288,7 @@ async function SendOtp(req, resp) {
       });
     }
 
-    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes 
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
     user.otp = GeneratedOtp;
     user.otpExpiry = otpExpiry;
     await user.save();
@@ -359,15 +359,13 @@ async function VerifyOtp(req, resp) {
   try {
     const { email, otp } = req.body;
 
-    
     if (!email || !otp) {
       return resp.status(400).send({
         success: false,
-        message: "Email or OTP not received",
+        message: "Email or otp not received",
       });
     }
 
-   
     const user = await UserModal.findOne({ Email: email });
 
     if (!user) {
@@ -377,33 +375,75 @@ async function VerifyOtp(req, resp) {
       });
     }
 
-  
     if (user.otp !== otp) {
       return resp.status(400).send({
         success: false,
-        message: "Incorrect OTP. Please try again.",
+        message: "Incorrect otp. Please try again.",
       });
     }
 
-  
     if (new Date() > user.otpExpiry) {
       return resp.status(400).send({
         success: false,
-        message: "OTP has expired. Please request a new one.",
+        message: "otp has expired. Please request a new one.",
       });
     }
-   
+
     return resp.status(200).send({
       success: true,
       message: "Valid OTP",
     });
-
-  }
-   catch (error) {
+  } catch (error) {
     console.error("Error verifying OTP:", error);
     return resp.status(500).send({
       success: false,
       message: "Internal server error",
+    });
+  }
+}
+
+async function ResetPassword(req, resp) {
+  try {
+    const { email, newPassword, confirmPassword } = req.body;
+
+    if (!email || !newPassword || !confirmPassword) {
+      return resp.status(400).send({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+ console.log(email);
+    if (newPassword !== confirmPassword) {
+      return resp.status(400).send({
+        success: false,
+        message: "Passwords do not match",
+      });
+    }
+
+    const user = await UserModal.findOne({ Email:email });
+ 
+    if (!user) {
+      return resp.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.Password = hashedPassword;
+    await user.save();
+
+    return resp.status(200).send({
+      success: true,
+      message: "Password reset successfull",
+    });
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "internal Server error",
+      
     });
   }
 }
@@ -418,4 +458,5 @@ module.exports = {
   UserPassword,
   SendOtp,
   VerifyOtp,
+  ResetPassword,
 };

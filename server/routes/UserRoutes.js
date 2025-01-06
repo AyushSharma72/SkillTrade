@@ -9,6 +9,7 @@ const {
   UserPassword,
   SendOtp,
   VerifyOtp,
+  ResetPassword,
 } = require("../controllers/UserController");
 
 const Isloggedin = require("../middleware/Isloggedin");
@@ -32,7 +33,8 @@ router.post("/UserPassword/:uid", UserPassword);
 
 router.post("/SendOtp", SendOtp);
 
-
 router.post("/VerifyOtp", VerifyOtp);
+
+router.post("/Resetpassword", ResetPassword);
 
 module.exports = router;

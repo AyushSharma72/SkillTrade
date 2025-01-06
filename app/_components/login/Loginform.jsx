@@ -20,6 +20,8 @@ import { Input as Otp } from "antd";
 const { Title } = Typography;
 import { RxCross1 } from "react-icons/rx";
 import {style } from "../../_Arrays/Arrays"
+import ModalComponent from "../Modal";
+import ResetPassModal from "./ResetPassModal";
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
@@ -32,6 +34,7 @@ const LoginForm = () => {
   const [GeneratedOtp, SetGeneratedOtp] = useState("");
   const [ResetPass, SetResetPass] = useState(false);
   const [VerifyOtp,SetVerifyOtp] = useState(false)
+
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
@@ -39,6 +42,7 @@ const LoginForm = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleResetPassClose = () => SetResetPass(false);
 
   const verifyOtp = async () => {
     if (!otp) {
@@ -234,6 +238,9 @@ const LoginForm = () => {
 
           <Button type="submit">Login</Button>
         </form>
+
+        {/* forgot password modal  */}
+
         <Modal
           open={open}
           aria-labelledby="modal-modal-title"
@@ -282,11 +289,25 @@ const LoginForm = () => {
                   formatter={(str) => str.toUpperCase()}
                   {...sharedProps}
                 />
-                <Button onClick={() => { verifyOtp()}}>{VerifyOtp?"Verifying...":"Verify"}</Button>
+                <Button
+                  onClick={() => {
+                    verifyOtp();
+                  }}
+                >
+                  {VerifyOtp ? "Verifying..." : "Verify"}
+                </Button>
               </>
             ) : null}
           </Box>
         </Modal>
+
+        {/* reset password modal */}
+        <ModalComponent
+          handleClose={handleResetPassClose}
+          open={ResetPass}
+          ModalType={ResetPassModal}
+          email={email}
+        />
         {/* backdrop */}
         {loading && (
           <Backdrop
