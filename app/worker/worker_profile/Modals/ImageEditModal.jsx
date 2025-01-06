@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import { Input, Textarea } from "@mui/joy";
+import { Input } from "@mui/joy";
 import Button from "@mui/joy/Button";
 import { toast, Toaster } from "react-hot-toast";
 import SvgIcon from "@mui/joy/SvgIcon";
@@ -75,6 +75,7 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false); // Hide Backdrop
+      GetWorkerData();
     }
   }
 

@@ -1,301 +1,36 @@
-"use client";
-import React, { useState, useEffect } from "react";
-import demouserimage from "../../../assests/demouserimage.jpg";
-import { useAuth } from "@/app/_context/UserAuthContent";
-import toast from "react-hot-toast";
-import Rating from "@mui/material/Rating";
-import { FaSquareWhatsapp } from "react-icons/fa6";
-import { FaSquarePhone } from "react-icons/fa6";
-import { FaCircleUser } from "react-icons/fa6";
-import { FaAddressCard } from "react-icons/fa";
-import { TbMapPinCode } from "react-icons/tb";
-import { PiCityFill } from "react-icons/pi";
-import { FaCodePullRequest } from "react-icons/fa6";
-import { FaCheckCircle } from "react-icons/fa";
-import { IoIosTime } from "react-icons/io";
-import { FaEdit } from "react-icons/fa";
-import moment from "moment";
-import { Badge, Space } from "antd";
-import ModalComponent from "../_Components/Modal";
-import ImageEditModal from "../Modals/ImageEditModal";
-import EditProfileModal from "../Modals/EditProfileModal";
-import Chip from "@mui/material/Chip";
-import Ratings from "../_Components/Ratings";
-import { useParams } from "next/navigation";
-import Lottie from "react-lottie";
-import animationData from "../../../assests/loading.json";
+import React from "react";
+import WorkerProfileClient from "../WorkerProfileClient";
 
-const WorkerProfile = () => {
-  const [auth, SetAuth] = useAuth();
-  const [WorkerData, SetWorkerData] = useState([]);
-  const [open, setOpen] = React.useState(false);
-  const [open2, setOpen2] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleOpen2 = () => setOpen2(true);
-  const handleClose = () => setOpen(false);
-  const handleClose2 = () => setOpen2(false);
-  const [imageError, setImageError] = useState(false);
-  const { wid } = useParams();
+export default async function WorkerProfile({ params }) {
+  const { wid } = params;
+  let data;
 
-  <Space
-    direction="vertical"
-    size="middle"
-    style={{
-      width: "100%",
-    }}
-  ></Space>;
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
-
-  async function GetWorkerData() {
-    try {
-      const response = await fetch(
-        `http://localhost:8000/api/v1/workers/GetWorkerData/${wid}`
-      );
-      if (response) {
-        const data = await response.json();
-        if (data.success) {
-          SetWorkerData(data.worker);
-        } else {
-          toast.error(data.message);
-        }
-      } else {
-        toast.error("Error fetching data");
+  try {
+    const response = await fetch(
+      `http://localhost:8000/api/v1/workers/GetWorkerData/${wid}`,
+      {
+        cache: "no-store", // Prevent caching
       }
-    } catch (error) {
-      toast.error("error try again");
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Failed to fetch worker data: ${response.status} ${response.message}`
+      );
     }
-  }
-  useEffect(() => {
-    GetWorkerData();
-  }, []);
-  if (!auth?.user) {
+
+    data = await response.json();
+  } catch (error) {
+    console.error("Error fetching worker data:", error);
+
     return (
-      <div className="h-screen flex flex-col items-center justify-center">
-        <Lottie
-          options={defaultOptions}
-          height={150}
-          width={200}
-          isClickToPauseDisabled={true}
-        />
-        <p className="font-bold tracking-wider">Loading auth.....</p>
+      <div className="flex flex-col items-center bg-gray-200">
+        <p className="text-red-500">
+          Failed to load worker data. Please try again later.
+        </p>
       </div>
     );
   }
-  return (
-    <div className="flex flex-col items-center   bg-gray-200 ">
-      <p className="font-semibold text-3xl sm:mt-2 mt-20"> WorkerProfile</p>
 
-      <div className="flex justify-center md:gap-5 items-center md:items-start p-3 mt-5 w-full md:flex-row flex-col  gap-5">
-        {/* left div  */}
-        <div className="xl:w-[20%] lg:w-[25%] sm:w-1/2 w-[90%] ">
-          {" "}
-          <Badge.Ribbon
-            text={`${WorkerData.verfied ? "Verified" : "Unverified"}`}
-            color={`${WorkerData.verfied ? "" : "red"}`}
-            placement="start"
-          >
-            {auth.user.role === 1 ? (
-              <FaEdit
-                className="absolute right-3 top-[50%] cursor-pointer"
-                title="edit profile"
-                onClick={handleOpen}
-              />
-            ) : null}
-            <div className="flex flex-col justify-start gap-3">
-              {/* image */}
-
-              <div className="flex flex-col justify-center items-center  gap-1 rounded-lg shadow-lg bg-white">
-                {" "}
-                <img
-                  src={
-                    imageError
-                      ? demouserimage // Fallback image if error occurs
-                      : `http://localhost:8000/api/v1/workers/GetWorkerImage/${wid}`
-                  }
-                  alt="Worker"
-                  className="shadow-md !h-[200px] w-[200px] object-cover rounded-[50%]"
-                  onError={() => setImageError(true)}
-                />
-                <div className="flex flex-col w-full pl-3 pb-3 gap-3">
-                  {" "}
-                  <p className="text-2xl font-semibold">{WorkerData?.Name}</p>
-                  <p className="flex  items-center gap-3">
-                    <span className="flex items-center font-semibold">
-                      {WorkerData?.OverallRaitngs}
-                      <Rating max={1} defaultValue={1} />
-                    </span>
-
-                    {WorkerData?.OverallRaitngs === 0 ? (
-                      <span className="text-sm font-bold">No rating given</span>
-                    ) : (
-                      <span
-                        className="text-sm font-semibold cursor-pointer text-blue-600"
-                        onClick={() => {
-                          const reviewsElement =
-                            document.getElementById("reviews");
-                          if (reviewsElement) {
-                            reviewsElement.scrollIntoView({
-                              behavior: "smooth",
-                            });
-                          }
-                        }}
-                      >
-                        {WorkerData?.Reviews?.length} Reviews
-                      </span>
-                    )}
-                  </p>
-                  <div className="flex flex-col gap-2 items-start">
-                    <p className="font-semibold tracking-wider">Expertise</p>
-                    <Chip label={`${WorkerData.ServiceType}`} />
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white p-3  rounded-lg  flex flex-col gap-3 shadow-lg">
-                <div
-                  className="flex  items-center gap-2 cursor-pointer"
-                  onClick={() => {
-                    const url = `https://wa.me/+91${WorkerData?.MobileNo}`;
-                    window.open(url, "_blank");
-                  }}
-                >
-                  <FaSquareWhatsapp className="text-3xl  text-green-600" />
-                  Message on whatsapp
-                </div>
-                <hr />
-                <div
-                  className="flex  items-center gap-2 cursor-pointer"
-                  onClick={() => {
-                    const url = `tel:${WorkerData?.MobileNo}`;
-                    window.open(url, "_self");
-                  }}
-                >
-                  <FaSquarePhone className="text-3xl text-blue-600" />
-                  {WorkerData?.MobileNo}
-                </div>
-              </div>
-            </div>
-          </Badge.Ribbon>
-        </div>
-        {/* modal 1 */}
-        <ModalComponent
-          open={open}
-          handleClose={handleClose}
-          ModalType={ImageEditModal}
-          GetWorkerData={GetWorkerData}
-          data={WorkerData}
-        />
-        {/* modal 2 */}
-        <ModalComponent
-          open={open2}
-          handleClose={handleClose2}
-          ModalType={EditProfileModal}
-          GetWorkerData={GetWorkerData}
-          data={WorkerData}
-        />
-        {/* right div  */}
-        <div className="bg-white xl:w-1/2 lg:w-[60%] w-[90%] p-5 rounded-lg flex flex-col gap-5 shadow-lg relative mb-2 ">
-          {auth?.user.role === 1 ? (
-            <FaEdit
-              className="absolute right-3 top-2 cursor-pointer"
-              title="edit profile"
-              onClick={handleOpen2}
-            />
-          ) : null}
-          <hr className="mt-4" />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <FaCircleUser className="text-xl" />
-              Role
-            </span>
-            <p className="text-center">
-              {WorkerData?.role === 1 ? "Worker" : "User"}
-            </p>
-          </div>
-
-          {/* address */}
-          <hr />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <FaAddressCard className="text-xl" />
-              Address
-            </span>
-            <p className="text-center">{WorkerData?.Address}</p>
-          </div>
-
-          {/* pincode  */}
-
-          <hr />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <TbMapPinCode className="text-xl" />
-              Pincode
-            </span>
-            <p className="text-center">{WorkerData?.pincode}</p>
-          </div>
-
-          {/* city  */}
-
-          <hr />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <PiCityFill className="text-xl" />
-              City
-            </span>
-            <p className="text-center">
-              {WorkerData?.city ? (
-                WorkerData?.city
-              ) : (
-                <span className="text-red-600">not provided</span>
-              )}
-            </p>
-          </div>
-
-          {/* Assigned Request */}
-          <hr />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <FaCodePullRequest className="text-xl" />
-              Assigned requests
-            </span>
-            <p className="text-center">{WorkerData?.assignedRequest?.length}</p>
-          </div>
-
-          {/* Completed Request */}
-          <hr />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <FaCheckCircle className="text-xl" />
-              Completed requests
-            </span>
-            <p className="text-center">{WorkerData?.CompletedRequest}</p>
-          </div>
-
-          {/* joined  */}
-          <hr />
-          <div className="flex ">
-            <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <IoIosTime className="text-xl" />
-              Joined
-            </span>
-
-            <p className="text-center">
-              {moment(WorkerData.createdAt).format(" MMMM Do YYYY")}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <Ratings Reviews={WorkerData.Reviews} />
-    </div>
-  );
-};
-
-export default WorkerProfile;
+  return <WorkerProfileClient IntialWorkerData={data.worker} />;
+}

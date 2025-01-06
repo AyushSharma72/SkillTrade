@@ -214,11 +214,16 @@ async function GetAllRequests(req, resp) {
   try {
     const pagenumber = req.params.pagenumber;
 
-    const totalrequests = await RequestModal.find();
-    const requests = await RequestModal.find()
-      .select("-image")
+    const totalrequests = await RequestModal.countDocuments({
+      status: { $in: ["Accepted", "Assigned"] },
+    });
+    const requests = await RequestModal.find({
+      status: { $in: ["Accepted", "Assigned"] },
+    })
+      .select("service location date status user")
       .skip((pagenumber - 1) * 5)
       .limit(5);
+
     if (requests && requests.length >= 1) {
       return resp.status(200).send({
         totalrequests,

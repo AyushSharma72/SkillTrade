@@ -18,8 +18,8 @@ const ModalComponent = ({
       >
         <ModalType
           handleClose={handleClose}
-          GetWorkerData={GetWorkerData}
           data={data}
+          GetWorkerData={GetWorkerData}
         />
       </Modal>
     </div>

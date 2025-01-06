@@ -15,7 +15,6 @@ import moment from "moment";
 import { Tag } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import Pagination from "@mui/material/Pagination";
-import GetRequestData from "./GetRequestData";
 import { GetRequestFilteredData } from "./GetRequestFilteredData";
 import { PulseLoader } from "react-spinners";
 import Empty from "../../assests/Empty.svg";
@@ -82,11 +81,13 @@ function ViewRequest() {
   async function GetData() {
     try {
       setloading(true);
-      const info = await GetRequestData(pageNumber);
-
+      const response = await fetch(
+        `http://localhost:8000/api/v1/request/Allrequests/${pageNumber}`
+      );
+      const info = await response.json();
       if (info.success) {
         setdata(info.requests);
-        SetPages(Math.ceil(info?.totalrequests?.length / 5));
+        SetPages(Math.ceil(info?.totalrequests / 5));
       } else {
         toast.error(info.message);
       }
@@ -113,6 +114,7 @@ function ViewRequest() {
       setDisabled(false);
     }
   };
+
   async function GetFilteredData() {
     try {
       setloading(true);

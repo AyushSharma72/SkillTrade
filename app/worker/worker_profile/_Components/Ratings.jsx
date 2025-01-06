@@ -1,5 +1,4 @@
 import React from "react";
-import demouserimage from "../../../assests/demouserimage.jpg";
 import Rating from "@mui/material/Rating";
 import moment from "moment";
 import Avatar from "@mui/material/Avatar";

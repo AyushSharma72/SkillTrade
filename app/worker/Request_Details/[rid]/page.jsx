@@ -18,6 +18,7 @@ import { GoReport } from "react-icons/go";
 import ModalComponent from "../../../_components/Modal";
 import ReportModal from "./../_Modals/ReportModal";
 import AcceptRequest from "../_Modals/AcceptRequest";
+import Link from "next/link";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -165,9 +166,17 @@ const RequestDetails = () => {
                     {moment(data.createdAt).format("MMMM Do YYYY, h:mm A")}
                   </p>
                 </div>
-                {data.status === "Completed" ? null : (
-                  <Button onClick={handleOpen2}>Accept Request</Button>
-                )}
+                <div className="flex gap-2 justify-center items-center">
+                  {data.status === "Completed" ? null : (
+                    <Button onClick={handleOpen2} className="w-1/2">
+                      Accept Request
+                    </Button>
+                  )}
+                  <Link href="/worker/all_request" className="w-1/2">
+                    {" "}
+                    <Button className="w-full">Back</Button>
+                  </Link>
+                </div>
                 {/* report modal */}
                 <ModalComponent
                   open={open}
