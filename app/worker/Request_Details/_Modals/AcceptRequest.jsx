@@ -74,13 +74,23 @@ const AcceptRequest = ({ handleClose, rid }) => {
           onChange={(e) => setDescription(e.target.value)}
           className="w-full h-40 overflow-y-scroll scrollbar-hide"
         />
-        <Button
-          onClick={() => {
-            AcceptRequestFunction();
-          }}
-        >
-          Accept Request
-        </Button>
+        <div className="flex  flex-col gap-1 w-full">
+          {" "}
+          <Button
+            onClick={() => {
+              AcceptRequestFunction();
+            }}
+          >
+            Accept Request
+          </Button>
+          <Button
+            onClick={() => {
+              handleClose();
+            }}
+          >
+            Close
+          </Button>
+        </div>
       </div>
     </Box>
   );

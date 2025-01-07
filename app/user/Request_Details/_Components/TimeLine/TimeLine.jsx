@@ -9,39 +9,14 @@ import TimelineDot from "@mui/lab/TimelineDot";
 import { FaCheck } from "react-icons/fa";
 import { FaRegClock } from "react-icons/fa6";
 import Typography from "@mui/material/Typography";
-import GetRequestData from "../_FetchFunction/GetRequestData";
-import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useState } from "react";
 import moment from "moment";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-const TimeLine = () => {
-  const [data, setdata] = useState([]);
-  const [loading, setloading] = useState(true);
-  const { rid } = useParams();
-
-  async function GetData() {
-    try {
-      setloading(true);
-      const info = await GetRequestData(rid);
-
-      if (info.success) {
-        setdata(info.requestdetails);
-        setloading(false);
-      } else {
-        toast.error(info.message);
-        setloading(false);
-      }
-    } catch (error) {
-      toast.error("please try again");
-      setloading(false);
-    }
-  }
-
-  useEffect(() => {
-    GetData();
-  }, []);
+const TimeLine = ({ intialData, loadingstate }) => {
+  const [data, setdata] = useState(intialData);
+  const [loading, setloading] = useState(loadingstate);
 
   return (
     <>

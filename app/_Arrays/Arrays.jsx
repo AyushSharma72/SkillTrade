@@ -60,4 +60,16 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export { services, steps, style, StyledTableCell, StyledTableRow };
+const labels = {
+    1: "Very Poor 😭",
+
+    2: "Poor 🥲",
+
+    3: "Ok 🥱",
+
+    4: "Good👍",
+
+    5: "Excellent 😍",
+  };
+
+export { services, steps, style, StyledTableCell, StyledTableRow ,labels };

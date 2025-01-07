@@ -1,27 +1,28 @@
-"use client";
+"use client"
 import React from "react";
 import { Tabs } from "antd";
 import { CgDetailsMore } from "react-icons/cg";
 import { TbTimeline } from "react-icons/tb";
 import { RiCalendarScheduleFill } from "react-icons/ri";
-import RequestDetails from "../_Components/RequestDetails";
-import TimeLine from "../_Components/TimeLine";
-import Reschedule from "../_Components/Reschedule";
-import UserPrivateRoutes from "../../../_components/privateroutes/UserPrivateRoutes";
 import AcceptedBy from "../_Components/AcceptedBy";
 import { FaCircleCheck } from "react-icons/fa6";
-const page = () => {
+import RequestDetailsServer from "../_Components/RequestDetails/RequestDetialsServer";
+import RescheduleServer from "../_Components/Reschedule/RescheduleServer"; 
+import TimeLineServer from "../_Components/TimeLine/TimeLineServer";
+
+export default function Page({ params }) {
+ const { rid } = params
   const items = [
     {
       key: "1",
       label: "Request Details",
-      children: <RequestDetails />,
+      children: <RequestDetailsServer rid={rid} />, 
       icon: <CgDetailsMore />,
     },
     {
       key: "2",
       label: "Reschedule",
-      children: <Reschedule />,
+      children: <RescheduleServer  rid={rid}/>,
       icon: <RiCalendarScheduleFill />,
     },
     {
@@ -33,7 +34,7 @@ const page = () => {
     {
       key: "4",
       label: "Timeline",
-      children: <TimeLine />,
+      children: < TimeLineServer rid={rid}/>,
       icon: <TbTimeline />,
     },
   ];
@@ -43,6 +44,4 @@ const page = () => {
       <Tabs defaultActiveKey="1" items={items} className="sm:mt-0 mt-20" />
     </div>
   );
-};
-
-export default UserPrivateRoutes(page);
+}

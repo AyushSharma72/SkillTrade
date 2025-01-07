@@ -256,10 +256,10 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
           <hr />
           <div className="flex ">
             <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <FaCodePullRequest className="text-xl" />
-              Assigned requests
+              <FaSquarePhone className="text-xl" />
+              Mobile No
             </span>
-            <p className="text-center">{WorkerData?.assignedRequest?.length}</p>
+            <p className="text-center"> {WorkerData?.MobileNo}</p>
           </div>
 
           {/* Completed Request */}

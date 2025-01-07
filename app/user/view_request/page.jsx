@@ -70,7 +70,7 @@ function ViewRequest() {
       ) : data?.length > 0 ? (
         <div>
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
-            Requests
+            Requests Cretated By You
           </p>
           <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col items-center pb-3">
             <Table aria-label="customized table">
@@ -109,11 +109,23 @@ function ViewRequest() {
                         <Tag icon={<ClockCircleOutlined />} color="warning">
                           {data.status}
                         </Tag>
-                      ) : (
+                      ) : data.status === "Accepted" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="blue">
+                          {data.status}
+                        </Tag>
+                      ) : data.status === "Assigned" ? (
                         <Tag icon={<CheckCircleOutlined />} color="success">
                           {data.status}
                         </Tag>
-                      )}
+                      ) : data.status === "Completed" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="purple">
+                          {data.status}
+                        </Tag>
+                      ) : data.status === "Deleted" ? (
+                        <Tag icon={<CheckCircleOutlined />} color="red">
+                          {data.status}
+                        </Tag>
+                      ) : null}
                     </StyledTableCell>
 
                     <StyledTableCell align="center">

@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React,{useEffect} from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -33,7 +33,7 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   variants: [
-    {
+    {         
       props: ({ open }) => open,
       style: {
         width: `calc(100% - ${drawerWidth}px)`,
@@ -69,9 +69,14 @@ const Navbar = () => {
     setOpen(false);
   };
 
+ 
+  useEffect(() => {
+    
+  }, [auth]); // Watch for changes to the `auth` state
+
   const pathname = usePathname();
   return (
-    <div className="bg-black flex justify-center text-white ">
+    <div className="bg-black flex justify-center text-white sticky top-0 z-[10]">
       {/* navbar big screen  */}
       <div className="w-full  xl:w-3/4 justify-between sm:flex hidden">
         <Image src={logo} className="w-[200px] h-[70px]"></Image>

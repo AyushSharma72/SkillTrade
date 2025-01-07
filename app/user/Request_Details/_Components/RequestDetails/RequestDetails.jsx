@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { useParams } from "next/navigation";
 import { Flex, Tag, Image } from "antd";
 import { useRouter } from "next/navigation";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-import GetRequestData from "../_FetchFunction/GetRequestData";
 import { MdOutlineHandyman } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
 import { FaCalendarCheck } from "react-icons/fa";
@@ -14,27 +13,28 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import { TbMapPinCode } from "react-icons/tb";
 import { FaAddressCard } from "react-icons/fa";
-import { Button } from "../../../../components/ui/button";
+import { Button } from "../../../../../components/ui/button";
 import { toast, Toaster } from "react-hot-toast";
-import { DeleteRequestFetchFunction } from "../_FetchFunction/DeleteRequest";
+import { DeleteRequestFetchFunction } from "../../_FetchFunction/DeleteRequest";
 import Modal from "@mui/material/Modal";
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { Textarea } from "@mui/joy";
-import { UnAssign } from "../_FetchFunction/UnassignWorker";
+import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 import Rating from "@mui/material/Rating";
 import { Input } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
-import { CompleteRequest } from "../_FetchFunction/CompleteRequest";
+import { CompleteRequest } from "../../_FetchFunction/CompleteRequest";
 import { useAuth } from "@/app/_context/UserAuthContent";
-import Link from "next/link";
+import {labels,style} from "../../../../_Arrays/Arrays"
+import Link from "next/link"
 
-const RequestDetails = () => {
-  const [data, setData] = useState(null);
+const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
+  const [data, setData] = useState(initialData);
   const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(loadingstate);
   const { rid } = useParams();
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(null);
+  const [imageUrl, setImageUrl] = useState(imgurl);
   const [open, setOpen] = React.useState(false);
   const [unassignModal, SetunassignModal] = useState(false);
   const [completed, SetCompleted] = useState(false);
@@ -44,53 +44,13 @@ const RequestDetails = () => {
   const [auth, setAuth] = useAuth();
   const [price, SetPrice] = useState(null);
   const [comment, SetComment] = useState("");
-
   const [stars, setValue] = React.useState(2);
   const [hover, setHover] = React.useState(-1);
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 400,
-    bgcolor: "background.paper",
-    border: "2px solid #000",
-    boxShadow: 24,
-    p: 4,
-  };
-  const labels = {
-    1: "Very Poor 😭",
-
-    2: "Poor 🥲",
-
-    3: "Ok 🥱",
-
-    4: "Good👍",
-
-    5: "Excellent 😍",
-  };
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
   }
-  async function GetData() {
-    try {
-      setLoading(true);
-      const info = await GetRequestData(rid);
-      if (info.success) {
-        setData(info.requestdetails);
-        setImageUrl(
-          `http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`
-        );
-      } else {
-        toast.error(info.message);
-      }
-    } catch (error) {
-      toast.error("Please try again");
-    } finally {
-      setLoading(false);
-    }
-  }
+
   async function HandleCompleteRequest(wid) {
     try {
       const uid = auth?.user?._id;
@@ -171,6 +131,27 @@ const RequestDetails = () => {
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
+async function GetData() {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        `http://localhost:8000/api/v1/request/GetSingleUserRequest/${rid}`
+      );
+      const info = await response.json()
+      if (info.success) {
+        setData(info.requestdetails);
+        setImageUrl(
+          `http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`
+        );
+      } else {
+        toast.error(info.message);
+      }
+    } catch (error) {
+      toast.error("Please try again");
+    } finally {
+      setLoading(false);
+    }
+  }
   async function UnassignWorker(e, wid) {
     e.preventDefault();
     if (!description || description.length < 30) {
@@ -194,19 +175,20 @@ const RequestDetails = () => {
       GetData();
     }
   }
+
   const handleChange = (event) => {
     if (event.target.value.length <= 100) {
       setDescription(event.target.value);
     }
   };
+
   const handleCommentChange = (event) => {
     if (event.target.value.length <= 200) {
       SetComment(event.target.value);
     }
   };
-  useEffect(() => {
-    GetData();
-  }, []);
+
+ 
 
   return (
     <div className="flex flex-col items-center justify-center mb-10">
@@ -315,7 +297,11 @@ const RequestDetails = () => {
                       Assigned to :
                     </span>
                     <div className="text-lg flex justify-between items-center gap-5">
-                    <Link href={`/worker/worker_profile/${data.assignedTo?._id}`}> <span className="text-blue-500"> {data.assignedTo?.Name}</span></Link> 
+                      <Link
+                        href={`/worker/worker_profile/${data.assignedTo?._id}`}
+                      >
+                        <span> {data.assignedTo?.Name}</span>
+                      </Link>
                       {data.status != "Completed" ? (
                         <Button
                           onClick={() => {

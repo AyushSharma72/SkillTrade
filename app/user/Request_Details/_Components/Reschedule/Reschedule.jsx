@@ -7,20 +7,20 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import UpdateRequest from "../_FetchFunction/EditRequest";
+import UpdateRequest from "../../_FetchFunction/EditRequest";
 import { useParams } from "next/navigation";
-import reschedule from "../../../assests/reschedule.svg";
+import reschedule from "../../../../assests/reschedule.svg";
 import Image from "next/image";
-import GetRequestData from "../_FetchFunction/GetRequestData";
-import completedimage from "../../../assests/requestcompletedimage.svg";
-const Reschedule = () => {
+import completedimage from "../../../../assests/requestcompletedimage.svg";
+
+const Reschedule = ({ intialData }) => {
   const [loading, setLoading] = useState(false);
   const minDate = new Date();
-  const [date, setdate] = useState("");
-  const [time, settime] = useState("");
-  const [address, setAddress] = useState("");
-  const [pincode, Setpincode] = useState("");
-  const [status, SetStatus] = useState(null);
+  const [date, setdate] = useState(intialData.date);
+  const [time, settime] = useState(intialData.time);
+  const [address, setAddress] = useState(intialData.location);
+  const [pincode, Setpincode] = useState(intialData.pincode);
+  const [status, SetStatus] = useState(intialData.status);
   const { rid } = useParams();
 
   async function Update(e) {
@@ -49,30 +49,6 @@ const Reschedule = () => {
     }
   }
 
-  async function GetData() {
-    try {
-      setLoading(true);
-      const info = await GetRequestData(rid);
-
-      if (info.success) {
-        setdate(info.requestdetails.date);
-        settime(info.requestdetails.time);
-        setAddress(info.requestdetails.location);
-        Setpincode(info.requestdetails.pincode);
-        SetStatus(info.requestdetails.status);
-      } else {
-        toast.error(info.message);
-      }
-    } catch (error) {
-      toast.error("Please try again");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    GetData();
-  }, []);
 
   return (
     <>

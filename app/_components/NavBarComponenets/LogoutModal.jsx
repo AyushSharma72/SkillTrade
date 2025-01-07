@@ -4,19 +4,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  borderRadius: "8px",
-  boxShadow: 24,
-  p: 4,
-};
+import {style} from "../../_Arrays/Arrays"
 
 const LogoutModal = ({ modalState, onClose }) => {
   const router = useRouter();

@@ -98,10 +98,10 @@ async function GetUserRequest(req, resp) {
 
     // Fetch the requests for the current page
     const requests = await RequestModal.find({ user: id })
-      .select("-image")
+      .select("service location date status user")
       .limit(5)
       .skip((page - 1) * 5)
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }); 
 
     if (requests && requests.length) {
       return resp.status(200).send({

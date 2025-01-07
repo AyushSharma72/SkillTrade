@@ -34,8 +34,6 @@ import {
 } from "@/components/ui/select";
 import { TbFilterSearch } from "react-icons/tb";
 
-
-
 function ViewRequest() {
   const [auth, setauth] = useAuth();
   const [data, setdata] = useState([]);
@@ -299,11 +297,23 @@ function ViewRequest() {
                           <Tag icon={<ClockCircleOutlined />} color="warning">
                             {data.status}
                           </Tag>
-                        ) : (
+                        ) : data.status === "Accepted" ? (
+                          <Tag icon={<CheckCircleOutlined />} color="blue">
+                            {data.status}
+                          </Tag>
+                        ) : data.status === "Assigned" ? (
                           <Tag icon={<CheckCircleOutlined />} color="success">
                             {data.status}
                           </Tag>
-                        )}
+                        ) : data.status === "Completed" ? (
+                          <Tag icon={<CheckCircleOutlined />} color="purple">
+                            {data.status}
+                          </Tag>
+                        ) : data.status === "Deleted" ? (
+                          <Tag icon={<CheckCircleOutlined />} color="red">
+                            {data.status}
+                          </Tag>
+                        ) : null}
                       </StyledTableCell>
                       <StyledTableCell align="center">
                         <Link href={`Request_Details/${data._id}`}>

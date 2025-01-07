@@ -117,20 +117,21 @@ const Userinfo = () => {
         <hr />
 
         {/* Image Upload Field */}
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2  ">
           <Image
             src={`http://localhost:8000/api/v1/users/GetUserImage/${auth?.user?._id}`}
-            className="object-cover rounded-md responsive-image"
+            className="object-cover w-[300px] h-[300px] responsive-image rounded-sm"
             alt="user image"
             width={200}
-            height={200}
+            height={100}
           />
-          <label className="font-medium">Profile photo</label>
+          <label className="font-medium w-full" >Profile photo</label>
           <Input
             type="file"
             accept="image/*"
             onChange={handleImageChange}
             size="md"
+            className="w-full"
           />
         </div>
 
