@@ -23,6 +23,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "depcheck": "^1.4.7",
+    "js-cookie": "^3.0.5",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.438.0",

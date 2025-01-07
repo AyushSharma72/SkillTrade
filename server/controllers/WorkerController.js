@@ -7,7 +7,7 @@ const fs = require("fs").promises;
 
 async function RegisterWorker(req, resp) {
   try {
-    const { Name, MobileNo, ServiceType, Password, Address, pincode } =
+    const { Name, MobileNo, ServiceType, Password, Address, pincode,Email } =
       req.body;
 
     if (
@@ -16,7 +16,8 @@ async function RegisterWorker(req, resp) {
       !ServiceType ||
       !Password ||
       !Address ||
-      !pincode
+      !pincode ||
+      !Email
     ) {
       return resp.status(400).send({
         success: false,
@@ -32,6 +33,14 @@ async function RegisterWorker(req, resp) {
         message: "Mobile number already exists, please login",
       });
     }
+      const WorkerEmailExists = await WorkerModal.findOne({ Email});
+      const userEmailExists = await UserModal.findOne({ Email });
+      if (WorkerEmailExists || userEmailExists) {
+        return resp.status(409).send({
+          success: false,
+          message: "Email Id already exists, please login",
+        });
+      }
 
     const hashedPassword = await bcrypt.hash(Password, 10);
 
@@ -42,6 +51,7 @@ async function RegisterWorker(req, resp) {
       Password: hashedPassword,
       Address,
       pincode,
+      Email,
     });
     await newWorker.save();
 

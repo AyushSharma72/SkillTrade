@@ -20,7 +20,7 @@ import {
 const WorkerRegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [serviceType, setServiceType] = useState(""); // To store the selected service type
+  const [serviceType, setServiceType] = useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -35,12 +35,12 @@ const WorkerRegisterForm = () => {
     const formData = new FormData(event.target);
 
     const Name = formData.get("Name");
+    const Email = formData.get("Email");
     const MobileNo = formData.get("MobileNumber");
     const Address = formData.get("Address");
     const Password = formData.get("Password");
     const pincode = formData.get("pincode");
 
-    // Ensure that the service type is selected
     if (!serviceType) {
       toast.error("Please select a service type");
       return;
@@ -57,6 +57,7 @@ const WorkerRegisterForm = () => {
           },
           body: JSON.stringify({
             Name,
+            Email,
             MobileNo,
             Address,
             Password,
@@ -83,7 +84,7 @@ const WorkerRegisterForm = () => {
   }
 
   return (
-    <div className="flex flex-col items-center ">
+    <div className="flex flex-col items-center mb-4">
       <Toaster />
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
@@ -98,7 +99,7 @@ const WorkerRegisterForm = () => {
       >
         <p className="font-bold text-2xl ">Create Worker Account</p>
         <TextField
-          id="standard-basic"
+          id="name"
           label="Name"
           variant="outlined"
           className="w-3/4"
@@ -107,7 +108,16 @@ const WorkerRegisterForm = () => {
           name="Name"
         />
         <TextField
-          id="standard-basic"
+          id="email"
+          label="Email"
+          variant="outlined"
+          className="w-3/4"
+          required
+          type="email"
+          name="Email"
+        />
+        <TextField
+          id="mobile"
           label="Mobile Number"
           variant="outlined"
           className="w-3/4"
@@ -117,7 +127,7 @@ const WorkerRegisterForm = () => {
           name="MobileNumber"
         />
         <TextField
-          id="standard-basic"
+          id="address"
           label="Full Address"
           variant="outlined"
           className="w-3/4"
@@ -126,7 +136,7 @@ const WorkerRegisterForm = () => {
           name="Address"
         />
         <TextField
-          id="standard-basic"
+          id="pincode"
           label="Area Pincode"
           variant="outlined"
           className="w-3/4"
@@ -135,7 +145,7 @@ const WorkerRegisterForm = () => {
           name="pincode"
         />
         <TextField
-          id="standard-password"
+          id="password"
           label="Password"
           variant="outlined"
           className="w-3/4"
@@ -179,7 +189,6 @@ const WorkerRegisterForm = () => {
             </SelectItem>
           </SelectContent>
         </Select>
-
         <Button>Register</Button>
       </form>
     </div>

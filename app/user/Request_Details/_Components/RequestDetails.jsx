@@ -26,6 +26,7 @@ import { Input } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
 import { CompleteRequest } from "../_FetchFunction/CompleteRequest";
 import { useAuth } from "@/app/_context/UserAuthContent";
+import Link from "next/link";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -314,7 +315,7 @@ const RequestDetails = () => {
                       Assigned to :
                     </span>
                     <div className="text-lg flex justify-between items-center gap-5">
-                      <span> {data.assignedTo?.Name}</span>
+                    <Link href={`/worker/worker_profile/${data.assignedTo?._id}`}> <span className="text-blue-500"> {data.assignedTo?.Name}</span></Link> 
                       {data.status != "Completed" ? (
                         <Button
                           onClick={() => {
