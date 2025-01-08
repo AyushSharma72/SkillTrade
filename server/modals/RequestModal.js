@@ -84,6 +84,9 @@ const RequestSchema = new mongoose.Schema(
     completedAt: {
       type: Date,
     },
+    deletedAt: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

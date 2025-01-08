@@ -328,7 +328,7 @@ async function GetWhoAcceptedRequest(req, resp) {
     const requests = await RequestModal.find(
       {
         _id: rid,
-        status: { $in: ["Accepted", "Assigned", "Completed"] },
+        status: { $in: ["Accepted", "Assigned", "Completed","Deleted"] },
       },
       "acceptedBy"
     )
@@ -358,23 +358,29 @@ async function GetWhoAcceptedRequest(req, resp) {
 async function DeleteRequest(req, resp) {
   try {
     const { rid } = req.params;
-    const response = await RequestModal.deleteOne({ _id: rid });
-    if (response.deletedCount > 0) {
+    const response = await RequestModal.findOne({ _id: rid });
+
+    if (response) {
+      
+      response.status = "Deleted";
+      response.deletedAt = new Date();
+      await response.save();
+
       resp.status(200).send({
         success: true,
-        message: "Request deleted",
+        message: "Request deleted successfully",
       });
     } else {
       resp.status(400).send({
         success: false,
-        message: "Request not found ",
+        message: "Request not found",
       });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     resp.status(500).send({
       success: false,
-      message: "internal server error",
+      message: "Internal server error",
     });
   }
 }

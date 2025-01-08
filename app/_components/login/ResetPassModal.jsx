@@ -12,6 +12,7 @@ const ResetPassModal = ({ handleClose, email }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
@@ -48,6 +49,7 @@ const ResetPassModal = ({ handleClose, email }) => {
       const result = await response.json();
 
       if (response.ok) {
+        ResetSuccess(true);
         toast.success(result.message || "Password reset successful!");
       } else {
         toast.error(result.message || "Failed to reset password.");
@@ -131,6 +133,7 @@ const ResetPassModal = ({ handleClose, email }) => {
           Cancel
         </Button>
       </div>
+
     </Box>
   );
 };

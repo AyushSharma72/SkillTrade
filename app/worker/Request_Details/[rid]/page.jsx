@@ -19,6 +19,7 @@ import ModalComponent from "../../../_components/Modal";
 import ReportModal from "./../_Modals/ReportModal";
 import AcceptRequest from "../_Modals/AcceptRequest";
 import Link from "next/link";
+import Alert from "@mui/material/Alert";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -56,6 +57,9 @@ const RequestDetails = () => {
     <div className="flex flex-col items-center justify-center mb-10 sm:mt-0 mt-20">
       <Toaster />
       <p className="text-2xl font-bold mt-2">Request Details</p>
+      <Alert severity="error" className=" w-full">
+        {data?.status === "Deleted" ? "This request was deleted " : null}
+      </Alert>
       {loading ? (
         <div className="h-[600px] w-full flex">
           <span className="m-auto flex  gap-2 text-2xl items-center font-bold">
@@ -65,7 +69,7 @@ const RequestDetails = () => {
       ) : (
         <div className="w-full">
           {data && (
-            <div className="flex flex-col items-center xl:flex-row justify-around  m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
+            <div className="flex flex-col items-center xl:flex-row justify-around  m-auto w-full lg:w-full xl:justify-around p-2">
               <div className="flex flex-col gap-2 justify-center items-center xl:w-[40%]">
                 <Image
                   src={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
@@ -85,14 +89,16 @@ const RequestDetails = () => {
                   </span>
                   <p className="text-lg ">{data.service}</p>
                 </div>
-                <span
-                  className="absolute right-[1%] top-[1%] flex items-center gap-2 text-gray-500 cursor-pointer"
-                  onClick={handleOpen}
-                >
-                  <GoReport />
-                  Report
-                </span>
-
+                {data.status === "Deleted" ||
+                data.status === "Completed" ? null : (
+                  <span
+                    className="absolute right-[1%] top-[1%] flex items-center gap-2 text-gray-500 cursor-pointer"
+                    onClick={handleOpen}
+                  >
+                    <GoReport />
+                    Report
+                  </span>
+                )}
                 <hr />
                 <div className="flex items-center  sm:justify-normal">
                   <span className="flex items-center gap-2 font-bold text-lg md:w-[30%] ">
@@ -141,18 +147,26 @@ const RequestDetails = () => {
                   </span>
                   <div className="text-lg text-center">
                     {data.status === "Pending" ? (
-                      <Flex gap="4px 0" wrap>
-                        <Tag icon={<ClockCircleOutlined />} color="warning">
-                          {data.status}
-                        </Tag>
-                      </Flex>
-                    ) : (
-                      <Flex gap="4px 0" wrap>
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                          {data.status}
-                        </Tag>
-                      </Flex>
-                    )}
+                      <Tag icon={<ClockCircleOutlined />} color="warning">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Accepted" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="blue">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Assigned" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="success">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Completed" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="purple">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Deleted" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="red">
+                        {data.status}
+                      </Tag>
+                    ) : null}
                   </div>
                 </div>
                 <hr />
@@ -167,7 +181,8 @@ const RequestDetails = () => {
                   </p>
                 </div>
                 <div className="flex gap-2 justify-center items-center">
-                  {data.status === "Completed" ? null : (
+                  {data.status === "Completed" ||
+                  data.status === "Deleted" ? null : (
                     <Button onClick={handleOpen2} className="w-1/2">
                       Accept Request
                     </Button>
@@ -177,23 +192,23 @@ const RequestDetails = () => {
                     <Button className="w-full">Back</Button>
                   </Link>
                 </div>
-                {/* report modal */}
-                <ModalComponent
-                  open={open}
-                  handleClose={handleClose}
-                  ModalType={ReportModal}
-                  id={rid}
-                />
-                {/* Accept request modal */}
-                <ModalComponent
-                  open={open2}
-                  handleClose={handleClose2}
-                  ModalType={AcceptRequest}
-                  id={rid}
-                />
               </div>
             </div>
           )}
+          {/* report modal */}
+          <ModalComponent
+            open={open}
+            handleClose={handleClose}
+            ModalType={ReportModal}
+            id={rid}
+          />
+          {/* Accept request modal */}
+          <ModalComponent
+            open={open2}
+            handleClose={handleClose2}
+            ModalType={AcceptRequest}
+            id={rid}
+          />
         </div>
       )}
     </div>

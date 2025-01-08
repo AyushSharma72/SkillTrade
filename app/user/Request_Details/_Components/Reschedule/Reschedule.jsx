@@ -49,13 +49,14 @@ const Reschedule = ({ intialData }) => {
     }
   }
 
-
   return (
     <>
-      {status === "Completed" ? (
+      {status === "Completed" || status === "Deleted" ? (
         <div className="flex flex-col justify-center items-center w-full ">
           <p className="text-2xl font-semibold mt-10 text-center">
-            You cannot reschedule because this request was completed
+            {`You cannot reschedule because this request was ${
+              status === "Completed" ? "completed" : "deleted"
+            }`}
           </p>
           <Image
             src={completedimage}

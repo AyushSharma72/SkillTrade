@@ -275,6 +275,7 @@ const LoginForm = () => {
                   toast.error("Enter email");
                 }
               }}
+              disabled={SendingOtp}
             >
               {SendingOtp ? "Generating..." : " Generate OTP"}
             </Button>

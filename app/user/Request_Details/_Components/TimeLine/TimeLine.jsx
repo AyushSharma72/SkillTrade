@@ -28,6 +28,7 @@ const TimeLine = ({ intialData, loadingstate }) => {
         </Box>
       ) : (
         <Timeline position="alternate">
+          {/* Created */}
           <TimelineItem>
             <TimelineSeparator>
               <TimelineConnector />
@@ -51,6 +52,7 @@ const TimeLine = ({ intialData, loadingstate }) => {
             </TimelineContent>
           </TimelineItem>
 
+          {/* pending  */}
           <TimelineItem>
             <TimelineSeparator>
               <TimelineConnector />
@@ -71,7 +73,9 @@ const TimeLine = ({ intialData, loadingstate }) => {
               </Typography>
             </TimelineContent>
           </TimelineItem>
-          {data.status === "Pending" ? null : (
+
+          {/* Accepted  */}
+          {data.status !== "Pending" && data.acceptedBy.length > 0 ? (
             <TimelineItem>
               <TimelineSeparator>
                 <TimelineConnector />
@@ -94,8 +98,10 @@ const TimeLine = ({ intialData, loadingstate }) => {
                 </Typography>
               </TimelineContent>
             </TimelineItem>
-          )}
-          {data.status === "Assigned" || data.status == "Completed" ? (
+          ) : null}
+
+          {/* Assigned  */}
+          {data.confirmedAt ? (
             <TimelineItem>
               <TimelineSeparator>
                 <TimelineConnector />
@@ -117,6 +123,8 @@ const TimeLine = ({ intialData, loadingstate }) => {
               </TimelineContent>
             </TimelineItem>
           ) : null}
+
+          {/* completed  */}
           {data.status == "Completed" ? (
             <TimelineItem>
               <TimelineSeparator>
@@ -134,6 +142,30 @@ const TimeLine = ({ intialData, loadingstate }) => {
                 <Typography>
                   {data.completedAt
                     ? moment(data.completedAt).format("MMMM Do YYYY, h:mm A")
+                    : "No date available"}
+                </Typography>
+              </TimelineContent>
+            </TimelineItem>
+          ) : null}
+
+          {/* deleted  */}
+          {data.status == "Deleted" ? (
+            <TimelineItem>
+              <TimelineSeparator>
+                <TimelineConnector />
+                <TimelineDot color="error">
+                  <FaCheck />
+                </TimelineDot>
+                <TimelineConnector sx={{ bgcolor: "secondary.main" }} />
+              </TimelineSeparator>
+              <TimelineContent sx={{ py: "12px", px: 2 }}>
+                <Typography variant="h6" component="span">
+                  Deleted
+                </Typography>
+                <Typography>The request was deleted by you </Typography>
+                <Typography>
+                  {data.deletedAt
+                    ? moment(data.deletedAt).format("MMMM Do YYYY, h:mm A")
                     : "No date available"}
                 </Typography>
               </TimelineContent>

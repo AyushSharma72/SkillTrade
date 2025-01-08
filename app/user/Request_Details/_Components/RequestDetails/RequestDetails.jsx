@@ -1,5 +1,5 @@
 "use client";
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { useParams } from "next/navigation";
 import { Flex, Tag, Image } from "antd";
 import { useRouter } from "next/navigation";
@@ -25,8 +25,8 @@ import { Input } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
 import { CompleteRequest } from "../../_FetchFunction/CompleteRequest";
 import { useAuth } from "@/app/_context/UserAuthContent";
-import {labels,style} from "../../../../_Arrays/Arrays"
-import Link from "next/link"
+import { labels, style } from "../../../../_Arrays/Arrays";
+import Link from "next/link";
 
 const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [data, setData] = useState(initialData);
@@ -131,13 +131,13 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const handleImageChange = (e) => {
     setImage(e.target.files[0]);
   };
-async function GetData() {
+  async function GetData() {
     try {
       setLoading(true);
       const response = await fetch(
         `http://localhost:8000/api/v1/request/GetSingleUserRequest/${rid}`
       );
-      const info = await response.json()
+      const info = await response.json();
       if (info.success) {
         setData(info.requestdetails);
         setImageUrl(
@@ -188,8 +188,6 @@ async function GetData() {
     }
   };
 
- 
-
   return (
     <div className="flex flex-col items-center justify-center mb-10">
       <Toaster /> <p className="text-2xl font-bold">Request Details</p>
@@ -211,13 +209,15 @@ async function GetData() {
                   onSubmit={updateRequestImage}
                   className="flex justify-center items-center flex-col sm:flex-row"
                 >
-                  <input
+                 {data.status !== "Completed" && data.status !== "Deleted" ?<> <input
                     type="file"
                     id="image"
                     accept="image/*"
                     onChange={handleImageChange}
                   />
                   <Button type="submit">Update Photo</Button>
+                  </>:null
+                 }
                 </form>
                 <p className="font-bold text-xl text-center">
                   {data.description}
@@ -268,25 +268,33 @@ async function GetData() {
                   </p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal">
+                <div className="flex items-center sm:justify-normal"> 
                   <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <SiStatuspage />
                     Status :
                   </span>
                   <div className="text-lg">
                     {data.status === "Pending" ? (
-                      <Flex gap="4px 0" wrap>
-                        <Tag icon={<ClockCircleOutlined />} color="warning">
-                          {data.status}
-                        </Tag>
-                      </Flex>
-                    ) : (
-                      <Flex gap="4px 0" wrap>
-                        <Tag icon={<CheckCircleOutlined />} color="success">
-                          {data.status}
-                        </Tag>
-                      </Flex>
-                    )}
+                      <Tag icon={<ClockCircleOutlined />} color="warning">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Accepted" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="blue">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Assigned" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="success">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Completed" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="purple">
+                        {data.status}
+                      </Tag>
+                    ) : data.status === "Deleted" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="red">
+                        {data.status}
+                      </Tag>
+                    ) : null}
                   </div>
                 </div>
                 <hr />
@@ -314,7 +322,7 @@ async function GetData() {
                     </div>
                   </div>
                 ) : null}
-                {data.status != "Completed" ? (
+                {data.status !== "Completed" && data.status !== "Deleted" ? (
                   <div className="flex gap-1 justify-around">
                     {data.status === "Pending" ? null : (
                       <Button
