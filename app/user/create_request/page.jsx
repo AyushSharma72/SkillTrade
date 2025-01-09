@@ -107,12 +107,12 @@ const CreateRequest = () => {
           const position = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
               enableHighAccuracy: true,
-              timeout: 10000, // Timeout after 10 seconds
+              timeout: 10000, 
             });
           });
 
           const { latitude, longitude } = position.coords;
-          setCoordinates({ latitude, longitude }); // Save coordinates
+          setCoordinates({ latitude, longitude }); 
 
           const address = await getHumanReadableAddress(latitude, longitude);
           setCustomLocation(address);

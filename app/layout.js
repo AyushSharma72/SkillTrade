@@ -1,7 +1,7 @@
 import "./globals.css";
 import Navbar from "./_components/Navbar";
 import { AuthProvider } from "./_context/UserAuthContent";
-
+import GoogleTranslator from "./_components/GoogleTranslator";
 export const metadata = {
   title: "Skill Trade",
   description:
@@ -14,8 +14,10 @@ export default function RootLayout({ children }) {
       <body>
         <AuthProvider>
           <Navbar />
+
           {children}
         </AuthProvider>
+        <GoogleTranslator />
       </body>
     </html>
   );

@@ -24,7 +24,7 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
-import {StyledTableCell,StyledTableRow} from "../../../_Arrays/Arrays"
+import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
 // import { style } from "../../../_Arrays/Arrays";
 
 function AcceptedBy() {
@@ -165,7 +165,8 @@ function AcceptedBy() {
                         )}
                       </StyledTableCell>
                       <StyledTableCell className="!flex justify-center gap-2">
-                        {request.assignedTo ? null : (
+                        {request.assignedTo ? null : data[0].status ===
+                          "Deleted" ? null : (
                           <Button
                             title="assign this job to this worker"
                             onClick={handleOpen}
@@ -190,24 +191,27 @@ function AcceptedBy() {
                         >
                           <Box sx={style} className="flex flex-col gap-2 ">
                             <p className="text-center">
-                             Confirm Request Assignment
+                              Confirm Request Assignment
                             </p>
                             <p className="text-center">
                               Please check all the details before assigning the
                               task to the worker !{" "}
                             </p>
 
-                            <Button
-                              title="assign this job to this worker"
-                              onClick={(e) => {
-                                AssignTask(e, accepted.worker._id);
-                                if (!loading2) {
-                                  handleClose();
-                                }
-                              }}
-                            >
-                              Assign
-                            </Button>
+                            {data[0].status === "Deleted" ||
+                            data[0].status === "Completed" ? null : (
+                              <Button
+                                title="assign this job to this worker"
+                                onClick={(e) => {
+                                  AssignTask(e, accepted.worker._id);
+                                  if (!loading2) {
+                                    handleClose();
+                                  }
+                                }}
+                              >
+                                Assign
+                              </Button>
+                            )}
                             <Button onClick={handleClose}>Close</Button>
                           </Box>
                         </Modal>
@@ -287,13 +291,3 @@ function AcceptedBy() {
 }
 
 export default AcceptedBy;
-
-
-
-
-
-
-
-
- 
-
