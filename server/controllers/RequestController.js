@@ -215,12 +215,12 @@ async function GetAllRequests(req, resp) {
     const pagenumber = req.params.pagenumber;
 
     const totalrequests = await RequestModal.countDocuments({
-      status: { $in: ["Accepted", "Assigned"] },
+      status: { $in: ["Accepted", "Assigned","Pending"] },
     });
     const requests = await RequestModal.find({
-      status: { $in: ["Accepted", "Assigned"] },
+      status: { $in: ["Accepted", "Assigned", "Pending"] },
     })
-      .select("service location date status user")
+      .select("service location date status user coordinates")
       .skip((pagenumber - 1) * 5)
       .limit(5);
 

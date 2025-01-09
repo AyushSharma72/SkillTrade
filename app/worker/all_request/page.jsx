@@ -50,6 +50,52 @@ function ViewRequest() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [WorkerCoordinates, SetWorkerCoordinates] = useState({
+    latitude: null,
+    longitude: null,
+  });
+
+  //  get location
+  useEffect(() => {
+    // Prompt user for location and save coordinates to localStorage
+    const getUserLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const { latitude, longitude } = position.coords;
+
+            // Save to localStorage
+            localStorage.setItem(
+              "userCoordinates",
+              JSON.stringify({ latitude, longitude })
+            );
+          },
+          (error) => {
+            console.error("Error fetching location:", error.message);
+            toast.error(
+              "Unable to fetch location. Please enable location services."
+            );
+          }
+        );
+      } else {
+        toast.error("Geolocation is not supported by your browser.");
+      }
+    };
+
+    getUserLocation();
+    const userCoordinates = JSON.parse(localStorage.getItem("userCoordinates"));
+    if (userCoordinates) {
+      const latitude = userCoordinates.latitude;
+      const longitude = userCoordinates.longitude;
+      SetWorkerCoordinates({
+        latitude: latitude,
+        longitude: longitude,
+      });
+    } else {
+      console.log("No user coordinates found in localStorage.");
+    }
+  }, []);
+
   const handleServiceTypeChange = (value) => {
     setServiceType(value);
   };
@@ -76,6 +122,27 @@ function ViewRequest() {
       setloading(false);
     }
   }
+
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const toRadians = (degrees) => (degrees * Math.PI) / 180;
+
+    const R = 6371; // Radius of the Earth in kilometers
+    const dLat = toRadians(lat2 - lat1);
+    const dLon = toRadians(lon2 - lon1);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    const distance = R * c; // Distance in kilometers
+    return distance.toFixed(2);
+  }
+
   const checkCity = async () => {
     try {
       const response = await fetch(
@@ -269,6 +336,7 @@ function ViewRequest() {
                       Visiting Date
                     </StyledTableCell>
                     <StyledTableCell align="center">Status</StyledTableCell>
+                    <StyledTableCell align="center">Distance</StyledTableCell>
                     <StyledTableCell align="center">Action</StyledTableCell>
                   </TableRow>
                 </TableHead>
@@ -316,8 +384,20 @@ function ViewRequest() {
                         ) : null}
                       </StyledTableCell>
                       <StyledTableCell align="center">
+                        {WorkerCoordinates.latitude &&
+                        data.coordinates?.coordinates[1]
+                          ? `${calculateDistance(
+                              WorkerCoordinates.latitude,
+                              WorkerCoordinates.longitude,
+                              data.coordinates?.coordinates[1],
+                              data.coordinates?.coordinates[0]
+                            )} km away`
+                          : <span className="text-red-500">not availiable</span>}{" "}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
                         <Link href={`Request_Details/${data._id}`}>
                           <Button>View</Button>
+                         
                         </Link>
                       </StyledTableCell>
                     </StyledTableRow>
