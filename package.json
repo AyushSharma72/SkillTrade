@@ -24,6 +24,8 @@
     "clsx": "^2.1.1",
     "depcheck": "^1.4.7",
     "js-cookie": "^3.0.5",
+    "leaflet": "^1.9.4",
+    "leaflet-routing-machine": "^3.2.12",
     "lottie-react": "^2.4.0",
     "lottie-web": "^5.12.2",
     "lucide-react": "^0.438.0",

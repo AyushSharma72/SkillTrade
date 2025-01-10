@@ -11,6 +11,7 @@ const LogoutModal = ({ modalState, onClose }) => {
 
   const handleLogout = () => {
     localStorage.removeItem("auth");
+     localStorage.removeItem("userCoordinates");
     router.push("/login");
   };
 

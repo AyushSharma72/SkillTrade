@@ -24,6 +24,8 @@ import Checkbox from "@mui/material/Checkbox";
 import SmallScreennmodal from "./SmallScreenmodal";
 import Paper from "@mui/material/Paper";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
+import { calculateDistance } from "../../_Arrays/Arrays";
+import Alert from "@mui/material/Alert";
 
 import {
   Select,
@@ -32,6 +34,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { TbFilterSearch } from "react-icons/tb";
 
 function ViewRequest() {
@@ -46,7 +49,6 @@ function ViewRequest() {
     yourCity: false,
   });
   const [Disabled, setDisabled] = useState(null);
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -54,6 +56,7 @@ function ViewRequest() {
     latitude: null,
     longitude: null,
   });
+  const [alertshow, Setalertshow] = useState(true);
 
   //  get location
   useEffect(() => {
@@ -72,9 +75,6 @@ function ViewRequest() {
           },
           (error) => {
             console.error("Error fetching location:", error.message);
-            toast.error(
-              "Unable to fetch location. Please enable location services."
-            );
           }
         );
       } else {
@@ -99,6 +99,7 @@ function ViewRequest() {
   const handleServiceTypeChange = (value) => {
     setServiceType(value);
   };
+
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
   };
@@ -121,26 +122,6 @@ function ViewRequest() {
     } finally {
       setloading(false);
     }
-  }
-
-  function calculateDistance(lat1, lon1, lat2, lon2) {
-    const toRadians = (degrees) => (degrees * Math.PI) / 180;
-
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = toRadians(lat2 - lat1);
-    const dLon = toRadians(lon2 - lon1);
-
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRadians(lat1)) *
-        Math.cos(toRadians(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const distance = R * c; // Distance in kilometers
-    return distance.toFixed(2);
   }
 
   const checkCity = async () => {
@@ -324,6 +305,28 @@ function ViewRequest() {
             <p className="text-3xl text-center sm:mt-3 mt-10 font-bold">
               All Requests
             </p>
+            {WorkerCoordinates.latitude && alertshow ? (
+              <Alert
+                severity="info"
+                className="mt-3"
+                onClose={() => {
+                  Setalertshow(false);
+                }}
+              >
+                You are sharing your location for better search results !
+              </Alert>
+            ) : alertshow ? (
+              <Alert
+                severity="info"
+                className="mt-3"
+                onClose={() => {
+                  Setalertshow(false);
+                }}
+              >
+                Allow location in browser site settings to display distance of
+                the request location !
+              </Alert>
+            ) : null}
             <TableContainer className="cursor-pointer mt-2 " component={Paper}>
               <Table aria-label="customized table" sx={{ minWidth: 500 }}>
                 <TableHead>
@@ -343,6 +346,7 @@ function ViewRequest() {
                 <TableBody>
                   {data.map((data) => (
                     <StyledTableRow key={data._id}>
+                      {/* service type  */}
                       <StyledTableCell
                         component="th"
                         scope="row"
@@ -350,9 +354,11 @@ function ViewRequest() {
                       >
                         {data.service}
                       </StyledTableCell>
+                      {/* Location */}
                       <StyledTableCell align="center">
                         {data.location}
                       </StyledTableCell>
+                      {/* Visiting Date */}
                       <StyledTableCell align="center">
                         <div className="flex flex-col">
                           <span className="font-bold">
@@ -360,6 +366,7 @@ function ViewRequest() {
                           </span>
                         </div>
                       </StyledTableCell>
+                      {/* Status */}
                       <StyledTableCell align="center">
                         {data.status === "Pending" ? (
                           <Tag icon={<ClockCircleOutlined />} color="warning">
@@ -383,21 +390,24 @@ function ViewRequest() {
                           </Tag>
                         ) : null}
                       </StyledTableCell>
+                      {/* Distance */}
                       <StyledTableCell align="center">
                         {WorkerCoordinates.latitude &&
-                        data.coordinates?.coordinates[1]
-                          ? `${calculateDistance(
-                              WorkerCoordinates.latitude,
-                              WorkerCoordinates.longitude,
-                              data.coordinates?.coordinates[1],
-                              data.coordinates?.coordinates[0]
-                            )} km away`
-                          : <span className="text-red-500">not availiable</span>}{" "}
+                        data.coordinates?.coordinates[1] ? (
+                          `${calculateDistance(
+                            WorkerCoordinates.latitude,
+                            WorkerCoordinates.longitude,
+                            data.coordinates?.coordinates[1],
+                            data.coordinates?.coordinates[0]
+                          )} km away`
+                        ) : (
+                          <span className="text-red-500">not availiable</span>
+                        )}{" "}
                       </StyledTableCell>
+                      {/* Action */}
                       <StyledTableCell align="center">
                         <Link href={`Request_Details/${data._id}`}>
                           <Button>View</Button>
-                         
                         </Link>
                       </StyledTableCell>
                     </StyledTableRow>
@@ -405,6 +415,7 @@ function ViewRequest() {
                 </TableBody>
               </Table>
             </TableContainer>
+
             {ServiceType ||
             checkedValues.nearBy ||
             checkedValues.yourCity ? null : (

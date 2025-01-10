@@ -2,6 +2,8 @@ import "./globals.css";
 import Navbar from "./_components/Navbar";
 import { AuthProvider } from "./_context/UserAuthContent";
 import GoogleTranslator from "./_components/GoogleTranslator";
+import "leaflet/dist/leaflet.css";
+
 export const metadata = {
   title: "Skill Trade",
   description:
