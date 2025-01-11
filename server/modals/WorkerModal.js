@@ -91,8 +91,9 @@ const WorkerSchema = mongoose.Schema(
       type: Number,
     },
     Verified: {
-      type: Boolean,
-      default: false,
+      type: String,
+      enum: ["Pending", "Verified", "Unverified"],
+      default: "Unverified",
     },
     VerifyId: {
       data: Buffer,

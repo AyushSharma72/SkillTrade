@@ -9,7 +9,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import { FaAddressCard } from "react-icons/fa";
 import { TbMapPinCode } from "react-icons/tb";
 import { PiCityFill } from "react-icons/pi";
-import { FaCodePullRequest } from "react-icons/fa6";
+import { SiTicktick } from "react-icons/si";
 import { FaCheckCircle } from "react-icons/fa";
 import { IoIosTime } from "react-icons/io";
 import { FaEdit } from "react-icons/fa";
@@ -23,6 +23,7 @@ import Ratings from "./_Components/Ratings";
 import { useParams } from "next/navigation";
 import Lottie from "react-lottie";
 import animationData from "../../assests/loading.json";
+import Alert from "@mui/material/Alert";
 
 const WorkerProfileClient = ({ IntialWorkerData }) => {
   const [open, setOpen] = useState(false);
@@ -86,14 +87,29 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
   return (
     <div className="flex flex-col items-center   bg-gray-200 ">
       <p className="font-semibold text-3xl sm:mt-2 mt-20"> WorkerProfile</p>
-
-      <div className="flex justify-center md:gap-5 items-center md:items-start p-3 mt-5 w-full md:flex-row flex-col  gap-5">
+      {WorkerData?.Verified === "Unverified" ? (
+        <Alert severity="warning" className="w-[73%] mt-5">
+          Your profile is unverified add verification id (AddharCard Or PanCard)
+          by editing you profile.
+        </Alert>
+      ) : WorkerData?.Verified === "Pending" ? (
+        <Alert severity="warning" className="w-[73%] mt-5">
+          Profile verification is currently pending with the administrator
+        </Alert>
+      ) : null}
+      <div className="flex justify-center md:gap-5 items-center md:items-start p-3 w-full md:flex-row flex-col mt-5  gap-5">
         {/* left div  */}
         <div className="xl:w-[20%] lg:w-[25%] sm:w-1/2 w-[90%] ">
           {" "}
           <Badge.Ribbon
-            text={`${WorkerData.verfied ? "Verified" : "Unverified"}`}
-            color={`${WorkerData.verfied ? "" : "red"}`}
+            text={WorkerData.Verified}
+            color={
+              WorkerData.Verified === "Unverified"
+                ? "red"
+                : WorkerData.Verified === "Pending"
+                ? "orange"
+                : null
+            }
             placement="start"
           >
             {auth.user.role === 1 ? (
@@ -203,7 +219,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
               onClick={handleOpen2}
             />
           ) : null}
-          <hr className="mt-4" />
+          <hr className="mt-2" />
           <div className="flex ">
             <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
               <FaCircleUser className="text-xl" />
@@ -256,10 +272,24 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
           <hr />
           <div className="flex ">
             <span className="md:w-[35%] w-1/2 flex gap-2 items-center font-bold">
-              <FaSquarePhone className="text-xl" />
-              Mobile No
+              <SiTicktick className="text-xl" />
+              Profile verification
             </span>
-            <p className="text-center"> {WorkerData?.MobileNo}</p>
+
+            <p
+              className={`text-center ${
+                WorkerData?.Verified === "Unverified"
+                  ? "text-red-600"
+                  : WorkerData?.Verified === "Pending"
+                  ? "text-yellow-600"
+                  : WorkerData?.Verified === "Verified"
+                  ? "text-green-500"
+                  : null
+              } `}
+            >
+              {" "}
+              {WorkerData?.Verified}
+            </p>
           </div>
 
           {/* Completed Request */}

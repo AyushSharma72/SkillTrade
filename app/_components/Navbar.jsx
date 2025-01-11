@@ -105,7 +105,14 @@ const Navbar = () => {
               >
                 Home
               </Link>{" "}
-             
+              <Link
+                href="/worker/all_request"
+                className={`${
+                  pathname === "/worker/all_request" ? "border-b-2 " : ""
+                }`}
+              >
+                All Request
+              </Link>
               <WorkerMenu />
             </>
           ) : auth?.user?.role == 2 ? (
@@ -116,7 +123,6 @@ const Navbar = () => {
               >
                 Home
               </Link>{" "}
-             
               <AdminMenu />
             </>
           ) : (

@@ -7,7 +7,7 @@ const fs = require("fs").promises;
 
 async function RegisterWorker(req, resp) {
   try {
-    const { Name, MobileNo, ServiceType, Password, Address, pincode,Email } =
+    const { Name, MobileNo, ServiceType, Password, Address, pincode, Email } =
       req.body;
 
     if (
@@ -33,14 +33,14 @@ async function RegisterWorker(req, resp) {
         message: "Mobile number already exists, please login",
       });
     }
-      const WorkerEmailExists = await WorkerModal.findOne({ Email});
-      const userEmailExists = await UserModal.findOne({ Email });
-      if (WorkerEmailExists || userEmailExists) {
-        return resp.status(409).send({
-          success: false,
-          message: "Email Id already exists, please login",
-        });
-      }
+    const WorkerEmailExists = await WorkerModal.findOne({ Email });
+    const userEmailExists = await UserModal.findOne({ Email });
+    if (WorkerEmailExists || userEmailExists) {
+      return resp.status(409).send({
+        success: false,
+        message: "Email Id already exists, please login",
+      });
+    }
 
     const hashedPassword = await bcrypt.hash(Password, 10);
 
@@ -290,7 +290,7 @@ async function UpdateProfile(req, resp) {
   } else {
     console.log("No verification image exists");
   }
-
+  updatedWorker.Verified = "Pending";
   await updatedWorker.save();
 
   return resp.status(200).send({
@@ -405,6 +405,7 @@ const GetWorkerAssignedRequest = async (req, resp) => {
       .json({ success: false, error: "Internal server error" });
   }
 };
+
 module.exports = {
   RegisterWorker,
   CheckCity,
