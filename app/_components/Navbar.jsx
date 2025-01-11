@@ -1,5 +1,5 @@
 "use client";
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -24,6 +24,7 @@ import { useAuth } from "../_context/UserAuthContent";
 import Menu from "../_components/NavBarComponenets/menu";
 import WorkerMenu from "./NavBarComponenets/WorkerMenu";
 const drawerWidth = 240;
+import AdminMenu from "./NavBarComponenets/AdminMenu";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -33,7 +34,7 @@ const AppBar = styled(MuiAppBar, {
     duration: theme.transitions.duration.leavingScreen,
   }),
   variants: [
-    {         
+    {
       props: ({ open }) => open,
       style: {
         width: `calc(100% - ${drawerWidth}px)`,
@@ -69,10 +70,7 @@ const Navbar = () => {
     setOpen(false);
   };
 
- 
-  useEffect(() => {
-    
-  }, [auth]); // Watch for changes to the `auth` state
+  useEffect(() => {}, [auth]); // Watch for changes to the `auth` state
 
   const pathname = usePathname();
   return (
@@ -107,15 +105,19 @@ const Navbar = () => {
               >
                 Home
               </Link>{" "}
-              <Link
-                href="/worker/all_request"
-                className={`${
-                  pathname === "/worker/all_request" ? "border-b-2 " : ""
-                }`}
-              >
-                All Requests
-              </Link>
+             
               <WorkerMenu />
+            </>
+          ) : auth?.user?.role == 2 ? (
+            <>
+              <Link
+                href="/"
+                className={`${pathname === "/" ? "border-b-2 " : ""}`}
+              >
+                Home
+              </Link>{" "}
+             
+              <AdminMenu />
             </>
           ) : (
             <>

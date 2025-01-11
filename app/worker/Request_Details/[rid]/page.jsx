@@ -21,7 +21,6 @@ import Link from "next/link";
 import Alert from "@mui/material/Alert";
 import { calculateDistance } from "../../../_Arrays/Arrays";
 
-
 const RequestDetails = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -67,7 +66,6 @@ const RequestDetails = () => {
       console.log("No user coordinates found in localStorage.");
     }
   }, []);
-
 
   return (
     <div className="flex flex-col items-center justify-center mb-10 sm:mt-0 mt-20">
@@ -116,14 +114,19 @@ const RequestDetails = () => {
                     {data.location}{" "}
                     {WorkerCoordinates.latitude &&
                     data.coordinates?.coordinates[1] ? (
-                      <span className="font-bold text-blue-500">
+                      <a
+                        href={`https://www.google.com/maps?q=${data.coordinates?.coordinates[1]},${data.coordinates?.coordinates[0]}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-bold text-blue-500 underline"
+                      >
                         {`${calculateDistance(
                           WorkerCoordinates.latitude,
                           WorkerCoordinates.longitude,
                           data.coordinates?.coordinates[1],
                           data.coordinates?.coordinates[0]
                         )} km `}
-                      </span>
+                      </a>
                     ) : (
                       <span className="text-red-500 ml-2">not available</span>
                     )}
