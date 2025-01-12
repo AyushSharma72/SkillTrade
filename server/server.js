@@ -5,7 +5,7 @@ const ConnectDb = require("./dbconfig");
 const UserRoutes = require("./routes/UserRoutes");
 const WorkerRoutes = require("./routes/WorkerRoutes");
 const RequestRoutes = require("./routes/RequestRoutes");
-
+const AdminRoutes = require("./routes/AdminRoutes");
 const app = express();
 
 //parse the data
@@ -23,6 +23,7 @@ ConnectDb();
 app.use("/api/v1/users", UserRoutes);
 app.use("/api/v1/workers", WorkerRoutes);
 app.use("/api/v1/request", RequestRoutes);
+app.use("/api/v1/admin", AdminRoutes);
 
 const PORT = process.env.PORT || 8000;
 

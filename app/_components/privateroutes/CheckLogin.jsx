@@ -44,7 +44,6 @@ export default function CheckLogin(WrappedComponent) {
       };
 
       if (localStorage.getItem("auth") && auth?.token) {
-        console.log(auth);
         checkAuth();
       } else {
         setIsAuthenticated(false);

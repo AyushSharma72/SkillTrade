@@ -92,7 +92,7 @@ const WorkerSchema = mongoose.Schema(
     },
     Verified: {
       type: String,
-      enum: ["Pending", "Verified", "Unverified"],
+      enum: ["Pending", "Verified", "Unverified","Rejected"],
       default: "Unverified",
     },
     VerifyId: {

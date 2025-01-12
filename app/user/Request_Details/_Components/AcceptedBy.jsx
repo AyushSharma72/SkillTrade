@@ -25,7 +25,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
-// import { style } from "../../../_Arrays/Arrays";
+
 
 function AcceptedBy() {
   const [auth] = useAuth();
