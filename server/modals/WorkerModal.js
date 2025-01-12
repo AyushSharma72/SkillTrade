@@ -91,10 +91,19 @@ const WorkerSchema = mongoose.Schema(
       type: Number,
     },
     Verified: {
-      type: String,
-      enum: ["Pending", "Verified", "Unverified","Rejected"],
-      default: "Unverified",
+      verified: {
+        type: String,
+        // enum: ["Pending", "Verified", "Unverified", "Rejected"],
+        default: "Unverified",
+      },
+      rejectedReason: {
+        type: String,
+      },
+      rejectionDate: {
+        type: Date,
+      },
     },
+
     VerifyId: {
       data: Buffer,
       contentType: String,

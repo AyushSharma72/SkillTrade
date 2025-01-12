@@ -7,17 +7,17 @@ async function VerifyWorker(req, resp) {
 
 async function GetVerifyingRequest(req, resp) {
   try {
-    const page = parseInt(req.query.page) || 1;
+    const page = parseInt(req.query.page) || 1; 
     const limit = 7;
     const skip = (page - 1) * limit;
 
-    const requests = await WorkerModal.find({ Verified: "Pending" })
-      .skip(skip)
-      .limit(limit);
+     const requests = await WorkerModal.find({ "Verified.verified": "Pending" })
+       .skip(skip)
+       .limit(limit);
 
-    const totalRequests = await WorkerModal.countDocuments({
-      Verified: "Pending",
-    });
+     const totalRequests = await WorkerModal.countDocuments({
+       "Verified.verified": "Pending",
+     });
 
     if (requests && requests.length > 0) {
       return resp.status(200).send({

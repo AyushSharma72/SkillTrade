@@ -290,7 +290,7 @@ async function UpdateProfile(req, resp) {
   } else {
     console.log("No verification image exists");
   }
-  updatedWorker.Verified = "Pending";
+  updatedWorker.Verified.verified ="Pending";
   await updatedWorker.save();
 
   return resp.status(200).send({
