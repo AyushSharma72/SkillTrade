@@ -45,7 +45,7 @@ async function GetVerifyId(req, resp) {
     const request = await WorkerModal.findById(req.params.wid).select(
       "VerifyId"
     );
-    console.log(request)
+
     if (!request || !request.VerifyId || !request.VerifyId.data) {
       return resp.status(404).send({
         success: false,

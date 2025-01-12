@@ -86,7 +86,7 @@ const page = () => {
     <div className="container mx-auto p-4">
       {loading ? (
         <div className="flex justify-center items-center h-screen">
-          <PulseLoader size={20} color="#3f51b5" />
+          <PulseLoader size={20}  />
         </div>
       ) : requests && requests.length > 0 ? (
         <>
@@ -108,7 +108,10 @@ const page = () => {
                 {requests.map((request) => (
                   <StyledTableRow key={request._id}>
                     <StyledTableCell align="center">
-                      {request.Name}
+                          <Link href={`/worker/worker_profile/${request._id}`} className="text-blue-600">
+                         {request.Name}
+                        </Link>
+                      
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {request.Address || "N/A"}
@@ -123,9 +126,9 @@ const page = () => {
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <div className="flex gap-2 justify-center">
-                        <Link href={`/worker/worker_profile/${request._id}`}>
-                          <Button type="primary">View Profile</Button>
-                        </Link>
+                    
+                        <Button type="primary">Verify</Button>
+                        <Button type="primary">Reject</Button>
                       </div>
                     </StyledTableCell>
                   </StyledTableRow>
@@ -157,11 +160,14 @@ const page = () => {
       {/* Modal */}
       <Dialog open={openModal} onClose={handleCloseModal}>
         <DialogTitle>Worker ID</DialogTitle>
-        <RxCross1 className="absolute top-5 right-2 cursor-pointer" onClick={handleCloseModal} />
+        <RxCross1
+          className="absolute top-5 right-2 cursor-pointer"
+          onClick={handleCloseModal}
+        />
         <DialogContent>
           {imageLoading && (
-            <div className="flex justify-center my-4">
-              <PulseLoader size={15} color="#3f51b5" />
+            <div className="flex justify-center my-4 text-lg">
+             Loading <PulseLoader size={15} />
             </div>
           )}
           {selectedImage && (
