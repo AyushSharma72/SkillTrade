@@ -9,8 +9,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  TextField,
 } from "@mui/material";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -20,9 +18,16 @@ import { Button } from "../../../components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 import { RxCross1 } from "react-icons/rx";
 import Empty from "../../assests/Empty.svg";
+import { style } from "../../_Arrays/Arrays";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+// import isAdmin from "@/app/_components/privateroutes/isAdmin";
+import { Textarea } from "@mui/joy";
+import { toast, Toaster } from "react-hot-toast";
+import  Backdrop  from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
-
-const Page = () => {
+const Page = ({ role }) => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,7 +37,8 @@ const Page = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageLoading, setImageLoading] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
-
+  const [selectedId, SetSelectedId] = useState(null);
+  const [backdrop, SetBackDrop] = useState(false);
 
   const fetchPageData = async (page) => {
     setLoading(true);
@@ -82,42 +88,76 @@ const Page = () => {
     setOpenModal(false);
   };
 
+  const handleRejectRequest = async () => {
+    if (rejectionReason.length < 30) {
+      toast.error("reason cannot be less than 30 characters");
+      return;
+    }
+    try {
+      SetBackDrop(true);
+      const response = await fetch(
+        `http://localhost:8000/api/v1/admin/reject_verification_request/${selectedId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            reason: rejectionReason,
+          }),
+        }
+      );
+      const data = await response.json();
+      if (data.success) {
+        toast("the request was rejected");
+        fetchPageData(currentPage);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("Error rejecting request");
+    } finally {
+      setOpenRejectModal(false);
+      SetBackDrop(false);
+    }
+  };
 
+  const verifyWorker = async (wid) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/admin/verify_worker/${wid}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            role: 2,
+          }),
+        }
+      );
 
-  // const handleRejectRequest = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `http://localhost:8000/api/v1/admin/reject_request/${selectedRequestId}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify({
-  //           rejectionReason,
-  //         }),
-  //       }
-  //     );
-  //     const data = await response.json();
-  //     if (data.success) {
-  //       // Refresh data after successful rejection
-  //       fetchPageData(currentPage);
-  //     } else {
-  //       console.error("Failed to reject request:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error rejecting request:", error);
-  //   } finally {
-  //     handleCloseRejectModal();
-  //   }
-  // };
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("error try again");
+    } finally {
+      SetBackDrop(false);
+    }
+  };
 
   useEffect(() => {
     fetchPageData(currentPage);
   }, [currentPage]);
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4 sm:m-0 mt-20">
+      <Toaster />
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} />
@@ -163,10 +203,19 @@ const Page = () => {
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       <div className="flex gap-2 justify-center">
-                        <Button>Verify</Button>
+                        <Button
+                          onClick={() => {
+                            verifyWorker(request._id);
+                          }}
+                        >
+                          Verify
+                        </Button>
                         <Button
                           className="bg-red-600 hover:bg-red-500"
-                          onClick={()=>{setOpenRejectModal(true)}}
+                          onClick={() => {
+                            setOpenRejectModal(true);
+                            SetSelectedId(request._id);
+                          }}
                         >
                           Reject
                         </Button>
@@ -188,7 +237,7 @@ const Page = () => {
         </>
       ) : (
         <div className="flex flex-col items-center">
-          <Typography variant="h5" className="mb-4">
+          <Typography variant="h5" className="mb-4 text-center">
             No pending verification requests.
           </Typography>
           <Image src={Empty} alt="No Data" width={300} height={300} />
@@ -207,7 +256,7 @@ const Page = () => {
         />
         <DialogContent>
           {imageLoading && (
-            <div className="flex justify-center my-4 text-lg">
+            <div className="flex justify-center my-4 gap-2 text-lg">
               Loading <PulseLoader size={15} />
             </div>
           )}
@@ -225,7 +274,57 @@ const Page = () => {
       </Dialog>
 
       {/* Modal for Rejection */}
-   
+      <Modal
+        open={openRejectModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={style}
+          className="sm:w-[400px] w-[300px] flex flex-col gap-2 !p-4"
+        >
+          <Typography
+            id="modal-modal-title"
+            className="text-center"
+            variant="h6"
+            component="h2"
+          >
+            Are you sure? <br></br>this action is not reversible
+          </Typography>
+
+          <Textarea
+            name="rejection"
+            placeholder="Give a reason for rejection"
+            value={rejectionReason}
+            onChange={(e) => setRejectionReason(e.target.value)}
+            className="w-full h-40 overflow-y-scroll scrollbar-hide"
+            required
+          />
+          <div className="flex justify-around  flex-col mt-2 gap-1">
+            <Button
+              onClick={() => {
+                handleRejectRequest();
+              }}
+            >
+              Reject
+            </Button>
+            <Button
+              onClick={() => {
+                setOpenRejectModal(false);
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </Box>
+      </Modal>
+
+      <Backdrop
+        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
+        open={backdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </div>
   );
 };

@@ -19,15 +19,15 @@ const isAdmin = (WrappedComponent) => {
             if (auth?.user?.role === 2) {
               setIsAdmin(true);
             } else {
-              toast("error checking authentication")
+              toast("error checking authentication");
               router.replace("/");
             }
           } catch (error) {
-            console.error("Error parsing auth data:", error);
+            // console.error("Error parsing auth data:", error);
             router.replace("/");
           }
         } else {
-          toast("please login")
+          toast("please login");
           router.replace("/"); // Redirect if no auth data
         }
         setLoading(false);
@@ -48,9 +48,13 @@ const isAdmin = (WrappedComponent) => {
     if (isAdmin) {
       return <WrappedComponent {...props} role={2} />;
     }
-
-    // Prevent rendering anything else if the user is not an admin
-    return null;
+    return (
+      <div className="flex flex-col justify-center items-center h-screen">
+        {" "}
+        <p className="text-red-600 text-xl">You are not authorized to access this page </p>
+        <p className="text-xl">Redirecting....</p>
+      </div>
+    );
   };
 };
 
