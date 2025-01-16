@@ -12,7 +12,7 @@ import { Button as CustomButton } from "@/components/ui/button";
 import { UpdateProfile } from "../_FetchFunction/UpdateUserProfile";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-import {style} from "../../../_Arrays/Arrays"
+import { style } from "../../../_Arrays/Arrays";
 
 const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [vimage, setImage] = useState(null);
@@ -21,7 +21,6 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [pincode, setPincode] = useState(data.pincode);
   const [backdrop, Setbackdrop] = useState(false);
 
- 
   const VisuallyHiddenInput = styled("input")`
     clip: rect(0 0 0 0);
     clip-path: inset(50%);
@@ -100,41 +99,36 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
     >
       <Toaster />
       <p className="text-xl font-semibold text-center">Edit your profile</p>
-
-      <hr />
+      <hr />{" "}
       <div className="flex flex-col items-center w-full mt-2">
-        <Button
-          component="label"
-          variant="outlined"
-          color="neutral"
-          className="w-full"
-          startDecorator={
-            <SvgIcon>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
-                />
-              </svg>
-            </SvgIcon>
-          }
-        >
-          <Backdrop
-            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-            open={backdrop}
+        {data.Verified.verified === "Verified" ? null : (
+          <Button
+            component="label"
+            variant="outlined"
+            color="neutral"
+            className="w-full"
+            startDecorator={
+              <SvgIcon>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"
+                  />
+                </svg>
+              </SvgIcon>
+            }
           >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-          Upload your verification id
-          <VisuallyHiddenInput type="file" onChange={handleFileChange} />
-        </Button>
+            Upload your verification id
+            <VisuallyHiddenInput type="file" onChange={handleFileChange} />
+          </Button>
+        )}
         {vimage && (
           <div className="mt-2 flex flex-col">
             <MdDeleteOutline
@@ -208,6 +202,15 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
         </CustomButton>
         <CustomButton onClick={handleClose}>Close</CustomButton>
       </div>
+      <Backdrop
+        sx={(theme) => ({
+          color: "#fff",
+          zIndex: theme.zIndex.drawer + 1,
+        })}
+        open={backdrop}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Box>
   );
 };

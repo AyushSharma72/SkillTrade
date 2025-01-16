@@ -60,7 +60,7 @@ function ViewRequest() {
 
   //  get location
   useEffect(() => {
-    // Prompt user for location and save coordinates to localStorage
+   
     const getUserLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(

@@ -88,40 +88,62 @@ async function CheckCity(req, resp) {
     });
   }
 }
+
 async function Report(req, resp) {
   try {
     const { wid, rid } = req.params;
-    const { IssueType, description } = req.body;
+    const { issueType } = req.body;
 
-    if (!IssueType && !description) {
+    if (!issueType) {
       return resp.status(400).send({
         success: false,
-        message: "Provide at least one field",
+        message: "please select the issue",
       });
     }
 
-    const existingReport = await ReportModal.findOne({
-      worker: wid,
-      requestId: rid,
-    });
+    // Find the report by requestId
+    const existingReport = await ReportModal.findOne({ requestId: rid });
+
     if (existingReport) {
-      return resp.status(400).send({
-        success: false,
-        message: "You have already reported this request",
+      // Check if the worker has already reported this request
+      const workerAlreadyReported = existingReport.Report.some(
+        (report) => report.worker.toString() === wid
+      );
+
+      if (workerAlreadyReported) {
+        return resp.status(400).send({
+          success: false,
+          message: "You have already reported this request",
+        });
+      }
+
+      // Add the new report to the existing document
+      existingReport.Report.push({
+        worker: wid,
+        issueType,
       });
-    }
 
-    const report = await ReportModal({
-      IssueType: IssueType,
-      Description: description,
-      worker: wid,
-      requestId: rid,
-    }).save();
+      await existingReport.save();
 
-    if (report) {
       return resp.status(200).send({
         success: true,
-        report,
+        message: "Request reported",
+      });
+    } else {
+      // Create a new report document if none exists for the requestId
+      const newReport = await ReportModal({
+        requestId: rid,
+        Report: [
+          {
+            worker: wid,
+            issueType,
+          },
+        ],
+      }).save();
+
+      return resp.status(200).send({
+        success: true,
+        report: newReport,
         message: "Request reported",
       });
     }
@@ -132,6 +154,7 @@ async function Report(req, resp) {
     });
   }
 }
+
 
 async function AcceptRequest(req, resp) {
   try {

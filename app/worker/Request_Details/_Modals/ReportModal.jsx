@@ -13,21 +13,11 @@ import {
 import { ReportRequest } from "../_FetchFunction/ReportRequest";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { toast } from "react-hot-toast";
+import {style} from "../../../_Arrays/Arrays"
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 3,
-};
 
 const ReportModal = ({ handleClose, rid }) => {
   const [IssueType, SetIssueType] = useState("");
-  const [description, setDescription] = useState("");
   const auth = useAuth();
 
   const handleIssueTypeChange = (value) => {
@@ -42,11 +32,13 @@ const ReportModal = ({ handleClose, rid }) => {
         auth?.user?._id,
         rid,
         IssueType,
-        description
+       
       );
 
       if (data.success) {
         toast.success(data.message);
+        SetIssueType("");
+        setDescription("");
       } else {
         toast.error(data.message);
       }
@@ -60,7 +52,9 @@ const ReportModal = ({ handleClose, rid }) => {
 
   return (
     <Box sx={style} className="w-[280px] sm:w-[400px]">
-      <p className="w-full text-center mb-2 text-2xl font-bold">Report request</p>
+      <p className="w-full text-center mb-2 text-2xl font-bold">
+        Report request
+      </p>
       <div className="flex flex-col items-center justify-center gap-3">
         <Select
           required
@@ -71,24 +65,19 @@ const ReportModal = ({ handleClose, rid }) => {
             <SelectValue placeholder="Select issue" />
           </SelectTrigger>
           <SelectContent className="z-[1500]">
-            <SelectItem value="electrician">
+            <SelectItem value=" The request is irrelevent">
               The request is irrelevent
             </SelectItem>
-            <SelectItem value="carpenter">the image is irrelevent</SelectItem>
-            <SelectItem value="plumber">
+            <SelectItem value="the image is irrelevent">
+              the image is irrelevent
+            </SelectItem>
+            <SelectItem value="Description and other details are not proper">
               Description and other details are not proper
             </SelectItem>
           </SelectContent>
         </Select>
 
-        <Textarea
-          name="description"
-          placeholder="give description (Optional)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full h-40 overflow-y-scroll scrollbar-hide"
-          required
-        />
+       
         <div className="w-full flex flex-col gap-2 ">
           {" "}
           <Button

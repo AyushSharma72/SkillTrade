@@ -104,6 +104,7 @@ const Page = ({ role }) => {
           },
           body: JSON.stringify({
             reason: rejectionReason,
+            role:2
           }),
         }
       );

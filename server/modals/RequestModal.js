@@ -84,8 +84,13 @@ const RequestSchema = new mongoose.Schema(
     completedAt: {
       type: Date,
     },
-    deletedAt: {
-      type: Date,
+    ReportedInfo: {
+      Info: {
+        type: String,
+      },
+      Deleted: {
+        type: Boolean,
+      },
     },
   },
   {

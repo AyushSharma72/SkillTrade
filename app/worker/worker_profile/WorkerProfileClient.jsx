@@ -87,15 +87,23 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
   return (
     <div className="flex flex-col items-center   bg-gray-200 ">
       <p className="font-semibold text-3xl sm:mt-2 mt-20"> WorkerProfile</p>
-      {WorkerData?.Verified.verified === "Unverified" ? (
-        <Alert severity="warning" className="w-[73%] mt-5">
-          Your profile is unverified add verification id (AddharCard Or PanCard)
-          by editing you profile.
-        </Alert>
-      ) : WorkerData?.Verified.verified === "Pending" ? (
-        <Alert severity="warning" className="w-[73%] mt-5">
-          Profile verification is currently pending with the administrator
-        </Alert>
+      {auth?.user?.role === 1 ? (
+        WorkerData?.Verified.verified === "Unverified" ? (
+          <Alert severity="warning" className="w-[73%] mt-5">
+            Your profile is unverified add verification id (AddharCard Or
+            PanCard) by editing you profile.
+          </Alert>
+        ) : WorkerData?.Verified.verified === "Pending" ? (
+          <Alert severity="warning" className="w-[73%] mt-5">
+            Profile verification is currently pending with the administrator
+          </Alert>
+        ) : WorkerData?.Verified.verified === "Rejected" ? (
+          <Alert severity="error" className="w-[73%] mt-5">
+            your verification request was rejected
+            <br></br>
+            Reason:{WorkerData?.Verified.rejectedReason}
+          </Alert>
+        ) : null
       ) : null}
       <div className="flex justify-center md:gap-5 items-center md:items-start p-3 w-full md:flex-row flex-col  gap-5">
         {/* left div  */}
@@ -104,7 +112,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
           <Badge.Ribbon
             text={WorkerData.Verified.verified}
             color={
-              WorkerData?.Verified.verified === "Unverified"
+              WorkerData?.Verified.verified === "Unverified" || "Rejected"
                 ? "red"
                 : WorkerData?.Verified.verified === "Pending"
                 ? "orange"
@@ -278,7 +286,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
 
             <p
               className={`text-center ${
-                WorkerData?.Verified.verified === "Unverified"
+                WorkerData?.Verified.verified === "Unverified" || "Rejected"
                   ? "text-red-600"
                   : WorkerData?.Verified.verified === "Pending"
                   ? "text-yellow-600"

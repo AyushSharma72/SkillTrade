@@ -1,7 +1,7 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { Flex, Tag, Image } from "antd";
+import { Tag, Image} from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { MdOutlineHandyman } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
@@ -20,6 +20,10 @@ import AcceptRequest from "../_Modals/AcceptRequest";
 import Link from "next/link";
 import Alert from "@mui/material/Alert";
 import { calculateDistance } from "../../../_Arrays/Arrays";
+import { TbMessageReport } from "react-icons/tb";
+import { Typography } from "@mui/material";
+import Empty from "../../../assests/Empty.svg";
+import { useAuth } from "@/app/_context/UserAuthContent";
 
 const RequestDetails = () => {
   const [data, setData] = useState(null);
@@ -31,7 +35,7 @@ const RequestDetails = () => {
     latitude: null,
     longitude: null,
   });
-
+const [auth,Setauth]  = useAuth()
   const handleClose = () => setOpen(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
@@ -84,7 +88,7 @@ const RequestDetails = () => {
         </div>
       ) : (
         <div className="w-full mt-5">
-          {data && (
+          {data ? (
             <div className="flex flex-col items-center xl:flex-row justify-around m-auto w-full lg:w-full xl:justify-around p-2">
               <div className="flex flex-col gap-2 justify-center items-center xl:w-[40%]">
                 <Image
@@ -99,6 +103,16 @@ const RequestDetails = () => {
               </div>
 
               <div className="flex flex-col w-[90%] mt-5 xl:mt-0 xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg relative">
+               { auth.user.role==1?<div
+                  className="absolute top-4 right-5 flex items-center gap-1 cursor-pointer"
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                >
+                  <TbMessageReport /> Report
+                </div>
+                :null
+}
                 <div className="flex items-center sm:justify-normal">
                   <span className="flex items-center gap-2 font-bold text-lg md:w-[30%]">
                     <MdOutlineHandyman /> Service type:
@@ -207,21 +221,30 @@ const RequestDetails = () => {
                   </p>
                 </div>
                 <div className="flex gap-2 justify-center items-center">
-                  {data.status === "Completed" ||
+                  {auth?.user?.role!==1 || data.status === "Completed" ||
                   data.status === "Deleted" ? null : (
                     <Button onClick={handleOpen2} className="w-1/2">
                       Accept Request
                     </Button>
                   )}
-                  <Link href="/worker/all_request" className="w-1/2">
+                  
+                  <Link href={auth?.user?.role===1? `/worker/all_request`:auth?.user?.role===2?`/admin/reports`:`/`} className="w-1/2">
                     <Button className="w-full">Back</Button>
                   </Link>
                 </div>
               </div>
             </div>
+          ) : (
+            <div className="flex flex-col items-center">
+              <Typography variant="h5" className="mb-4 text-center">
+                Request not found
+              </Typography>
+              <Image src={Empty} alt="No Data" width={400} height={400}  className="w-[300px] h-[300px] sm:w-[400px] sm:h-[400px]"/>
+              <Link href="/">
+                <Button className="mt-4">Go Home</Button>
+              </Link>
+            </div>
           )}
-          {/* Map Section */}
-          {/* <div id="map" className="w-full h-[500px]  mt-5 rounded-lg"></div> */}
 
           {/* Report Modal */}
           <ModalComponent

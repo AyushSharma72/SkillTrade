@@ -1,4 +1,4 @@
-export async function ReportRequest(wid, rid, IssueType, description) {
+export async function ReportRequest(wid, rid, IssueType) {
   try {
     const response = await fetch(
       `http://localhost:8000/api/v1/workers/report/${wid}/${rid}`,
@@ -7,7 +7,6 @@ export async function ReportRequest(wid, rid, IssueType, description) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           IssueType,
-          description,
         }),
       }
     );

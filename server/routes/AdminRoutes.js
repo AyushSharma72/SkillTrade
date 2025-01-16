@@ -4,7 +4,11 @@ const {
   GetVerifyingRequest,
   GetVerifyId,
   rejectVerificationRequest,
+  GetReport,
+  DeleteRequest,
+  InformUser,
 } = require("../controllers/AdminController");
+
 const router = express.Router();
 const isAdmin = require("../middleware/isAdmin");
 
@@ -19,5 +23,11 @@ router.post(
   isAdmin,
   rejectVerificationRequest
 );
+
+router.post("/view_reports", GetReport);
+
+router.delete("/delete_request/:rid",DeleteRequest);
+
+router.post("/inform_user/:rid", InformUser);
 
 module.exports = router;

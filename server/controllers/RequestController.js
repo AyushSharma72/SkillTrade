@@ -253,14 +253,17 @@ async function FilterRequests(req, resp) {
     const { nearBy, yourCity, ServiceType } = req.query;
 
     const worker = await WorkerModal.findById(wid).select("pincode city");
-    // console.log(worker);
+ 
     if (!worker) {
       return resp.status(404).send({
         success: false,
         message: "Worker not found",
       });
     }
-    let query = {};
+    let query = {
+      status: { $nin: ["completed", "deleted"] }, // Exclude completed and deleted requests
+    };
+
 
     // Add dynamic filtering based on query parameters
     if (nearBy === "true" && worker.pincode) {
