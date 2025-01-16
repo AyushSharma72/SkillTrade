@@ -19,6 +19,9 @@ const ReportSchema = mongoose.Schema(
         },
       },
     ],
+    ReviewRequested: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,

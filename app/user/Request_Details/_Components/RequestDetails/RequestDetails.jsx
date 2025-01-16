@@ -27,6 +27,7 @@ import { CompleteRequest } from "../../_FetchFunction/CompleteRequest";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { labels, style } from "../../../../_Arrays/Arrays";
 import Link from "next/link";
+import Alert from "@mui/material/Alert";
 
 const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [data, setData] = useState(initialData);
@@ -38,6 +39,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [open, setOpen] = React.useState(false);
   const [unassignModal, SetunassignModal] = useState(false);
   const [completed, SetCompleted] = useState(false);
+  const [reviewmodal, SetReviewModal] = useState(false);
   const router = useRouter();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -128,9 +130,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     }
   }
 
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
-  };
   async function GetData() {
     try {
       setLoading(true);
@@ -152,6 +151,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       setLoading(false);
     }
   }
+
   async function UnassignWorker(e, wid) {
     e.preventDefault();
     if (!description || description.length < 30) {
@@ -176,6 +176,30 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     }
   }
 
+  async function RequestReview(rid) {
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/v1/users/review_request/${rid}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("error try again later");
+    }
+  }
+
+  const handleImageChange = (e) => {
+    setImage(e.target.files[0]);
+  };
+
   const handleChange = (event) => {
     if (event.target.value.length <= 100) {
       setDescription(event.target.value);
@@ -191,6 +215,22 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   return (
     <div className="flex flex-col items-center justify-center mb-10">
       <Toaster /> <p className="text-2xl font-bold">Request Details</p>
+      {data.ReportedInfo.Info ? (
+        <Alert severity="warning" className="w-full">
+          Warning: please follow the below guidelines otherwise the request will
+          be deleted
+          <br></br>
+          {data.ReportedInfo.Info}.{" "}
+          <span
+            onClick={() => {
+              SetReviewModal(true);
+            }}
+            className="ml-3 text-blue-600 cursor-pointer"
+          >
+            Request Review
+          </span>
+        </Alert>
+      ) : null}
       {loading ? (
         <Box sx={{ display: "flex" }} className="mt-5">
           <CircularProgress />
@@ -209,15 +249,18 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                   onSubmit={updateRequestImage}
                   className="flex justify-center items-center flex-col sm:flex-row"
                 >
-                 {data.status !== "Completed" && data.status !== "Deleted" ?<> <input
-                    type="file"
-                    id="image"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                  <Button type="submit">Update Photo</Button>
-                  </>:null
-                 }
+                  {data.status !== "Completed" && data.status !== "Deleted" ? (
+                    <>
+                      {" "}
+                      <input
+                        type="file"
+                        id="image"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                      <Button type="submit">Update Photo</Button>
+                    </>
+                  ) : null}
                 </form>
                 <p className="font-bold text-xl text-center">
                   {data.description}
@@ -268,7 +311,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                   </p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal"> 
+                <div className="flex items-center sm:justify-normal">
                   <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <SiStatuspage />
                     Status :
@@ -505,6 +548,34 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                         Cancel
                       </Button>
                     </div>
+                  </Box>
+                </Modal>
+
+                {/* request review modal  */}
+
+                <Modal open={reviewmodal}>
+                  <Box sx={style} className="flex flex-col gap-2">
+                    <p className="text-center font-semibold">
+                      Make the changes before requesting review
+                    </p>
+                    <hr></hr>
+                    <div></div> {/* placeholder div */}
+                    <Button
+                      
+                      onClick={() => {
+                        RequestReview(rid);
+                      }}
+                    >
+                      Request review
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        SetReviewModal(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <hr />
                   </Box>
                 </Modal>
               </div>

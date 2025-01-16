@@ -4,6 +4,7 @@ const WorkerModal = require("../modals/WorkerModal");
 const UserModal = require("../modals/UserModal");
 const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
+const ReportModal = require("../modals/ReportModal");
 
 async function RegisterUser(req, resp) {
   try {
@@ -412,7 +413,7 @@ async function ResetPassword(req, resp) {
         message: "All fields are required",
       });
     }
- console.log(email);
+    console.log(email);
     if (newPassword !== confirmPassword) {
       return resp.status(400).send({
         success: false,
@@ -420,8 +421,8 @@ async function ResetPassword(req, resp) {
       });
     }
 
-    const user = await UserModal.findOne({ Email:email });
- 
+    const user = await UserModal.findOne({ Email: email });
+
     if (!user) {
       return resp.status(404).send({
         success: false,
@@ -443,11 +444,33 @@ async function ResetPassword(req, resp) {
     return resp.status(500).send({
       success: false,
       message: "internal Server error",
-      
     });
   }
 }
 
+async function SubmitForReview(req, resp) {
+  try {
+    const { rid } = req.params;
+    const report = ReportModal.find({ requestId: rid });
+    if (!report) {
+      return resp.status(404).send({
+        success: false,
+        message: "Report not found ",
+      });
+    }
+    report.ReviewRequested = true;
+    report.save();
+    resp.status(200).send({
+      success: true,
+      message: "requested review",
+    });
+  } catch (error) {
+    resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
 
 module.exports = {
   RegisterUser,
@@ -459,4 +482,5 @@ module.exports = {
   SendOtp,
   VerifyOtp,
   ResetPassword,
+  SubmitForReview,
 };

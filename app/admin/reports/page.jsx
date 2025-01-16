@@ -84,7 +84,7 @@ const Page = ({ role }) => {
     setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  async function deleteRequest() {
+async function deleteRequest() {
     const apiUrl = `https:/localhost:8000/api/v1/admin/delete_request/${requestId}`; 
      setBackdrop(true);
     try {
@@ -107,7 +107,7 @@ const Page = ({ role }) => {
     } finally {
       setBackdrop(false); // Hide the backdrop
     }
-  }
+}
 
 async function informUser() {
     const apiUrl = `http://localhost:8000/api/v1/admin/inform_user/${requestId}`; 
@@ -161,7 +161,7 @@ async function informUser() {
                   <StyledTableCell align="center">
                     Number of times reported
                   </StyledTableCell>
-                  <StyledTableCell align="center">Actions</StyledTableCell> q
+                  <StyledTableCell align="center">Actions</StyledTableCell> 
                 </TableRow>
               </TableHead>
               <TableBody>
