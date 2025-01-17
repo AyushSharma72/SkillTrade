@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useParams } from "next/navigation";
-import { Flex, Tag, Image } from "antd";
+import { Tag, Image } from "antd";
 import { useRouter } from "next/navigation";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { MdOutlineHandyman } from "react-icons/md";
@@ -28,6 +28,7 @@ import { useAuth } from "@/app/_context/UserAuthContent";
 import { labels, style } from "../../../../_Arrays/Arrays";
 import Link from "next/link";
 import Alert from "@mui/material/Alert";
+import Backdrop from "@mui/material/Backdrop";
 
 const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [data, setData] = useState(initialData);
@@ -48,6 +49,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [comment, SetComment] = useState("");
   const [stars, setValue] = React.useState(2);
   const [hover, setHover] = React.useState(-1);
+  const [fetchLoading, setFetchLoading] = useState(false);
 
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
@@ -65,7 +67,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       if (!uid) {
         toast.error("user is missing try agian later");
       }
-
+      setFetchLoading(true);
       const response = await CompleteRequest(
         rid,
         uid,
@@ -82,6 +84,8 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     } catch (error) {
       console.log(error);
       toast.error("error try again");
+    } finally {
+      setFetchLoading(false);
     }
   }
   async function updateRequestImage(e) {
@@ -93,7 +97,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
         return;
       }
       formData.append("image", image);
-
+      setFetchLoading(true);
       const response = await fetch(
         `http://localhost:8000/api/v1/request/UpdateRequestPhoto/${rid}`,
         {
@@ -113,11 +117,14 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       }
     } catch (error) {
       toast.error("Failed to update photo. Please try again.");
+    } finally {
+      setFetchLoading(false);
     }
   }
 
   async function DeleteRequest() {
     try {
+      setFetchLoading(true);
       const response = await DeleteRequestFetchFunction(rid);
       if (response.success) {
         toast.success(response.message);
@@ -127,6 +134,8 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       }
     } catch (error) {
       toast.error("Error try again");
+    } finally {
+      setFetchLoading(false);
     }
   }
 
@@ -159,6 +168,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       return;
     }
     try {
+      setFetchLoading(true);
       const response = await UnAssign(rid, wid, description);
       const data = await response.json();
       if (response.status === 200) {
@@ -173,11 +183,13 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       SetunassignModal(false);
       setDescription("");
       GetData();
+      setFetchLoading(false);
     }
   }
 
   async function RequestReview(rid) {
     try {
+      setFetchLoading(true);
       const response = await fetch(
         `http://localhost:8000/api/v1/users/review_request/${rid}`,
         {
@@ -193,6 +205,10 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       }
     } catch (error) {
       toast.error("error try again later");
+    } finally {
+      SetReviewModal(false);
+      GetData();
+      setFetchLoading(false);
     }
   }
 
@@ -214,8 +230,15 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
 
   return (
     <div className="flex flex-col items-center justify-center mb-10">
-      <Toaster /> <p className="text-2xl font-bold">Request Details</p>
-      {data.ReportedInfo.Info ? (
+      <Toaster />{" "}
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={fetchLoading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>{" "}
+      <p className="text-2xl font-bold">Request Details</p>
+      {data.ReportedInfo.Info && data.ReportedInfo.Review == false ? (
         <Alert severity="warning" className="w-full">
           Warning: please follow the below guidelines otherwise the request will
           be deleted
@@ -229,6 +252,10 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
           >
             Request Review
           </span>
+        </Alert>
+      ) : data.ReportedInfo.Review ? (
+        <Alert severity="info" className="w-full">
+          The request is submitted for review
         </Alert>
       ) : null}
       {loading ? (
@@ -552,7 +579,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                 </Modal>
 
                 {/* request review modal  */}
-
                 <Modal open={reviewmodal}>
                   <Box sx={style} className="flex flex-col gap-2">
                     <p className="text-center font-semibold">
@@ -561,7 +587,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     <hr></hr>
                     <div></div> {/* placeholder div */}
                     <Button
-                      
                       onClick={() => {
                         RequestReview(rid);
                       }}

@@ -23,10 +23,12 @@ import { MdDelete } from "react-icons/md";
 import { IoIosInformationCircle } from "react-icons/io";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import Empty from "../../assests/Empty.svg";
-import {toast,Toaster }from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { StyledTableCell, style } from "../../_Arrays/Arrays";
 import Modal from "@mui/material/Modal";
 import { Textarea } from "@mui/joy";
+import { BsPersonFillCheck } from "react-icons/bs";
+import { ImCross } from "react-icons/im";
 
 const Page = ({ role }) => {
   const [reports, setReports] = useState([]);
@@ -37,8 +39,20 @@ const Page = ({ role }) => {
   const [openRows, setOpenRows] = useState({});
   const [infomodal, SetInfoModal] = useState(false);
   const [openmodal, SetOpenModal] = useState(false);
-  const [requestId,SetRequestId] = useState("")
-  const [info,SetInfo] = useState("")
+  const [requestId, SetRequestId] = useState("");
+  const [info, SetInfo] = useState("");
+
+  useEffect(() => {
+    fetchPageData(currentPage);
+  }, [currentPage]);
+
+  const handlePageChange = (event, page) => {
+    setCurrentPage(page);
+  };
+
+  const handleToggleRow = (id) => {
+    setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
 
   const fetchPageData = async (page) => {
     setLoading(true);
@@ -72,21 +86,9 @@ const Page = ({ role }) => {
     }
   };
 
-  useEffect(() => {
-    fetchPageData(currentPage);
-  }, [currentPage]);
-
-  const handlePageChange = (event, page) => {
-    setCurrentPage(page);
-  };
-
-  const handleToggleRow = (id) => {
-    setOpenRows((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-async function deleteRequest() {
-    const apiUrl = `https:/localhost:8000/api/v1/admin/delete_request/${requestId}`; 
-     setBackdrop(true);
+  async function deleteRequest() {
+    const apiUrl = `http://localhost:8000/api/v1/admin/delete_request/${requestId}`;
+    setBackdrop(true);
     try {
       const response = await fetch(apiUrl, {
         method: "DELETE",
@@ -98,7 +100,9 @@ async function deleteRequest() {
       const result = await response.json();
 
       if (response.ok) {
+        SetOpenModal(false);
         toast.success(result.message);
+        fetchPageData(currentPage);
       } else {
         toast.error(result.message);
       }
@@ -107,42 +111,39 @@ async function deleteRequest() {
     } finally {
       setBackdrop(false); // Hide the backdrop
     }
-}
-
-async function informUser() {
-    const apiUrl = `http://localhost:8000/api/v1/admin/inform_user/${requestId}`; 
- setBackdrop(true);
-  try {
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ info }),
-    });
-
-    const result = await response.json();
-
-    if (response.ok) {
-      toast.success(result.message, {
-        duration: 3000,
-      });
-    } else {
-      toast.error(result.message, {
-        duration: 3000,
-      });
-    }
-  } catch (error) {
-    toast.error("An Error occurred", {
-      duration: 3000,
-    });
-  } finally {
-    setBackdrop(false); // Hide the backdrop
   }
-}
+
+  async function informUser() {
+    const apiUrl = `http://localhost:8000/api/v1/admin/inform_user/${requestId}`;
+    setBackdrop(true);
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ info }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(result.message);
+        fetchPageData(currentPage);
+        SetInfoModal(false);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("An Error occurred");
+    } finally {
+      setBackdrop(false); // Hide the backdrop
+    }
+  }
+
   return (
     <div className=" mx-auto p-4 sm:m-0 mt-20">
-      <Toaster/>
+      <Toaster />
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} />
@@ -161,7 +162,8 @@ async function informUser() {
                   <StyledTableCell align="center">
                     Number of times reported
                   </StyledTableCell>
-                  <StyledTableCell align="center">Actions</StyledTableCell> 
+                  <StyledTableCell align="center">Actions</StyledTableCell>
+                  <StyledTableCell align="center">Review</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -194,16 +196,20 @@ async function informUser() {
                       <StyledTableCell align="center">
                         {report.Report.length} times
                       </StyledTableCell>
+
+                      {/* actions  */}
                       <StyledTableCell align="center">
                         <div className="flex gap-3 justify-center items-center">
-                          <IoIosInformationCircle
-                            className="text-xl cursor-pointer text-blue-700"
-                            title="Inform User"
-                            onClick={() => {
-                               SetRequestId(report.requestId);
-                              SetInfoModal(true);
-                            }}
-                          />
+                          {report.ReviewRequested ? null : (
+                            <IoIosInformationCircle
+                              className="text-xl cursor-pointer text-blue-700"
+                              title="Inform User"
+                              onClick={() => {
+                                SetRequestId(report.requestId);
+                                SetInfoModal(true);
+                              }}
+                            />
+                          )}
                           <MdDelete
                             className="text-xl cursor-pointer text-red-600"
                             title="Delete Request"
@@ -213,6 +219,29 @@ async function informUser() {
                             }}
                           />
                         </div>
+                      </StyledTableCell>
+
+                      {/* reviews  */}
+
+                      <StyledTableCell align="center">
+                        {report.ReviewRequested ? (
+                          <div className="flex flex-col gap-2">
+                            <span>A review is requested by the user</span>
+                            <div className="flex gap-4 justify-center items-center">
+                              {" "}
+                              <BsPersonFillCheck
+                                title="Approving this review will remove this request from reported request"
+                                className="cursor-pointer text-2xl text-green-600"
+                              />
+                              <ImCross
+                                title="reject the review request of the user"
+                                className="cursor-pointer text-xl text-red-600"
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          "N/A"
+                        )}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
@@ -302,7 +331,7 @@ async function informUser() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style} className="flex flex-col gap-2">
+        <Box sx={style} className="flex flex-col gap-2 sm:w-[400px] w-[320px]">
           <p className="font-bold text-center">
             Are you sure you want to delete this request ?
           </p>{" "}
@@ -331,8 +360,11 @@ async function informUser() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style} className="flex flex-col gap-2 sm:w-[400px] w-[300px] !p-5">
-          <p className="text-center text-xl" >Inform User</p>{" "}
+        <Box
+          sx={style}
+          className="flex flex-col gap-2 sm:w-[400px] w-[300px] !p-5"
+        >
+          <p className="text-center text-xl">Inform User</p>{" "}
           <Textarea
             name="description"
             placeholder="Inform the user about problem in the request"
@@ -341,7 +373,13 @@ async function informUser() {
             className="w-full h-40 overflow-y-scroll scrollbar-hide"
             required
           />
-          <Button onClick={()=>{informUser()}}>Inform</Button>
+          <Button
+            onClick={() => {
+              informUser();
+            }}
+          >
+            Inform
+          </Button>
           <Button
             onClick={() => {
               SetInfoModal(false);

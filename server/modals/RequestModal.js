@@ -91,6 +91,10 @@ const RequestSchema = new mongoose.Schema(
       Deleted: {
         type: Boolean,
       },
+      Review:{
+        type:Boolean
+      }
+      
     },
   },
   {

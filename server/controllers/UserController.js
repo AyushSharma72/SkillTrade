@@ -5,6 +5,7 @@ const UserModal = require("../modals/UserModal");
 const fs = require("fs").promises;
 const nodemailer = require("nodemailer");
 const ReportModal = require("../modals/ReportModal");
+const RequestModal = require("../modals/RequestModal");
 
 async function RegisterUser(req, resp) {
   try {
@@ -451,20 +452,31 @@ async function ResetPassword(req, resp) {
 async function SubmitForReview(req, resp) {
   try {
     const { rid } = req.params;
-    const report = ReportModal.find({ requestId: rid });
+    const report = await ReportModal.findOne({ requestId: rid });
+    const request = await RequestModal.findById(rid);
+
     if (!report) {
       return resp.status(404).send({
         success: false,
         message: "Report not found ",
       });
     }
+    if (!request) {
+      return resp.status(404).send({
+        success: false,
+        message: "Request not found ",
+      });
+    }
+    request.ReportedInfo.Review = true;
     report.ReviewRequested = true;
-    report.save();
+    await report.save();
+    await request.save();
     resp.status(200).send({
       success: true,
       message: "requested review",
     });
   } catch (error) {
+    console.log(error);
     resp.status(500).send({
       success: false,
       message: "internal server error",

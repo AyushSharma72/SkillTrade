@@ -19,9 +19,10 @@ import { Typography } from "antd";
 import { Input as Otp } from "antd";
 const { Title } = Typography;
 import { RxCross1 } from "react-icons/rx";
-import {style } from "../../_Arrays/Arrays"
+import { style } from "../../_Arrays/Arrays";
 import ModalComponent from "../Modal";
 import ResetPassModal from "./ResetPassModal";
+import Link from "next/link";
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
@@ -33,12 +34,12 @@ const LoginForm = () => {
   const [SendingOtp, SetSendingOtp] = useState(false);
   const [GeneratedOtp, SetGeneratedOtp] = useState("");
   const [ResetPass, SetResetPass] = useState(false);
-  const [VerifyOtp,SetVerifyOtp] = useState(false)
+  const [VerifyOtp, SetVerifyOtp] = useState(false);
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
   };
- 
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -50,7 +51,7 @@ const LoginForm = () => {
       return;
     }
     try {
-       SetVerifyOtp(true);
+      SetVerifyOtp(true);
       const response = await fetch(
         "http://localhost:8000/api/v1/users/VerifyOtp",
         {
@@ -68,25 +69,23 @@ const LoginForm = () => {
       const data = await response.json();
 
       if (response.ok) {
-        toast.success("verification successfull")
+        toast.success("verification successfull");
         setTimeout(() => {
-        SetResetPass(true);
-        setOpen(false);
+          SetResetPass(true);
+          setOpen(false);
         }, 3000);
-       
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
-    }
-    finally{
-       SetVerifyOtp(false);
+    } finally {
+      SetVerifyOtp(false);
     }
   };
 
   const onChange = (text) => {
-    setOtp(text);  
+    setOtp(text);
   };
 
   const sharedProps = {
@@ -180,146 +179,162 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="relative flex justify-around sm:mt-20 ">
-      <Toaster />
+    <>
+      <p className="text-5xl font-bold leading-md tracking-md  text-center sm:mt-2 mt-20">
+        Welcome Back
+      </p>
+      <div className="relative flex justify-around sm:mt-20 mt-5">
+        <Toaster />
 
-      <Image
-        src={loginimage}
-        className="lg:w-[500px] lg:h-[400px] sm:w-[300px] sm:h-[300px] hidden md:block"
-      />
-      <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%] formshadow py-5 px-2 rounded-md h-fit">
-        <p className="font-bold text-2xl ">LOGIN</p>
-        <form
-          className="w-full flex justify-center flex-col items-center gap-y-10"
-          onSubmit={HandleLogin}
-        >
-          <TextField
-            id="standard-basic"
-            label="Mobile Number"
-            variant="outlined"
-            className="w-full"
-            required
-            type="tel"
-            inputProps={{ maxLength: 10 }}
-            name="MobileNo"
-          />
-          <div className="w-full flex flex-col gap-2  items-end">
+        <Image
+          src={loginimage}
+          className="lg:w-[500px] lg:h-[400px] sm:w-[300px] sm:h-[300px] hidden md:block"
+        />
+        <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%] formshadow py-10 px-2 rounded-md h-fit ">
+          {/* <p className="font-bold text-2xl ">LOGIN</p> */}
+          <form
+            className="w-full flex justify-center flex-col items-center gap-y-10"
+            onSubmit={HandleLogin}
+          >
             <TextField
-              id="standard-password"
-              label="Password"
+              id="standard-basic"
+              label="Mobile Number"
               variant="outlined"
               className="w-full"
-              name="Password"
               required
-              type={showPassword ? "text" : "password"}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
+              type="tel"
+              inputProps={{ maxLength: 10 }}
+              name="MobileNo"
             />
-            <span
-              className="text-right w-[132px] cursor-pointer"
-              onClick={() => {
-                handleOpen();
-              }}
-            >
-              Forgot password?
-            </span>
-          </div>
+            <div className="w-full flex flex-col gap-2  items-end">
+              <TextField
+                id="standard-password"
+                label="Password"
+                variant="outlined"
+                className="w-full"
+                name="Password"
+                required
+                type={showPassword ? "text" : "password"}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <span
+                className="text-right w-[132px] cursor-pointer"
+                onClick={() => {
+                  handleOpen();
+                }}
+              >
+                Forgot password?
+              </span>
+            </div>
+            <div className="w-full flex flex-col items-center gap-3">
+              {" "}
+              <Button type="submit" className="sm:w-1/2 w-3/4">Login</Button>
+              <p>
+                Don't have an account ?{" "}
+                <Link href="/register" className="text-blue-700">
+                  Register
+                </Link>
+              </p>
+            </div>
+          </form>
 
-          <Button type="submit">Login</Button>
-        </form>
+          {/* forgot password modal  */}
 
-        {/* forgot password modal  */}
-
-        <Modal
-          open={open}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box
-            sx={style}
-            className="flex flex-col gap-3 sm:w-[400px] w-[300px]"
+          <Modal
+            open={open}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
           >
-            <RxCross1
-              className="absolute right-4 top-4 cursor-pointer"
-              title="close"
-              onClick={handleClose}
-            />
-            <p className="text-center text-xl">Forgot Password ?</p>
-            <Input
-              name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter Email"
-              className="w-full"
-              required
-            />
-            <Button
-              onClick={() => {
-                if (email) {
-                  generateOTP();
-                  if (GeneratedOtp) {
-                    SendOtp();
+            <Box
+              sx={style}
+              className="flex flex-col gap-3 sm:w-[400px] w-[300px]"
+            >
+              <RxCross1
+                className="absolute right-4 top-4 cursor-pointer"
+                title="close"
+                onClick={handleClose}
+              />
+              <p className="text-center text-xl">Forgot Password ?</p>
+              <Input
+                name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter Email"
+                className="w-full"
+                required
+              />
+              <Button
+                onClick={() => {
+                  if (email) {
+                    generateOTP();
+                    if (GeneratedOtp) {
+                      SendOtp();
+                    }
+                  } else {
+                    toast.error("Enter email");
                   }
-                } else {
-                  toast.error("Enter email");
-                }
-              }}
-              disabled={SendingOtp}
+                }}
+                disabled={SendingOtp}
+              >
+                {SendingOtp ? "Generating..." : " Generate OTP"}
+              </Button>
+
+              {OtpGenerate ? (
+                <>
+                  <p className="text-center text-red-600 m-0">
+                    If not received generate OTP again
+                  </p>
+                  <Title level={5}>Enter OTP</Title>
+                  <Otp.OTP
+                    formatter={(str) => str.toUpperCase()}
+                    {...sharedProps}
+                  />
+                  <Button
+                    onClick={() => {
+                      verifyOtp();
+                    }}
+                  >
+                    {VerifyOtp ? "Verifying..." : "Verify"}
+                  </Button>
+                </>
+              ) : null}
+            </Box>
+          </Modal>
+
+          {/* reset password modal */}
+          <ModalComponent
+            handleClose={handleResetPassClose}
+            open={ResetPass}
+            ModalType={ResetPassModal}
+            email={email}
+          />
+          {/* backdrop */}
+          {loading && (
+            <Backdrop
+              sx={(theme) => ({
+                color: "#fff",
+                zIndex: theme.zIndex.drawer + 1,
+              })}
+              open={loading}
             >
-              {SendingOtp ? "Generating..." : " Generate OTP"}
-            </Button>
-
-            {OtpGenerate ? (
-              <>
-                <p className="text-center text-red-600 m-0">
-                  If not received generate OTP again
-                </p>
-                <Title level={5}>Enter OTP</Title>
-                <Otp.OTP
-                  formatter={(str) => str.toUpperCase()}
-                  {...sharedProps}
-                />
-                <Button
-                  onClick={() => {
-                    verifyOtp();
-                  }}
-                >
-                  {VerifyOtp ? "Verifying..." : "Verify"}
-                </Button>
-              </>
-            ) : null}
-          </Box>
-        </Modal>
-
-        {/* reset password modal */}
-        <ModalComponent
-          handleClose={handleResetPassClose}
-          open={ResetPass}
-          ModalType={ResetPassModal}
-          email={email}
-        />
-        {/* backdrop */}
-        {loading && (
-          <Backdrop
-            sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-            open={loading}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        )}
+              <CircularProgress color="inherit" />
+            </Backdrop>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
