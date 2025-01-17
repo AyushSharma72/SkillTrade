@@ -207,7 +207,73 @@ async function InformUser(req, resp) {
   }
 }
 
+async function ApproveRequest(req, resp) {
+  try {
+    const { rid } = req.params;
+    const report = await ReportModal.deleteOne({ requestId: rid });
+    const request = await RequestModal.findById(rid);
+    if (!report) {
+      resp.status(404).send({
+        success: false,
+        message: "Report not found",
+      });
+    }
+    if (!request) {
+      resp.status(404).send({
+        success: false,
+        message: "Request not found",
+      });
+    }
+    request.ReportedInfo = null;
+    request.save();
 
+    resp.status(200).send({
+      success: true,
+      message: "request approved",
+    });
+  } catch (error) {
+    resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
+async function RejectReviewRequest(req, resp) {
+  try {
+    const { rid } = req.params;
+    const { info } = req.body;
+    const report = await ReportModal.findOne({ requestId: rid });
+    const request = await RequestModal.findById(rid);
+    if (!report) {
+      resp.status(404).send({
+        success: false,
+        message: "Report not found",
+      });
+    }
+    if (!request) {
+      resp.status(404).send({
+        success: false,
+        message: "Request not found",
+      });
+    }
+    report.ReviewRequested = false;
+    request.ReportedInfo.Info = info;
+    request.ReportedInfo.Review = false;
+    await request.save();
+    await report.save();
+
+    resp.status(200).send({
+      success: true,
+      message: "request rejected",
+    });
+  } catch (error) {
+    resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
 
 module.exports = {
   VerifyWorker,
@@ -217,4 +283,6 @@ module.exports = {
   GetReport,
   DeleteRequest,
   InformUser,
+  ApproveRequest,
+  RejectReviewRequest,
 };

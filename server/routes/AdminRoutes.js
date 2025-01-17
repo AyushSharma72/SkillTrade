@@ -7,6 +7,8 @@ const {
   GetReport,
   DeleteRequest,
   InformUser,
+  ApproveRequest,
+  RejectReviewRequest,
 } = require("../controllers/AdminController");
 
 const router = express.Router();
@@ -29,5 +31,9 @@ router.post("/view_reports", GetReport);
 router.delete("/delete_request/:rid",DeleteRequest);
 
 router.post("/inform_user/:rid", InformUser);
+
+router.delete("/approve_review/:rid", ApproveRequest);
+
+router.post("/reject_review/:rid", RejectReviewRequest);
 
 module.exports = router;

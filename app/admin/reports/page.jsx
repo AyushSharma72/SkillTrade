@@ -39,6 +39,7 @@ const Page = ({ role }) => {
   const [openRows, setOpenRows] = useState({});
   const [infomodal, SetInfoModal] = useState(false);
   const [openmodal, SetOpenModal] = useState(false);
+  const [rejectReviewModal, SetRejectReviewModal] = useState(false);
   const [requestId, SetRequestId] = useState("");
   const [info, SetInfo] = useState("");
 
@@ -86,6 +87,7 @@ const Page = ({ role }) => {
     }
   };
 
+  // delete request
   async function deleteRequest() {
     const apiUrl = `http://localhost:8000/api/v1/admin/delete_request/${requestId}`;
     setBackdrop(true);
@@ -109,10 +111,12 @@ const Page = ({ role }) => {
     } catch (error) {
       toast.error("Error occurred while deleting");
     } finally {
+      SetRequestId(null);
       setBackdrop(false); // Hide the backdrop
     }
   }
 
+  // inform user
   async function informUser() {
     const apiUrl = `http://localhost:8000/api/v1/admin/inform_user/${requestId}`;
     setBackdrop(true);
@@ -137,6 +141,67 @@ const Page = ({ role }) => {
     } catch (error) {
       toast.error("An Error occurred");
     } finally {
+       SetRequestId(null);
+      setBackdrop(false); // Hide the backdrop
+    }
+  }
+
+  // reject review
+
+  async function rejectReviewRequest() {
+    try {
+      setBackdrop(true);
+      const response = await fetch(
+        `http://localhost:8000/api/v1/admin/reject_review/${requestId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ info }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+       SetRequestId(null);
+      setBackdrop(false); // Hide the backdrop
+    }
+  }
+
+  // approve review
+  async function approveRequest() {
+    try {
+      setBackdrop(true);
+      const response = await fetch(
+        `http://localhost:8000/api/v1/admin/approve_review/${requestId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(result.message);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred. Please try again.");
+    } finally {
+       SetRequestId(null);
       setBackdrop(false); // Hide the backdrop
     }
   }
@@ -229,14 +294,35 @@ const Page = ({ role }) => {
                             <span>A review is requested by the user</span>
                             <div className="flex gap-4 justify-center items-center">
                               {" "}
-                              <BsPersonFillCheck
+                              {/* <BsPersonFillCheck
                                 title="Approving this review will remove this request from reported request"
                                 className="cursor-pointer text-2xl text-green-600"
-                              />
-                              <ImCross
+                              /> */}
+                              <Button
+                                title="Approving this review will remove this request from reported request"
+                                onClick={() => {
+                                  SetRequestId(report.requestId);
+                                  if (requestId) {
+                                    approveRequest();
+                                  }
+                                }}
+                              >
+                                {" "}
+                                Approve
+                              </Button>
+                              <Button
+                                title="reject the review request of the user"
+                                onClick={() => {
+                                  SetRequestId(report.requestId);
+                                  SetRejectReviewModal(true);
+                                }}
+                              >
+                                Reject
+                              </Button>
+                              {/* <ImCross
                                 title="reject the review request of the user"
                                 className="cursor-pointer text-xl text-red-600"
-                              />
+                              /> */}
                             </div>
                           </div>
                         ) : (
@@ -383,6 +469,44 @@ const Page = ({ role }) => {
           <Button
             onClick={() => {
               SetInfoModal(false);
+            }}
+          >
+            Cancel
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* rejectReviewModal */}
+
+      <Modal
+        open={rejectReviewModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box
+          sx={style}
+          className="flex flex-col gap-2 sm:w-[400px] w-[300px] !p-5"
+        >
+          <p className="text-center text-xl">Reject Request</p>{" "}
+          <Textarea
+            name="description"
+            placeholder="Enter reason for rejection"
+            value={info}
+            onChange={(e) => SetInfo(e.target.value)}
+            className="w-full h-40 overflow-y-scroll scrollbar-hide"
+            required
+          />
+          <Button
+            onClick={() => {
+              rejectReviewRequest();
+            }}
+            className="bg-red-600"
+          >
+            Reject
+          </Button>
+          <Button
+            onClick={() => {
+              SetRejectReviewModal(false);
             }}
           >
             Cancel
