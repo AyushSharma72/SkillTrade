@@ -24,7 +24,7 @@ const items = [
 const page = () => {
   return (
     <div className="w-full ">
-      <p className="text-3xl font-bold  text-center mt-5">
+      <p className="text-3xl font-bold  text-center sm:mt-5 mt-20">
         {" "}
         User Profile Management
       </p>

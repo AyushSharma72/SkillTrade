@@ -68,11 +68,11 @@ function ViewRequest() {
           <PulseLoader size={20} className="m-auto" />
         </div>
       ) : data?.length > 0 ? (
-        <div>
+        <div className="flex flex-col items-center">
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
-            Requests Cretated By You
+            Requests Created By You
           </p>
-          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col items-center pb-3">
+          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col  pb-3 ">
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -137,14 +137,15 @@ function ViewRequest() {
                 ))}
               </TableBody>
             </Table>
-            <Pagination
+           
+          </TableContainer>
+           <Pagination
               className="mt-5"
               count={pages}
               page={pageNumber}
               color="primary"
               onChange={handlePageChange}
             />
-          </TableContainer>
         </div>
       ) : (
         <div className="w-full flex flex-col justify-center items-center">

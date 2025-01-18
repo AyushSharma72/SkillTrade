@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,10 +21,14 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "../_context/UserAuthContent";
-import Menu from "../_components/NavBarComponenets/menu";
+import Menu2 from "../_components/NavBarComponenets/menu";
 import WorkerMenu from "./NavBarComponenets/WorkerMenu";
 const drawerWidth = 240;
 import AdminMenu from "./NavBarComponenets/AdminMenu";
+import { Button } from "../../components/ui/button";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+import LogoutModal from "./NavBarComponenets/LogoutModal";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -61,6 +65,15 @@ const Navbar = () => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const [auth, setauth] = useAuth();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [modal, setModalState] = React.useState(false);
+  const open2 = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -69,8 +82,8 @@ const Navbar = () => {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-
-  useEffect(() => {}, [auth]); // Watch for changes to the `auth` state
+  const handleOpenModal = () => setModalState(true);
+  const handleCloseModal = () => setModalState(false);
 
   const pathname = usePathname();
   return (
@@ -95,7 +108,7 @@ const Navbar = () => {
               >
                 Create request
               </Link>
-              <Menu />
+              <Menu2 />
             </>
           ) : auth?.user?.role == 1 ? (
             <>
@@ -149,7 +162,7 @@ const Navbar = () => {
           )}
         </div>
       </div>
-
+      <LogoutModal modalState={modal} onClose={handleCloseModal}></LogoutModal>
       {/* small screen navbar */}
       <div className="sm:hidden">
         <Box className="flex justify-between">
@@ -177,7 +190,7 @@ const Navbar = () => {
               >
                 <MenuIcon />
               </IconButton>
-              <Image src={logo} className="w-[200px] h-[70px]"></Image>
+              <Image src={logo} className="w-[200px] h-[70px]" alt="Logo" />
             </Toolbar>
           </AppBar>
           <Drawer
@@ -204,36 +217,252 @@ const Navbar = () => {
             </DrawerHeader>
             <Divider />
             <List>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <Link href="/" className="m-auto flex">
-                    <ListItemIcon></ListItemIcon>
-                    <ListItemText primary="Home" />
-                  </Link>
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <Link href="register" className="m-auto flex">
-                    <ListItemIcon></ListItemIcon>
-                    <ListItemText primary="Register" />
-                  </Link>
-                </ListItemButton>
-              </ListItem>
-            </List>
-            <Divider />
-            <List>
-              <ListItem disablePadding>
-                <ListItemButton>
-                  <Link href="login" className="m-auto flex">
-                    <ListItemIcon></ListItemIcon>
-                    <ListItemText primary="Login" />
-                  </Link>
-                </ListItemButton>
-              </ListItem>
+              {/* user  */}
+              {auth?.user?.role === 0 && (
+                <div className="flex flex-col gap-3">
+                  {/* home  */}
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Home" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                  {/* create request  */}
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/user/create_request" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Create Request" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+
+                  {/* dashboard  */}
+                  <div className="flex justify-center ">
+                    <Button
+                      id="basic-button"
+                      aria-controls={open2 ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open2 ? "true" : undefined}
+                      onClick={handleClick}
+                      className="w-[90%]"
+                    >
+                      My Account
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open2}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                        }}
+                      >
+                        <Link href="/user/User_Profile"> Profile</Link>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                        }}
+                      >
+                        <Link href="/user/view_request"> View Request</Link>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                          handleOpenModal();
+                        }}
+                      >
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                </div>
+              )}
+
+              {/* worker  */}
+              {auth?.user?.role === 1 && (
+                 <div className="flex flex-col gap-3">
+                  {/* home  */}
+                  <ListItem disablePadding>
+                    <ListItemButton>
+                      <Link
+                        href="/"
+                        className="m-auto flex"
+                        onClick={handleDrawerClose}
+                      >
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Home" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                  {/* all request  */}
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/worker/all_request" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="All Requests" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+
+                  {/* dashboard  */}
+                  <div className="flex justify-center ">
+                    <Button
+                      id="basic-button"
+                      aria-controls={open2 ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open2 ? "true" : undefined}
+                      onClick={handleClick}
+                      className="w-[90%]"
+                    >
+                      My Account
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open2}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                        }}
+                      >
+                        <Link
+                          href={`/worker/worker_profile/${auth?.user?._id}`}
+                        >
+                          Profile
+                        </Link>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                        }}
+                      >
+                        <Link href="/worker/requests">Assigned Requests</Link>
+                      </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                          handleOpenModal();
+                        }}
+                      >
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                </div>
+              )}
+
+              {/* admin  */}
+              {auth?.user?.role === 2 && (
+                <div className="flex flex-col gap-3">
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Home" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+
+                  {/* admin menu  */}
+                  <div className="flex justify-center ">
+                    <Button
+                      id="basic-button"
+                      aria-controls={open2 ? "basic-menu" : undefined}
+                      aria-haspopup="true"
+                      aria-expanded={open2 ? "true" : undefined}
+                      onClick={handleClick}
+                      className="w-[90%]"
+                    >
+                      Admin Dashboard
+                    </Button>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open2}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                        }}
+                      >
+                        <Link href="/admin/reports">View Reports</Link>
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                        }}
+                      >
+                        <Link href="/admin/verify_worker">Verify Workers</Link>
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleDrawerClose();
+                            handleOpenModal();
+                        }}
+                      >
+                        Logout
+                      </MenuItem>
+                    </Menu>
+                  </div>
+                </div>
+              )}
+              {!auth?.user && (
+                <>
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Home" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/register" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Register" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link href="/login" className="m-auto flex">
+                        <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Login" />
+                      </Link>
+                    </ListItemButton>
+                  </ListItem>
+                </>
+              )}
             </List>
             <Divider />
           </Drawer>

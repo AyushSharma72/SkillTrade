@@ -65,7 +65,7 @@ const UserPassword = () => {
         <hr />
 
         <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 sm:w-1/2 m-auto">
+          <div className="flex flex-col gap-2 w-[90%] sm:w-1/2 m-auto">
             <label className="font-medium">Old Password</label>
             <Input
               name="name"
@@ -79,7 +79,7 @@ const UserPassword = () => {
               placeholder="Enter your old password"
             />
           </div>
-          <div className="flex flex-col gap-2 sm:w-1/2 m-auto">
+          <div className="flex flex-col gap-2 sm:w-1/2 m-auto  w-[90%]">
             <label className="font-medium">New password</label>
             <Input
               name="mobile"

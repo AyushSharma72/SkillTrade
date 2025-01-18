@@ -22,7 +22,7 @@ const LogoutModal = ({ modalState, onClose }) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style}>
+      <Box sx={style} className="w-[300px]">
         <Typography
           id="modal-modal-title"
           className="text-center text-red-600 font-bold"
@@ -30,9 +30,9 @@ const LogoutModal = ({ modalState, onClose }) => {
         >
           Are you sure you want to logout?
         </Typography>
-        <div className="flex mt-4">
+        <div className="flex flex-col mt-2">
           <Button
-            className="w-1/4 m-auto mt-3 gap-2 flex"
+            className="w-full m-auto mb-1 flex"
             onClick={() => {
               handleLogout();
               onClose();
@@ -40,7 +40,7 @@ const LogoutModal = ({ modalState, onClose }) => {
           >
             Logout
           </Button>
-          <Button className="w-1/4 m-auto mt-3 gap-2 flex" onClick={onClose}>
+          <Button className="w-full" onClick={onClose}>
             Cancel
           </Button>
         </div>

@@ -59,10 +59,10 @@ const AcceptedRequest = () => {
         </div>
       ) : requests?.length > 0 ? (
         <div>
-          <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
+          <p className="text-3xl text-center sm:mt-3  mt-5 font-bold">
             Requests Accepted By You
           </p>
-          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col items-center pb-3">
+          <TableContainer className="cursor-pointer sm:mt-5  mt-5 m-auto xl:!w-3/4  justify-center flex flex-col  pb-3">
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>

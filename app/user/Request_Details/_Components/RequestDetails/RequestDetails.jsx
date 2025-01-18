@@ -238,7 +238,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
         <CircularProgress color="inherit" />
       </Backdrop>{" "}
       <p className="text-2xl font-bold">Request Details</p>
-      {data.ReportedInfo.Info && data.ReportedInfo.Review == false ? (
+      {data.ReportedInfo?.Info && data.ReportedInfo?.Review == false ? (
         <Alert severity="warning" className="w-full">
           Warning: please follow the below guidelines otherwise the request will
           be deleted
@@ -253,7 +253,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
             Request Review
           </span>
         </Alert>
-      ) : data.ReportedInfo.Review ? (
+      ) : data.ReportedInfo?.Review ? (
         <Alert severity="info" className="w-full">
           The request is submitted for review
         </Alert>
@@ -274,16 +274,17 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                 />
                 <form
                   onSubmit={updateRequestImage}
-                  className="flex justify-center items-center flex-col sm:flex-row"
+                  className="flex justify-center items-center "
                 >
                   {data.status !== "Completed" && data.status !== "Deleted" ? (
                     <>
                       {" "}
                       <input
                         type="file"
-                        id="image"
+                        id="image"  
                         accept="image/*"
                         onChange={handleImageChange}
+                        className="w-1/2"
                       />
                       <Button type="submit">Update Photo</Button>
                     </>
@@ -293,7 +294,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                   {data.description}
                 </p>
               </div>
-              <div className="flex flex-col w-full xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg ">
+              <div className="flex flex-col w-full xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg  mt-4 sm:mt-0">
                 <div className="flex items-center sm:justify-normal ">
                   <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
                     <MdOutlineHandyman /> Service type :

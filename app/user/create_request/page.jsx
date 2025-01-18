@@ -186,7 +186,7 @@ const CreateRequest = () => {
   return (
     <Box sx={{ width: "100%" }}>
       <Toaster />
-      <p className="w-full text-center mt-2 font-bold text-3xl">
+      <p className="w-full text-center font-bold text-3xl mt-20 sm:mt-2">
         Create Request
       </p>
       <Stepper
