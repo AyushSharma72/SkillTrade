@@ -112,7 +112,8 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
           <Badge.Ribbon
             text={WorkerData.Verified.verified}
             color={
-              WorkerData?.Verified.verified === "Unverified" || "Rejected"
+              WorkerData?.Verified.verified === "Unverified" ||
+              WorkerData?.Verified.verified === "Rejected"
                 ? "red"
                 : WorkerData?.Verified.verified === "Pending"
                 ? "orange"
@@ -286,14 +287,15 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
 
             <p
               className={`text-center ${
-                WorkerData?.Verified.verified === "Unverified" || "Rejected"
+                WorkerData?.Verified.verified === "Unverified" ||
+                WorkerData?.Verified.verified === "Rejected"
                   ? "text-red-600"
                   : WorkerData?.Verified.verified === "Pending"
                   ? "text-yellow-600"
                   : WorkerData?.Verified.verified === "Verified"
                   ? "text-green-500"
                   : null
-              } `}
+              }`}
             >
               {" "}
               {WorkerData?.Verified.verified}

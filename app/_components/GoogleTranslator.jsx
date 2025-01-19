@@ -24,7 +24,6 @@ const GoogleTranslator = () => {
     script.async = true;
     document.body.appendChild(script);
 
-    // Add the other necessary scripts
     const customScript = document.createElement("script");
     customScript.innerHTML = `
       window.addEventListener("load", function () {
@@ -43,8 +42,6 @@ const GoogleTranslator = () => {
     floatScript.src = "https://cdn.gtranslate.net/widgets/latest/float.js";
     floatScript.defer = true;
     document.body.appendChild(floatScript);
-
-    // Clean up the scripts when component is unmounted
     return () => {
       document.body.removeChild(script);
       document.body.removeChild(customScript);
