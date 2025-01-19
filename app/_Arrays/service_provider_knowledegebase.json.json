@@ -1,0 +1,24 @@
+{
+  "service_provider_faqs.json": [
+    {
+      "question": "What is Skill Trade?",
+      "answer": "Skill Trade is a service booking platform where users can book various services such as electricians, carpenters, plumbers, and more. It connects service providers with consumers to fulfill their needs efficiently."
+    },
+    {
+      "question": "How do I get started?",
+      "answer": "Go to the 'Register' page and create an account by filling in the basic details as a service provider."
+    },
+    {
+      "question": "I am a service provider. How can I get work on this website?",
+      "answer": "To get work, go to the 'All Requests' page, apply filters based on your expertise and location, and accept the requests you want to work on."
+    },
+    {
+      "question": "How do I (service provider) verify my profile?",
+      "answer": "Go to your profile and add your Aadhar Card or PAN Card details. Click 'Submit'. Your profile will be verified by the admin if your documents are correct."
+    },
+    {
+      "question": "How does this website work?",
+      "answer": "The service consumer creates a request for any service they require. Service providers can accept the request. The service consumer can decide whom to assign the task based on pricing and the service provider's profile. The assigned service provider will get the chance to perform the work."
+    }
+  ]
+}

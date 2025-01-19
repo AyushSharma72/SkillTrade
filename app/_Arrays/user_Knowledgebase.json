@@ -1,0 +1,36 @@
+{
+  "Service Consumner(user) Knowledgebase": [
+    {
+      "question": "What is Skill Trade?",
+      "answer": "Skill Trade is a service booking platform where users can book various services such as electricians, carpenters, plumbers, and more. It connects service providers with consumers to fulfill their needs efficiently."
+    },
+    {
+      "question": "How do I book a service?",
+      "answer": "Click on 'Create Request' in the navbar, fill in the details of your request, and hit 'Submit'."
+    },
+    {
+      "question": "What services do you provide?",
+      "answer": "We provide services such as electricians, carpenters, plumbers, painters, gardeners, mechanics, roofers, tilers, and more. You can explore all the services on our platform."
+    },
+    {
+      "question": "Where can I view the created request?",
+      "answer": "Click on 'My Account' in the navbar, then click on 'View Request'. There you can see all your requests with their statuses."
+    },
+    {
+      "question": "How can I change my password?",
+      "answer": "Click on 'My Account', then click on 'Profile'. There you will find the 'Password' tab where you can change your password."
+    },
+    {
+      "question": "Where can I view request details?",
+      "answer": "You can view the details of your request on the 'View Request' page. Click on the 'View' button for the request you want to see details of."
+    },
+    {
+      "question": "How do I get started?",
+      "answer": "Go to the 'Register' page and create an account by filling in the basic details as a service consumer."
+    },
+    {
+      "question": "How can I (consumer) contact the service provider?",
+      "answer": "You can see which service provider or worker accepted your request on the 'Request Details' page. Click on the 'View Profile' button to find the contact information of the service provider."
+    }
+  ]
+}
