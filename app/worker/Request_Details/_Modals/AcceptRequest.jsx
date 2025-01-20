@@ -5,17 +5,8 @@ import { Input, Textarea } from "@mui/joy";
 import { Button } from "../../../../components/ui/button";
 import { AcceptRequestFetchFunction } from "../_FetchFunction/AcceptRequest";
 import { toast } from "react-hot-toast";
+import {style} from "../../../_Arrays/Arrays"
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  boxShadow: 24,
-  p: 3,
-};
 
 const AcceptRequest = ({ handleClose, rid }) => {
   const [EstimatedPrice, SetEstimatedPrice] = useState("");

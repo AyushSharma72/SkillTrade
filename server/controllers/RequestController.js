@@ -261,7 +261,7 @@ async function FilterRequests(req, resp) {
       });
     }
     let query = {
-      status: { $nin: ["completed", "deleted"] }, // Exclude completed and deleted requests
+      status: { $nin: ["Completed", "Deleted"] }, // Exclude completed and deleted requests
     };
 
 

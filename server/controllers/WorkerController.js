@@ -155,7 +155,6 @@ async function Report(req, resp) {
   }
 }
 
-
 async function AcceptRequest(req, resp) {
   try {
     const { wid, rid } = req.params;
