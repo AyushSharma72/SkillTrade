@@ -92,9 +92,9 @@ async function CheckCity(req, resp) {
 async function Report(req, resp) {
   try {
     const { wid, rid } = req.params;
-    const { issueType } = req.body;
-
-    if (!issueType) {
+    const issueType = req.body.issueType; 
+   
+    if (!req.body.issueType) {
       return resp.status(400).send({
         success: false,
         message: "please select the issue",

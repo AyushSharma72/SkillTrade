@@ -23,12 +23,11 @@ const isAdmin = (WrappedComponent) => {
               router.replace("/");
             }
           } catch (error) {
-            // console.error("Error parsing auth data:", error);
             router.replace("/");
           }
         } else {
           toast("please login");
-          router.replace("/"); // Redirect if no auth data
+          router.replace("/");
         }
         setLoading(false);
       };
@@ -51,7 +50,9 @@ const isAdmin = (WrappedComponent) => {
     return (
       <div className="flex flex-col justify-center items-center h-screen">
         {" "}
-        <p className="text-red-600 text-xl">You are not authorized to access this page </p>
+        <p className="text-red-600 text-xl">
+          You are not authorized to access this page{" "}
+        </p>
         <p className="text-xl">Redirecting....</p>
       </div>
     );

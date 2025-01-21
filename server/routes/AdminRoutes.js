@@ -26,14 +26,14 @@ router.post(
   rejectVerificationRequest
 );
 
-router.post("/view_reports", GetReport);
+router.post("/view_reports", isAdmin, GetReport);
 
-router.delete("/delete_request/:rid",DeleteRequest);
+router.delete("/delete_request/:rid", isAdmin, DeleteRequest);
 
-router.post("/inform_user/:rid", InformUser);
+router.post("/inform_user/:rid", isAdmin, InformUser);
 
-router.delete("/approve_review/:rid", ApproveRequest);
+router.delete("/approve_review/:rid", isAdmin, ApproveRequest);
 
-router.post("/reject_review/:rid", RejectReviewRequest);
+router.post("/reject_review/:rid", isAdmin, RejectReviewRequest);
 
 module.exports = router;

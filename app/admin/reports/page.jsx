@@ -27,8 +27,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { StyledTableCell, style } from "../../_Arrays/Arrays";
 import Modal from "@mui/material/Modal";
 import { Textarea } from "@mui/joy";
-import { BsPersonFillCheck } from "react-icons/bs";
-import { ImCross } from "react-icons/im";
+import isAdmin from "@/app/_components/privateroutes/isAdmin";
 
 const Page = ({ role }) => {
   const [reports, setReports] = useState([]);
@@ -97,6 +96,7 @@ const Page = ({ role }) => {
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({ role }),
       });
 
       const result = await response.json();
@@ -126,7 +126,7 @@ const Page = ({ role }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ info }),
+        body: JSON.stringify({ info, role }),
       });
 
       const result = await response.json();
@@ -158,7 +158,7 @@ const Page = ({ role }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ info }),
+          body: JSON.stringify({ info,role }),
         }
       );
 
@@ -188,6 +188,7 @@ const Page = ({ role }) => {
           headers: {
             "Content-Type": "application/json",
           },
+          body: JSON.stringify({ role }),
         }
       );
 
@@ -294,10 +295,7 @@ const Page = ({ role }) => {
                             <span>A review is requested by the user</span>
                             <div className="flex gap-4 justify-center items-center">
                               {" "}
-                              {/* <BsPersonFillCheck
-                                title="Approving this review will remove this request from reported request"
-                                className="cursor-pointer text-2xl text-green-600"
-                              /> */}
+                             
                               <Button
                                 title="Approving this review will remove this request from reported request"
                                 onClick={() => {
@@ -319,10 +317,7 @@ const Page = ({ role }) => {
                               >
                                 Reject
                               </Button>
-                              {/* <ImCross
-                                title="reject the review request of the user"
-                                className="cursor-pointer text-xl text-red-600"
-                              /> */}
+                             
                             </div>
                           </div>
                         ) : (
@@ -517,4 +512,4 @@ const Page = ({ role }) => {
   );
 };
 
-export default Page;
+export default isAdmin(Page);

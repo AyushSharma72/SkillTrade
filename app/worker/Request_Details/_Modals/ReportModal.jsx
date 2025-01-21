@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import { Textarea } from "@mui/joy";
 import Box from "@mui/material/Box";
 import { Button } from "../../../../components/ui/button";
 import {
@@ -11,14 +10,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ReportRequest } from "../_FetchFunction/ReportRequest";
-import { useAuth } from "@/app/_context/UserAuthContent";
 import { toast } from "react-hot-toast";
 import {style} from "../../../_Arrays/Arrays"
 
 
 const ReportModal = ({ handleClose, rid }) => {
   const [IssueType, SetIssueType] = useState("");
-  const auth = useAuth();
 
   const handleIssueTypeChange = (value) => {
     SetIssueType(value);
@@ -26,19 +23,22 @@ const ReportModal = ({ handleClose, rid }) => {
 
   async function Report() {
     try {
+      if(!IssueType){
+        toast.error("please select an issue")
+        return;
+      }
       const authString = localStorage.getItem("auth");
       const auth = JSON.parse(authString);
       const data = await ReportRequest(
         auth?.user?._id,
         rid,
         IssueType,
-       
       );
 
       if (data.success) {
         toast.success(data.message);
         SetIssueType("");
-        setDescription("");
+
       } else {
         toast.error(data.message);
       }
@@ -58,14 +58,14 @@ const ReportModal = ({ handleClose, rid }) => {
       <div className="flex flex-col items-center justify-center gap-3">
         <Select
           required
-          onValueChange={handleIssueTypeChange}
-          value={IssueType}
+          onValueChange={(value) => handleIssueTypeChange(value)}
+          value={IssueType || undefined}
         >
           <SelectTrigger>
             <SelectValue placeholder="Select issue" />
           </SelectTrigger>
           <SelectContent className="z-[1500]">
-            <SelectItem value=" The request is irrelevent">
+            <SelectItem value="The request is irrelevent">
               The request is irrelevent
             </SelectItem>
             <SelectItem value="the image is irrelevent">
@@ -77,7 +77,6 @@ const ReportModal = ({ handleClose, rid }) => {
           </SelectContent>
         </Select>
 
-       
         <div className="w-full flex flex-col gap-2 ">
           {" "}
           <Button

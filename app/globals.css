@@ -43,7 +43,7 @@ body::-webkit-scrollbar {
 }
 
 .ant-image {
-  height: 300px !important;
+  height: 300px !important; 
   width: 400px !important;
 }
 

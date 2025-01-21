@@ -12,7 +12,7 @@ const Register = () => {
             Register As User
           </TabsTrigger>
           <TabsTrigger value="worker" className="font-bold">
-            Register As Worker
+            Register As Service Provider
           </TabsTrigger>
         </TabsList>
 

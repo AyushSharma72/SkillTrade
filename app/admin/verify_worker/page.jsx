@@ -21,7 +21,7 @@ import Empty from "../../assests/Empty.svg";
 import { style } from "../../_Arrays/Arrays";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-// import isAdmin from "@/app/_components/privateroutes/isAdmin";
+import isAdmin from "@/app/_components/privateroutes/isAdmin";
 import { Textarea } from "@mui/joy";
 import { toast, Toaster } from "react-hot-toast";
 import  Backdrop  from "@mui/material/Backdrop";
@@ -51,7 +51,7 @@ const Page = ({ role }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            role: 2,
+            role: role,
           }),
         }
       );
@@ -104,7 +104,7 @@ const Page = ({ role }) => {
           },
           body: JSON.stringify({
             reason: rejectionReason,
-            role:2
+            role:role
           }),
         }
       );
@@ -133,7 +133,7 @@ const Page = ({ role }) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            role: 2,
+            role: role,
           }),
         }
       );
@@ -330,4 +330,4 @@ const Page = ({ role }) => {
   );
 };
 
-export default Page;
+export default isAdmin(Page);

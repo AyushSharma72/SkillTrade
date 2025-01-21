@@ -254,32 +254,7 @@ function AcceptedBy() {
           </Link>
         </div>
       )}
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="Assign modal"
-        aria-describedby="used to assign task to the worker "
-      >
-        <Box sx={style} className="flex flex-col gap-2 ">
-          <p className="text-center">
-            Please check all the details before assigning the task to the worker
-            !{" "}
-          </p>
-
-          <Button
-            title="assign this job to this worker"
-            onClick={(e) => {
-              AssignTask(e, accepted.worker._id);
-              if (!loading2) {
-                handleClose();
-              }
-            }}
-          >
-            Assign
-          </Button>
-          <Button onClick={handleClose}>Close</Button>
-        </Box>
-      </Modal>
+    
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading2}

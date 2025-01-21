@@ -97,7 +97,7 @@ const WorkerRegisterForm = () => {
         className="w-full flex justify-center flex-col items-center gap-y-5 mt-5 formshadow py-2 rounded-md"
         onSubmit={RegisterWorker}
       >
-        <p className="font-bold text-2xl ">Create Worker Account</p>
+        <p className="font-bold text-2xl ">Create Service Provider Account</p>
         <TextField
           id="name"
           label="Name"

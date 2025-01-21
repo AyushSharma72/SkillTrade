@@ -22,7 +22,7 @@ const LogoutModal = ({ modalState, onClose }) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={style} className="w-[300px]">
+      <Box sx={style} className="w-[300px] sm:w-[400px]">
         <Typography
           id="modal-modal-title"
           className="text-center text-red-600 font-bold"
