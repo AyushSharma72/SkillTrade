@@ -92,11 +92,11 @@ async function CheckCity(req, resp) {
 async function Report(req, resp) {
   try {
     const { wid, rid } = req.params;
-    const issueType = req.body.issueType; 
-   
-    if (!req.body.issueType) {
+    const issueType = req.body.issueType;
+    console.log(issueType);
+    if (!issueType) {
       return resp.status(400).send({
-        success: false,
+        success: false, 
         message: "please select the issue",
       });
     }
@@ -312,7 +312,7 @@ async function UpdateProfile(req, resp) {
   } else {
     console.log("No verification image exists");
   }
-  updatedWorker.Verified.verified ="Pending";
+  updatedWorker.Verified.verified = "Pending";
   await updatedWorker.save();
 
   return resp.status(200).send({

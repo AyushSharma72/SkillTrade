@@ -6,9 +6,7 @@ export async function ReportRequest(wid, rid, IssueType) {
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(
-          IssueType,
-        ),
+        body: JSON.stringify({ issueType: IssueType }),
       }
     );
     const data = await response.json();

@@ -37,6 +37,7 @@ const ReportModal = ({ handleClose, rid }) => {
 
       if (data.success) {
         toast.success(data.message);
+        handleClose();
         SetIssueType("");
 
       } else {

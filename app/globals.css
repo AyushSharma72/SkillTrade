@@ -3,6 +3,8 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
 .formshadow {
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
@@ -66,6 +68,11 @@ body::-webkit-scrollbar {
 .swiper-button-prev {
   top: 90% !important;
 }
+
+.textshadow {
+text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+}
+
 @media screen and (max-width: 400px) {
   .ant-image {
     height: 300px !important;
