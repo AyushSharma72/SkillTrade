@@ -103,7 +103,6 @@ const WorkerSchema = mongoose.Schema(
         type: Date,
       },
     },
-
     VerifyId: {
       data: Buffer,
       contentType: String,

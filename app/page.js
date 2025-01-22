@@ -30,7 +30,7 @@ export default function Home() {
       </div>
 
       {/* Worker section  */}
-      <div className="flex flex-col mt-5">
+      <div className="flex flex-col mt-10">
         <p className=" text-3xl sm:text-5xl text-center textshadow font-bold">
           Showcase Your Skills And Find Opportunities
         </p>
@@ -40,21 +40,19 @@ export default function Home() {
 
           <div className="md:w-[45%] xl:w-1/2">
             <DotLottieReact
-              src="https://lottie.host/d78e9347-6215-42e0-98a7-c73011911de4/HwLb6I30Uw.lottie"
-              loop
-              autoplay
-            />
+      src="https://lottie.host/bf9750c3-8c66-4641-a213-da2eea812c93/DyZztCGG34.lottie"
+      loop  
+      autoplay
+    />
           </div>
 
           {/* Text Section */}
-          <div className="text-center md:text-left md:w-[55%] xl:w-1/2 space-y-5 p-2">
+          <div className="text-center md:text-left md:w-[50%] xl:w-1/2 space-y-5 p-2">
             <p className="text-2xl mt-2 sm:mt-0 sm:text-3xl font-bold">
               Are you a skilled professional looking to expand your reach?
             </p>
-            <p className="leading-relaxed text-gray-700 text-lg sm:text-xl">
-              Skilltrade connects you with people who need your expertise.
-            </p>
-            <ul className="list-disc list-inside space-y-3 text-left font-semibold">
+
+            <ul className="list-disc list-inside space-y-3 text-left text-gray-700 text-lg ">
               <li>
                 Showcase your skills and find opportunities with people who need
                 your services.
@@ -67,6 +65,22 @@ export default function Home() {
                 Build your reputation and expand your professional network.
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+
+      {/* User section */}
+
+      <div className="flex flex-col mt-20">
+        <p className=" text-3xl sm:text-5xl text-center textshadow font-bold">
+          Find the Right Expertise for Your Needs
+        </p>
+
+        <div className="flex flex-col md:flex-row justify-around items-center mt-10 px-5">
+          {/* Lottie Animation Section */}
+          {/* Text Section */}
+          <div className="text-center md:text-left md:w-[55%] xl:w-1/2 space-y-5 p-2">
+           
           </div>
         </div>
       </div>

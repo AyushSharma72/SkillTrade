@@ -361,9 +361,11 @@ async function GetWorkerAcceptedRequest(req, resp) {
     const response = await RequestModal.find({
       acceptedBy: { $elemMatch: { worker: wid } },
     })
-      .select("-image")
+      .select("service location date status user  acceptedBy")
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .sort({ "acceptedBy.0.acceptedAt": -1 });;
+     
 
     if (response.length === 0) {
       return resp
@@ -408,9 +410,9 @@ const GetWorkerAssignedRequest = async (req, resp) => {
       assignedTo: wid,
       status: "Assigned",
     })
+      .select("service location date status user confirmedAt")
       .skip(skip)
       .limit(limit)
-      .select("-image")
       .sort({ createdAt: -1 });
 
     const totalPages = Math.ceil(totalRequests / limit);

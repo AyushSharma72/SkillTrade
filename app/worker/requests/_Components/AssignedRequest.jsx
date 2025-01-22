@@ -57,11 +57,11 @@ const AssignedRequest = () => {
           <PulseLoader size={20} className="m-auto" />
         </div>
       ) : requests?.length > 0 ? (
-        <div>
+        <div className="flex flex-col items-center">
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
             Requests Assigned To You
           </p>
-          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto xl:!w-3/4  justify-center flex flex-col  pb-3">
+          <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto   justify-center flex flex-col  pb-3">
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -71,6 +71,9 @@ const AssignedRequest = () => {
                     Visiting Date
                   </StyledTableCell>
                   <StyledTableCell align="center">Status</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Assigned Date
+                  </StyledTableCell>
                   <StyledTableCell align="center">Action</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -116,7 +119,9 @@ const AssignedRequest = () => {
                         </Tag>
                       ) : null}
                     </StyledTableCell>
-
+                    <StyledTableCell align="center">
+                     {moment(data.confirmedAt).format("MMMM Do YYYY")} 
+                    </StyledTableCell>
                     <StyledTableCell align="center">
                       <Link href={`Request_Details/${data._id}`}>
                         <Button>View</Button>
@@ -126,14 +131,14 @@ const AssignedRequest = () => {
                 ))}
               </TableBody>
             </Table>
-            <Pagination
-              className="mt-5"
-              count={pages}
-              page={pageNumber}
-              color="primary"
-              onChange={handlePageChange}
-            />
           </TableContainer>
+          <Pagination
+            className="mt-5"
+            count={pages}
+            page={pageNumber}
+            color="primary"
+            onChange={handlePageChange}
+          />
         </div>
       ) : (
         <div className="w-full flex flex-col justify-center items-center">

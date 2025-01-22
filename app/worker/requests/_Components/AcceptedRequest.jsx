@@ -15,7 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Empty from "../../../assests/Empty.svg";
 import Image from "next/image";
-import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays"
+import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
 
 const AcceptedRequest = () => {
   const [requests, setRequests] = useState([]);
@@ -28,8 +28,6 @@ const AcceptedRequest = () => {
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
   };
-
- 
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -58,11 +56,11 @@ const AcceptedRequest = () => {
           <PulseLoader size={20} className="m-auto" />
         </div>
       ) : requests?.length > 0 ? (
-        <div>
-          <p className="text-3xl text-center sm:mt-3  mt-5 font-bold">
+        <div className="flex flex-col items-center">
+          <p className="text-3xl text-center sm:mt-3 mt-5 font-bold">
             Requests Accepted By You
           </p>
-          <TableContainer className="cursor-pointer sm:mt-5  mt-5 m-auto xl:!w-3/4  justify-center flex flex-col  pb-3">
+          <TableContainer className="cursor-pointer sm:mt-5  mt-5 m-auto   justify-center flex flex-col  pb-3">
             <Table aria-label="customized table">
               <TableHead>
                 <TableRow>
@@ -72,6 +70,7 @@ const AcceptedRequest = () => {
                     Visiting Date
                   </StyledTableCell>
                   <StyledTableCell align="center">Status</StyledTableCell>
+                  <StyledTableCell align="center">Accepted At</StyledTableCell>
                   <StyledTableCell align="center">Action</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -117,8 +116,10 @@ const AcceptedRequest = () => {
                         </Tag>
                       ) : null}
                     </StyledTableCell>
-
-                    <StyledTableCell align="center">
+                    <StyledTableCell align="center" className="font-bold">
+                      {moment(data.acceptedBy[0].acceptedAt).format("MMMM Do YYYY")}
+                    </StyledTableCell>
+                    <StyledTableCell align="center" >
                       <Link href={`Request_Details/${data._id}`}>
                         <Button>View</Button>
                       </Link>
@@ -127,14 +128,14 @@ const AcceptedRequest = () => {
                 ))}
               </TableBody>
             </Table>
-            <Pagination
-              className="mt-5"
-              count={pages}
-              page={pageNumber}
-              color="primary"
-              onChange={handlePageChange}
-            />
           </TableContainer>
+          <Pagination
+            className="mt-5"
+            count={pages}
+            page={pageNumber}
+            color="primary"
+            onChange={handlePageChange}
+          />
         </div>
       ) : (
         <div className="w-full flex flex-col justify-center items-center">
