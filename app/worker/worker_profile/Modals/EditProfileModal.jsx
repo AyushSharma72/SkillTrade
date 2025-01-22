@@ -97,7 +97,10 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
       sx={style}
       className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
     >
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <p className="text-xl font-semibold text-center">Edit your profile</p>
       <hr />{" "}
       <div className="flex flex-col items-center w-full mt-2">

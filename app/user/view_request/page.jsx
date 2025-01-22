@@ -62,7 +62,10 @@ function ViewRequest() {
 
   return (
     <div>
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       {loading ? (
         <div className="h-[600px] w-full  flex  ">
           <PulseLoader size={20} className="m-auto" />
@@ -137,15 +140,14 @@ function ViewRequest() {
                 ))}
               </TableBody>
             </Table>
-           
           </TableContainer>
-           <Pagination
-              className="mt-5"
-              count={pages}
-              page={pageNumber}
-              color="primary"
-              onChange={handlePageChange}
-            />
+          <Pagination
+            className="mt-5"
+            count={pages}
+            page={pageNumber}
+            color="primary"
+            onChange={handlePageChange}
+          />
         </div>
       ) : (
         <div className="w-full flex flex-col justify-center items-center">

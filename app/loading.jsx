@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Lottie from "react-lottie";
-import animationData from "../../assests/loading.json";
+import animationData from "./assests/loading.json"
 
 export default function Loading() {
   const defaultOptions = {

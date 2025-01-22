@@ -67,6 +67,10 @@ const ResetPassModal = ({ handleClose, email }) => {
       sx={style}
       className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
     >
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <p className="text-xl font-semibold text-center">Reset Password</p>
 
       <hr />
@@ -129,11 +133,8 @@ const ResetPassModal = ({ handleClose, email }) => {
         <Button onClick={handleResetPassword} disabled={loading}>
           {loading ? "Processing..." : "Reset Password"}
         </Button>
-        <Button  onClick={handleClose}>
-          Cancel
-        </Button>
+        <Button onClick={handleClose}>Cancel</Button>
       </div>
-
     </Box>
   );
 };

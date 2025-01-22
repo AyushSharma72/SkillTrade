@@ -69,7 +69,10 @@ const UserRegisterForm = () => {
 
   return (
     <div className="flex flex-col  items-center">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
         open={loading}

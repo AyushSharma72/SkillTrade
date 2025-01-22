@@ -53,7 +53,10 @@ const RequestDetailsClient = ({
 
   return (
     <div className="flex flex-col items-center justify-center mb-10 sm:mt-0 mt-20">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <p className="text-3xl font-bold mt-5">Request Details</p>
 
       {data?.status === "Deleted" && (
@@ -86,14 +89,14 @@ const RequestDetailsClient = ({
 
               {/* Details Section */}
               <div className="flex flex-col gap-4 lg:w-3/5 bg-gray-50 p-4 rounded-md relative">
-                {auth?.user?.role === 1? (
+                {auth?.user?.role === 1 ? (
                   <div
                     className="absolute top-4 right-5 flex items-center gap-1 cursor-pointer text-gray-500"
                     onClick={() => setOpen(true)}
                   >
                     <TbMessageReport /> Report
                   </div>
-                ):null}
+                ) : null}
 
                 {/* Service Type */}
                 <div className="flex items-center">
@@ -177,11 +180,11 @@ const RequestDetailsClient = ({
                       <Tag icon={<CheckCircleOutlined />} color="blue">
                         Accepted
                       </Tag>
-                    ) :  data.status === "Assigned" ? (
+                    ) : data.status === "Assigned" ? (
                       <Tag icon={<CheckCircleOutlined />} color="green">
                         Assigned
                       </Tag>
-                    ) :(
+                    ) : (
                       <Tag icon={<CheckCircleOutlined />} color="red">
                         {data.status}
                       </Tag>

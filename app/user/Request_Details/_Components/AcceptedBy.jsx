@@ -112,7 +112,10 @@ function AcceptedBy() {
 
   return (
     <div className="container mx-auto p-4">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} color="#3f51b5" />
@@ -254,7 +257,7 @@ function AcceptedBy() {
           </Link>
         </div>
       )}
-    
+
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading2}

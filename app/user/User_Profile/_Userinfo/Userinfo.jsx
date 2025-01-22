@@ -111,7 +111,10 @@ const Userinfo = () => {
 
   return (
     <div className="w-full mb-2">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <div className="flex flex-col justify-center gap-4 border-2 border-gray-300 m-auto w-[85%] lg:w-3/4 xl:w-1/2 rounded-lg p-5">
         <p className="text-3xl text-center font-medium">Personal Information</p>
         <hr />
@@ -125,7 +128,7 @@ const Userinfo = () => {
             width={200}
             height={100}
           />
-          <label className="font-medium w-full" >Profile photo</label>
+          <label className="font-medium w-full">Profile photo</label>
           <Input
             type="file"
             accept="image/*"

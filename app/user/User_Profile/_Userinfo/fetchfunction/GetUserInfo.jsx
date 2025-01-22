@@ -1,22 +1,35 @@
+const cache = {};
+
 export async function GetUserInfo(uid) {
   try {
+    // Check if the data for the given uid exists in the cache
+    if (cache[uid]) {
+      return {
+        data: cache[uid],
+      };
+    }
+
     const response = await fetch(
-      `http://localhost:8000/api/v1/users/Userinfo/${uid}`
+      `http://localhost:8000/api/v1/users/Userinfo/${uid}`,
     );
+
     if (response.status === 200) {
       const data = await response.json();
+      cache[uid] = data;
+
       return {
         data,
       };
     } else {
       return {
-        data,
+        success: false,
+        message: "Failed to fetch user info",
       };
     }
   } catch (error) {
     return {
       success: false,
-      message: "error try again",
+      message: "Error, try again",
     };
   }
 }

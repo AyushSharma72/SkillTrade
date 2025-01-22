@@ -85,7 +85,10 @@ const WorkerRegisterForm = () => {
 
   return (
     <div className="flex flex-col items-center mb-4">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
         open={loading}

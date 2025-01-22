@@ -158,7 +158,10 @@ const Page = ({ role }) => {
 
   return (
     <div className="container mx-auto p-4 sm:m-0 mt-20">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} />

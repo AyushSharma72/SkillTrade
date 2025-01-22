@@ -111,7 +111,10 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
       sx={style}
       className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
     >
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}

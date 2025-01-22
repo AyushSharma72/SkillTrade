@@ -184,7 +184,10 @@ function ViewRequest() {
 
   return (
     <div>
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <div className="lg:flex lg:flex-row p-5 flex flex-col ">
         {/* Filters */}
         <div className="lg:w-1/4 flex flex-row lg:flex lg:flex-col gap-2 items-start mt-20 sm:mt-0">

@@ -184,7 +184,10 @@ const LoginForm = () => {
         Welcome Back
       </p>
       <div className="relative flex justify-around sm:mt-20 mt-5">
-        <Toaster />
+        <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
 
         <Image
           src={loginimage}
@@ -240,7 +243,9 @@ const LoginForm = () => {
             </div>
             <div className="w-full flex flex-col items-center gap-3">
               {" "}
-              <Button type="submit" className="sm:w-1/2 w-3/4">Login</Button>
+              <Button type="submit" className="sm:w-1/2 w-3/4">
+                Login
+              </Button>
               <p>
                 Don't have an account ?{" "}
                 <Link href="/register" className="text-blue-700">

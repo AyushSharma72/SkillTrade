@@ -209,7 +209,10 @@ const Page = ({ role }) => {
 
   return (
     <div className=" mx-auto p-4 sm:m-0 mt-20">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} />
@@ -295,7 +298,6 @@ const Page = ({ role }) => {
                             <span>A review is requested by the user</span>
                             <div className="flex gap-4 justify-center items-center">
                               {" "}
-                             
                               <Button
                                 title="Approving this review will remove this request from reported request"
                                 onClick={() => {
@@ -317,7 +319,6 @@ const Page = ({ role }) => {
                               >
                                 Reject
                               </Button>
-                             
                             </div>
                           </div>
                         ) : (

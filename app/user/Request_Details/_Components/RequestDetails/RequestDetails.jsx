@@ -230,7 +230,10 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
 
   return (
     <div className="flex flex-col items-center justify-center mb-10">
-      <Toaster />{" "}
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={fetchLoading}
@@ -281,7 +284,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                       {" "}
                       <input
                         type="file"
-                        id="image"  
+                        id="image"
                         accept="image/*"
                         onChange={handleImageChange}
                         className="w-1/2"

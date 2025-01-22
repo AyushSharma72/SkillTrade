@@ -59,7 +59,10 @@ const UserPassword = () => {
 
   return (
     <div className="w-full mb-2">
-      <Toaster />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <div className="flex flex-col justify-center gap-4 border-2 border-gray-300 m-auto w-[85%] lg:w-3/4 xl:w-1/2 rounded-lg p-5">
         <p className="text-3xl text-center font-medium">Reset Password</p>
         <hr />
