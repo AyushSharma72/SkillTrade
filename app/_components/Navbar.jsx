@@ -87,7 +87,7 @@ const Navbar = () => {
 
   const pathname = usePathname();
   return (
-    <div className="bg-black flex justify-center text-white sticky top-0 z-[10]">
+    <div className="bg-black flex justify-center text-white sticky top-0 z-[10] !font-serif">
       {/* navbar big screen  */}
       <div className="w-full  xl:w-3/4 justify-between sm:flex hidden">
         <Image src={logo} className="w-[200px] h-[70px]"></Image>

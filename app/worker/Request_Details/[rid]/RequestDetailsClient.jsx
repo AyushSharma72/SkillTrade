@@ -37,7 +37,7 @@ const RequestDetailsClient = ({
   const [auth, Setauth] = useAuth();
   const handleClose = () => setOpen(false);
   const handleOpen2 = () => setOpen2(true);
-  const handleClose2 = () => setOpen2(false);
+  const handleClose2 = () => setOpen2(false); 
 
   useEffect(() => {
     const userCoordinates = JSON.parse(localStorage.getItem("userCoordinates"));
@@ -51,12 +51,16 @@ const RequestDetailsClient = ({
     }
   }, []);
 
+ function CheckIfAlreadyAccepted(acceptedBy, authUserId) {
+   return acceptedBy.some((obj) => {
+     if (!obj.worker) return false; 
+     return String(obj.worker) === String(authUserId);// if the worker id is same as the person who accepted request
+   });
+ }
+
   return (
     <div className="flex flex-col items-center justify-center mb-10 sm:mt-0 mt-20">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <p className="text-3xl font-bold mt-5">Request Details</p>
 
       {data?.status === "Deleted" && (
@@ -76,10 +80,10 @@ const RequestDetailsClient = ({
           {data ? (
             <div className="flex flex-col lg:flex-row gap-6 bg-white shadow-lg rounded-lg p-2">
               {/* Image Section */}
-              <div className="flex flex-col items-center justify-between lg:w-2/5 ">
+              <div className="flex flex-col items-center justify-between lg:w-2/5">
                 <Image
                   src={requestimage}
-                  className="object-cover rounded-md lg:!h-[400px] lg:!w-full !h-[300px] "
+                  className="object-cover rounded-md lg:!h-[400px] lg:!w-full !h-[300px]"
                 />
 
                 <p className="font-bold text-xl text-center mt-4">
@@ -208,20 +212,36 @@ const RequestDetailsClient = ({
                 <div className="flex flex-col sm:flex-row gap-2 mt-6">
                   {auth?.user?.role !== 1 ||
                   data.status === "Completed" ||
-                  data.status === "Deleted" ? null : (
-                    <Button onClick={handleOpen2} className="w-full sm:w-1/2">
-                      Accept Request
-                    </Button>
-                  )}
+                  data.status === "Deleted"
+                    ? null
+                    : CheckIfAlreadyAccepted(
+                        data.acceptedBy,
+                        auth?.user?._id
+                      )?
+                       <Button
+                          onClick={handleOpen2}
+                          className="w-full sm:w-1/2"
+                          disabled={true}
+                        >
+                        Request Accepted 
+                        </Button>:(
+                        <Button
+                          onClick={handleOpen2}
+                          className="w-full sm:w-1/2"
+                        >
+                          Accept Request
+                        </Button>
+                      )}
+
                   <Link
                     href={
                       auth?.user?.role === 1
                         ? `/worker/all_request`
                         : `/admin/reports`
                     }
-                    className="w-full sm:w-1/2"
+                    className="w-full sm:w-1/2 m-auto"
                   >
-                    <Button className="w-full">Back</Button>
+                    <Button className="w-full ">Back</Button>
                   </Link>
                 </div>
               </div>

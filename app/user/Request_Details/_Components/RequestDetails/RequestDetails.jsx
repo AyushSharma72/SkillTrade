@@ -19,7 +19,6 @@ import { DeleteRequestFetchFunction } from "../../_FetchFunction/DeleteRequest";
 import Modal from "@mui/material/Modal";
 import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
 import { Textarea } from "@mui/joy";
-import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 import Rating from "@mui/material/Rating";
 import { Input } from "@mui/joy";
 import StarIcon from "@mui/icons-material/Star";
@@ -32,13 +31,11 @@ import Backdrop from "@mui/material/Backdrop";
 
 const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [data, setData] = useState(initialData);
-  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(loadingstate);
   const { rid } = useParams();
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState(imgurl);
   const [open, setOpen] = React.useState(false);
-  const [unassignModal, SetunassignModal] = useState(false);
   const [completed, SetCompleted] = useState(false);
   const [reviewmodal, SetReviewModal] = useState(false);
   const router = useRouter();
@@ -88,6 +85,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       setFetchLoading(false);
     }
   }
+
   async function updateRequestImage(e) {
     e.preventDefault();
     try {
@@ -161,32 +159,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     }
   }
 
-  async function UnassignWorker(e, wid) {
-    e.preventDefault();
-    if (!description || description.length < 30) {
-      toast.error("please give description of atleast 30 characters");
-      return;
-    }
-    try {
-      setFetchLoading(true);
-      const response = await UnAssign(rid, wid, description);
-      const data = await response.json();
-      if (response.status === 200) {
-        toast.success(data.message);
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-      toast.error("error making this request");
-    } finally {
-      SetunassignModal(false);
-      setDescription("");
-      GetData();
-      setFetchLoading(false);
-    }
-  }
-
+  
   async function RequestReview(rid) {
     try {
       setFetchLoading(true);
@@ -216,11 +189,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     setImage(e.target.files[0]);
   };
 
-  const handleChange = (event) => {
-    if (event.target.value.length <= 100) {
-      setDescription(event.target.value);
-    }
-  };
 
   const handleCommentChange = (event) => {
     if (event.target.value.length <= 200) {
@@ -384,7 +352,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                       >
                         <span> {data.assignedTo?.Name}</span>
                       </Link>
-                      {data.status != "Completed" ? (
+                      {/* {data.status != "Completed" ? (
                         <Button
                           onClick={() => {
                             SetunassignModal(true);
@@ -392,15 +360,15 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                         >
                           unassign
                         </Button>
-                      ) : null}
+                      ) : null} */}
                     </div>
                   </div>
                 ) : null}
                 {data.status !== "Completed" && data.status !== "Deleted" ? (
-                  <div className="flex gap-1 justify-around">
-                    {data.status === "Pending" ? null : (
+                  <div className="flex gap-1 justify-around sm:flex-row flex-col" >
+                    {data.status === "Pending"|| data.status==="Accepted" ? null : (
                       <Button
-                        className="w-1/2"
+                        className="w-full sm:w-1/2"
                         onClick={() => {
                           SetCompleted(true);
                         }}
@@ -408,7 +376,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                         Mark as completed
                       </Button>
                     )}
-                    <Button onClick={handleOpen} className="w-1/2">
+                    <Button onClick={handleOpen}  className="w-full sm:w-1/2">
                       Delete request
                     </Button>
                   </div>
@@ -436,48 +404,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     <Button onClick={handleClose}>Cancel</Button>
                   </Box>
                 </Modal>
-
-                {/* unassign modal */}
-                <Modal
-                  open={unassignModal}
-                  onClose={() => {
-                    SetunassignModal(false);
-                  }}
-                >
-                  <Box sx={style} className="flex flex-col gap-2">
-                    <p className="font-bold text-center">
-                      Are you sure you want to unassign this worker ?
-                    </p>{" "}
-                    <div>
-                      {" "}
-                      <Textarea
-                        name="description"
-                        placeholder="Type reason"
-                        value={description}
-                        onChange={handleChange}
-                        className="w-full h-20 overflow-y-scroll scrollbar-hide"
-                        required
-                      />
-                      <p className="text-gray-400">
-                        {100 - description.length} characters remaining
-                      </p>
-                    </div>
-                    <Button
-                      onClick={(e) => {
-                        UnassignWorker(e, data.assignedTo?._id);
-                      }}
-                    >
-                      Unassign
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        SetunassignModal(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </Box>
-                </Modal>
+              
 
                 {/* mark as completed modal  */}
                 <Modal
@@ -486,7 +413,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     SetCompleted(false);
                   }}
                 >
-                  <Box sx={style} className="flex flex-col gap-2">
+                  <Box sx={style} className="flex flex-col gap-2 sm:w-[400px]">
                     <p className="text-center font-semibold">
                       Rate you experience with the worker
                     </p>
@@ -584,7 +511,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
 
                 {/* request review modal  */}
                 <Modal open={reviewmodal}>
-                  <Box sx={style} className="flex flex-col gap-2">
+                  <Box sx={style} className="flex flex-col gap-2 ">
                     <p className="text-center font-semibold">
                       Make the changes before requesting review
                     </p>

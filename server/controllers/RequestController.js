@@ -215,10 +215,10 @@ async function GetAllRequests(req, resp) {
     const pagenumber = req.params.pagenumber;
 
     const totalrequests = await RequestModal.countDocuments({
-      status: { $in: ["Accepted", "Assigned","Pending"] },
+      status: { $in: ["Accepted","Pending"] },
     });
     const requests = await RequestModal.find({
-      status: { $in: ["Accepted", "Assigned", "Pending"] },
+      status: { $in: ["Accepted","Pending"] },
     })
       .select("service location date status user coordinates")
       .skip((pagenumber - 1) * 5)
@@ -427,55 +427,55 @@ async function AssignRequest(req, resp) {
   }
 }
 
-async function UnassignRequest(req, resp) {
-  try {
-    const { reason, date } = req.body;
-    const { rid, wid } = req.params;
+// async function UnassignRequest(req, resp) {
+//   try {
+//     const { reason, date } = req.body;
+//     const { rid, wid } = req.params;
 
-    // Validate inputs
-    if (!reason || !date) {
-      return resp.status(400).send({
-        message: "Reason and date are required for unassigning the request",
-        success: false,
-      });
-    }
+//     // Validate inputs
+//     if (!reason || !date) {
+//       return resp.status(400).send({
+//         message: "Reason and date are required for unassigning the request",
+//         success: false,
+//       });
+//     }
 
-    // Find request and worker
-    const request = await RequestModal.findOne({ _id: rid });
-    const worker = await WorkerModal.findOne({ _id: wid });
+//     // Find request and worker
+//     const request = await RequestModal.findOne({ _id: rid });
+//     const worker = await WorkerModal.findOne({ _id: wid });
 
-    if (!request || !worker) {
-      return resp.status(404).send({
-        message: "Either request or worker not found",
-        success: false,
-      });
-    }
+//     if (!request || !worker) {
+//       return resp.status(404).send({
+//         message: "Either request or worker not found",
+//         success: false,
+//       });
+//     }
 
-    request.confirmedAt = null;
-    request.assignedTo = null;
-    request.status = "Accepted";
+//     request.confirmedAt = null;
+//     request.assignedTo = null;
+//     request.status = "Accepted";
 
-    worker.UnAssignedRequest.push({
-      request: rid,
-      unassignReason: reason,
-      unassignesAt: new Date(),
-    });
+//     worker.UnAssignedRequest.push({
+//       request: rid,
+//       unassignReason: reason,
+//       unassignesAt: new Date(),
+//     });
 
-    await request.save();
-    await worker.save();
+//     await request.save();
+//     await worker.save();
 
-    return resp.status(200).send({
-      message: "Unassigned successfully",
-      success: true,
-    });
-  } catch (error) {
-    console.error("Error in UnassignRequest:", error);
-    return resp.status(500).send({
-      message: "Internal server error",
-      success: false,
-    });
-  }
-}
+//     return resp.status(200).send({
+//       message: "Unassigned successfully",
+//       success: true,
+//     });
+//   } catch (error) {
+//     console.error("Error in UnassignRequest:", error);
+//     return resp.status(500).send({
+//       message: "Internal server error",
+//       success: false,
+//     });
+//   }
+// }
 
 async function RequestCompleted(req, resp) {
   try {
@@ -556,6 +556,6 @@ module.exports = {
   GetWhoAcceptedRequest,
   DeleteRequest,
   AssignRequest,
-  UnassignRequest,
+  // UnassignRequest,
   RequestCompleted,
 };

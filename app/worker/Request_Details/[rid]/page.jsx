@@ -18,6 +18,7 @@ export default async function RequestDetailsServer({params}){
     }
    
     data = await response.json();
+   
  } catch (error) {
    return {
      success: false,

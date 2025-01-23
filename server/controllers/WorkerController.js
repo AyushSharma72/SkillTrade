@@ -96,7 +96,7 @@ async function Report(req, resp) {
     console.log(issueType);
     if (!issueType) {
       return resp.status(400).send({
-        success: false, 
+        success: false,
         message: "please select the issue",
       });
     }
@@ -136,7 +136,7 @@ async function Report(req, resp) {
         Report: [
           {
             worker: wid,
-            issueType,
+            IssueType: issueType,
           },
         ],
       }).save();
@@ -181,10 +181,22 @@ async function AcceptRequest(req, resp) {
     if (existingAcceptance) {
       return resp.status(400).send({
         success: false,
-        message: "You have already accepted this request.",
+        message: "You have already accepted this request",
       });
     }
     const existingrequest = await RequestModal.findOne({ _id: rid });
+
+    if (
+      existingrequest.status === "Assigned" ||
+      existingrequest.status === "Deleted" ||
+      existingrequest.status === "Completed"
+    ) {
+      return resp.status(400).send({
+        success: false,
+        message: "This request cannot be accepted",
+      });
+    }
+
     const updatedRequest = await RequestModal.findByIdAndUpdate(
       rid,
       {
@@ -364,8 +376,7 @@ async function GetWorkerAcceptedRequest(req, resp) {
       .select("service location date status user  acceptedBy")
       .skip(skip)
       .limit(limit)
-      .sort({ "acceptedBy.0.acceptedAt": -1 });;
-     
+      .sort({ "acceptedBy.0.acceptedAt": -1 });
 
     if (response.length === 0) {
       return resp
@@ -429,6 +440,14 @@ const GetWorkerAssignedRequest = async (req, resp) => {
       .json({ success: false, error: "Internal server error" });
   }
 };
+
+// async function RequestDateExceedEmail(req,resp){
+// try {
+
+// } catch (error) {
+
+// }
+// }
 
 module.exports = {
   RegisterWorker,

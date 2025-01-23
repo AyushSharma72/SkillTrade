@@ -194,11 +194,11 @@ function AcceptedBy() {
                         >
                           <Box sx={style} className="flex flex-col gap-2 ">
                             <p className="text-center">
-                              Confirm Request Assignment
+                              Confirm Request Assignment !
                             </p>
-                            <p className="text-center">
+                            <p className="text-center text-red-600">
                               Please check all the details before assigning the
-                              task to the worker !{" "}
+                              task to the worker once assigned you cannot revert this action!
                             </p>
 
                             {data[0].status === "Deleted" ||

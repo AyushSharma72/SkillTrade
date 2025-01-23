@@ -148,7 +148,8 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
                   <p className="text-2xl font-semibold">{WorkerData?.Name}</p>
                   <p className="flex  items-center gap-3">
                     <span className="flex items-center font-semibold">
-                      {WorkerData?.OverallRaitngs}
+                      {WorkerData?.OverallRaitngs?.toString().substring(0, 3)}
+
                       <Rating max={1} defaultValue={1} />
                     </span>
 

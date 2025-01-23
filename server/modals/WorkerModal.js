@@ -46,22 +46,6 @@ const WorkerSchema = mongoose.Schema(
     gender: {
       type: String,
     },
-    UnAssignedRequest: [
-      {
-        request: {
-          type: Schema.Types.ObjectId,
-          ref: "Requests",
-        },
-        unassignReason: {
-          type: String,
-          default: null,
-        },
-        unassignesAt: {
-          type: Date,
-          default: null,
-        },
-      },
-    ],
     CompletedRequest: {
       type: Number,
       default: 0,
