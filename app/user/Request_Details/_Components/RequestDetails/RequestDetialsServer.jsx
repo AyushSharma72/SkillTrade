@@ -1,11 +1,12 @@
-import RequestDetails from "./RequestDetails"
+import RequestDetails from "./RequestDetails";
+
 async function GetData(rid) {
   try {
     const response = await fetch(
       `http://localhost:8000/api/v1/request/GetSingleUserRequest/${rid}`,
-      { cache: 'no-store' } 
+      { cache: "no-store" }
     );
-    const info = await response.json(); 
+    const info = await response.json();
     if (info.success) {
       return info.requestdetails;
     }
@@ -16,18 +17,25 @@ async function GetData(rid) {
   }
 }
 
-export default async function RequestDetailsServer({ rid }) {
+export default async function RequestDetailsServer({ params }) {
+  const { rid } = params;
+  if (!rid) {
+    return <p>Error: Request ID is missing.</p>;
+  }
+
   const data = await GetData(rid);
 
   return (
     <>
       {data ? (
-        <RequestDetails initialData={data} loadingstate={false} imgurl={
-     `http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`
- }/>
+        <RequestDetails
+          initialData={data}
+          loadingstate={false}
+          imgurl={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
+        />
       ) : (
         <p>Failed to load request details.</p>
       )}
-  </>
+    </>
   );
 }

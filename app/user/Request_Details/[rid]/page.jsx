@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from "react";
 import { Tabs } from "antd";
 import { CgDetailsMore } from "react-icons/cg";
@@ -7,22 +7,27 @@ import { RiCalendarScheduleFill } from "react-icons/ri";
 import AcceptedBy from "../_Components/AcceptedBy";
 import { FaCircleCheck } from "react-icons/fa6";
 import RequestDetailsServer from "../_Components/RequestDetails/RequestDetialsServer";
-import RescheduleServer from "../_Components/Reschedule/RescheduleServer"; 
+import RescheduleServer from "../_Components/Reschedule/RescheduleServer";
 import TimeLineServer from "../_Components/TimeLine/TimeLineServer";
 
 export default function Page({ params }) {
- const { rid } = params
+  const { rid } = params;
+  
+  if (!rid) {
+    return <p>Error: Request ID not found.</p>;
+  }
+
   const items = [
     {
       key: "1",
       label: "Request Details",
-      children: <RequestDetailsServer rid={rid} />, 
+      children: <RequestDetailsServer params={params} />,
       icon: <CgDetailsMore />,
     },
     {
       key: "2",
       label: "Reschedule",
-      children: <RescheduleServer  rid={rid}/>,
+      children: <RescheduleServer rid={rid} />,
       icon: <RiCalendarScheduleFill />,
     },
     {
@@ -34,7 +39,7 @@ export default function Page({ params }) {
     {
       key: "4",
       label: "Timeline",
-      children: < TimeLineServer rid={rid}/>,
+      children: <TimeLineServer rid={rid} />,
       icon: <TbTimeline />,
     },
   ];

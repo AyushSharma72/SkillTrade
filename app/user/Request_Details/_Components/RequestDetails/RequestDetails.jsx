@@ -601,7 +601,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     </Button>
                   </Box>
                 </Modal>
-                ;
+                
               </div>
             </div>
           )}
