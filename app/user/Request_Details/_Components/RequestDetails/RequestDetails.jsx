@@ -28,6 +28,7 @@ import { labels, style } from "../../../../_Arrays/Arrays";
 import Link from "next/link";
 import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
+import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 
 const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [data, setData] = useState(initialData);
@@ -47,10 +48,17 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
   const [stars, setValue] = React.useState(2);
   const [hover, setHover] = React.useState(-1);
   const [fetchLoading, setFetchLoading] = useState(false);
+  const [unassignModal, SetunassignModal] = useState(false);
+  const [description, setDescription] = useState("");
 
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
   }
+  const handleChange = (event) => {
+    if (event.target.value.length <= 100) {
+      setDescription(event.target.value);
+    }
+  };
 
   async function HandleCompleteRequest(wid) {
     try {
@@ -82,6 +90,32 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
       console.log(error);
       toast.error("error try again");
     } finally {
+      setFetchLoading(false);
+    }
+  }
+
+  async function UnassignWorker(e, wid) {
+    e.preventDefault();
+    if (!description || description.length < 30) {
+      toast.error("please give description of atleast 30 characters");
+      return;
+    }
+    try {
+      setFetchLoading(true);
+      const response = await UnAssign(rid, wid, description);
+      const data = await response.json();
+      if (response.status === 200) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("error making this request");
+    } finally {
+      SetunassignModal(false);
+      setDescription("");
+      GetData();
       setFetchLoading(false);
     }
   }
@@ -159,7 +193,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     }
   }
 
-  
   async function RequestReview(rid) {
     try {
       setFetchLoading(true);
@@ -189,7 +222,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
     setImage(e.target.files[0]);
   };
 
-
   const handleCommentChange = (event) => {
     if (event.target.value.length <= 200) {
       SetComment(event.target.value);
@@ -198,10 +230,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
 
   return (
     <div className="flex flex-col items-center justify-center mb-10">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={fetchLoading}
@@ -352,7 +381,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                       >
                         <span> {data.assignedTo?.Name}</span>
                       </Link>
-                      {/* {data.status != "Completed" ? (
+                      {data.status != "Completed" ? (
                         <Button
                           onClick={() => {
                             SetunassignModal(true);
@@ -360,13 +389,14 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                         >
                           unassign
                         </Button>
-                      ) : null} */}
+                      ) : null}
                     </div>
                   </div>
                 ) : null}
                 {data.status !== "Completed" && data.status !== "Deleted" ? (
-                  <div className="flex gap-1 justify-around sm:flex-row flex-col" >
-                    {data.status === "Pending"|| data.status==="Accepted" ? null : (
+                  <div className="flex gap-1 justify-around sm:flex-row flex-col">
+                    {data.status === "Pending" ||
+                    data.status === "Accepted" ? null : (
                       <Button
                         className="w-full sm:w-1/2"
                         onClick={() => {
@@ -376,12 +406,11 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                         Mark as completed
                       </Button>
                     )}
-                    <Button onClick={handleOpen}  className="w-full sm:w-1/2">
+                    <Button onClick={handleOpen} className="w-full sm:w-1/2">
                       Delete request
                     </Button>
                   </div>
                 ) : null}
-
                 {/* modal */}
                 <Modal
                   open={open}
@@ -404,8 +433,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     <Button onClick={handleClose}>Cancel</Button>
                   </Box>
                 </Modal>
-              
-
                 {/* mark as completed modal  */}
                 <Modal
                   open={completed}
@@ -508,7 +535,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     </div>
                   </Box>
                 </Modal>
-
                 {/* request review modal  */}
                 <Modal open={reviewmodal}>
                   <Box sx={style} className="flex flex-col gap-2 ">
@@ -534,6 +560,48 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     <hr />
                   </Box>
                 </Modal>
+                {/* unassign modal  */}
+                <Modal
+                  open={unassignModal}
+                  onClose={() => {
+                    SetunassignModal(false);
+                  }}
+                >
+                  <Box sx={style} className="flex flex-col gap-2">
+                    <p className="font-bold text-center">
+                      Are you sure you want to unassign this worker ?
+                    </p>{" "}
+                    <div>
+                      {" "}
+                      <Textarea
+                        name="description"
+                        placeholder="Type reason"
+                        value={description}
+                        onChange={handleChange}
+                        className="w-full h-20 overflow-y-scroll scrollbar-hide"
+                        required
+                      />
+                      <p className="text-gray-400">
+                        {100 - description.length} characters remaining
+                      </p>
+                    </div>
+                    <Button
+                      onClick={(e) => {
+                        UnassignWorker(e, data.assignedTo?._id);
+                      }}
+                    >
+                      Unassign
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        SetunassignModal(false);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                  </Box>
+                </Modal>
+                ;
               </div>
             </div>
           )}
