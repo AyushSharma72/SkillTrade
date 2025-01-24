@@ -26,7 +26,6 @@ import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
 
-
 function AcceptedBy() {
   const [auth] = useAuth();
   const [data, setData] = useState([]);
@@ -75,6 +74,10 @@ function AcceptedBy() {
       setLoading(false);
     }
   }
+  function CheckDateExpired(visitingDate) {
+    const today = new Date();
+    return visitingDate < today;
+  }
 
   async function AssignTask(e, wid) {
     e.preventDefault();
@@ -112,10 +115,7 @@ function AcceptedBy() {
 
   return (
     <div className="container mx-auto p-4">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} color="#3f51b5" />
@@ -172,7 +172,15 @@ function AcceptedBy() {
                           "Deleted" ? null : (
                           <Button
                             title="assign this job to this worker"
-                            onClick={handleOpen}
+                            onClick={() => {
+                              if (!CheckDateExpired(data.date)) {
+                                handleOpen();
+                              } else {
+                                toast.error(
+                                  "the visiting date is expired please reschedule this request"
+                                );
+                              }
+                            }}
                           >
                             Assign
                           </Button>
@@ -198,7 +206,8 @@ function AcceptedBy() {
                             </p>
                             <p className="text-center text-red-600">
                               Please check all the details before assigning the
-                              task to the worker once assigned you cannot revert this action!
+                              task to the worker once assigned you cannot revert
+                              this action!
                             </p>
 
                             {data[0].status === "Deleted" ||
