@@ -101,7 +101,7 @@ async function GetUserRequest(req, resp) {
       .select("service location date status user")
       .limit(5)
       .skip((page - 1) * 5)
-      .sort({ createdAt: -1 }); 
+      .sort({ createdAt: -1 });
 
     if (requests && requests.length) {
       return resp.status(200).send({
@@ -215,10 +215,10 @@ async function GetAllRequests(req, resp) {
     const pagenumber = req.params.pagenumber;
 
     const totalrequests = await RequestModal.countDocuments({
-      status: { $in: ["Accepted","Pending"] },
+      status: { $in: ["Accepted", "Pending"] },
     });
     const requests = await RequestModal.find({
-      status: { $in: ["Accepted","Pending"] },
+      status: { $in: ["Accepted", "Pending"] },
     })
       .select("service location date status user coordinates")
       .skip((pagenumber - 1) * 5)
@@ -253,7 +253,7 @@ async function FilterRequests(req, resp) {
     const { nearBy, yourCity, ServiceType } = req.query;
 
     const worker = await WorkerModal.findById(wid).select("pincode city");
- 
+
     if (!worker) {
       return resp.status(404).send({
         success: false,
@@ -263,7 +263,6 @@ async function FilterRequests(req, resp) {
     let query = {
       status: { $nin: ["Completed", "Deleted"] }, // Exclude completed and deleted requests
     };
-
 
     // Add dynamic filtering based on query parameters
     if (nearBy === "true" && worker.pincode) {
@@ -331,7 +330,7 @@ async function GetWhoAcceptedRequest(req, resp) {
     const requests = await RequestModal.find(
       {
         _id: rid,
-        status: { $in: ["Accepted", "Assigned", "Completed","Deleted"] },
+        status: { $in: ["Accepted", "Assigned", "Completed", "Deleted"] },
       },
       "acceptedBy"
     )
@@ -364,7 +363,6 @@ async function DeleteRequest(req, resp) {
     const response = await RequestModal.findOne({ _id: rid });
 
     if (response) {
-      
       response.status = "Deleted";
       response.deletedAt = new Date();
       await response.save();
@@ -450,15 +448,26 @@ async function UnassignRequest(req, resp) {
         success: false,
       });
     }
+    const existingUnassignedRequest = worker.UnAssignedRequest.find(
+      (unassigned) => unassigned.request.toString() === rid
+    );
+
+    if (existingUnassignedRequest) {
+      return resp.status(400).send({
+        message: "This request has already been unassigned for this worker",
+        success: false,
+      });
+    }
 
     request.confirmedAt = null;
     request.assignedTo = null;
     request.status = "Accepted";
 
-    worker.UnAssignedRequest.push({
+    worker.unAssignedRequests.push({
       request: rid,
       unassignReason: reason,
-      unassignesAt: new Date(),
+      unassignedAt: new Date(),
+      unAssignedBy: 0,
     });
 
     await request.save();
@@ -476,7 +485,6 @@ async function UnassignRequest(req, resp) {
     });
   }
 }
-
 async function RequestCompleted(req, resp) {
   try {
     const { rid, wid, uid } = req.params;

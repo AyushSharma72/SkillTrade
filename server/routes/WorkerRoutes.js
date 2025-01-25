@@ -11,6 +11,7 @@ const {
   GetWorkerAcceptedRequest,
   GetWorkerAssignedRequest,
   GetWorkerCompletedRequest,
+  UnassignRequest,
 } = require("../controllers/WorkerController");
 
 const router = express.Router();
@@ -34,5 +35,7 @@ router.get("/GetWorkerAcceptedRequest/:wid", GetWorkerAcceptedRequest);
 router.get("/GetWorkerAssignedRequest/:wid", GetWorkerAssignedRequest);
 
 router.get("/GetWorkerCompletedRequest/:wid", GetWorkerCompletedRequest);
+
+router.post("/UnassignRequest/:rid/:wid", UnassignRequest);
 
 module.exports = router;

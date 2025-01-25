@@ -483,13 +483,66 @@ const GetWorkerCompletedRequest = async (req, resp) => {
   }
 };
 
-// async function RequestDateExceedEmail(req,resp){
-// try {
+async function UnassignRequest(req, resp) {
+  try {
+    const { reason, date } = req.body;
+    const { rid, wid } = req.params;
 
-// } catch (error) {
+    // Validate inputs
+    if (!reason || !date) {
+      return resp.status(400).send({
+        message: "Reason and date are required for unassigning the request",
+        success: false,
+      });
+    }
 
-// }
-// }
+    // Find request and worker
+    const request = await RequestModal.findOne({ _id: rid });
+    const worker = await WorkerModal.findOne({ _id: wid });
+
+    if (!request || !worker) {
+      return resp.status(404).send({
+        message: "Either request or worker not found",
+        success: false,
+      });
+    }
+    const existingUnassignedRequest = worker.UnAssignedRequest.find(
+      (unassigned) => unassigned.request.toString() === rid
+    );
+
+    if (existingUnassignedRequest) {
+      return resp.status(400).send({
+        message: "This request has already been unassigned for this worker",
+        success: false,
+      });
+    }
+
+    request.confirmedAt = null;
+    request.assignedTo = null;
+    request.status = "Accepted";
+
+    worker.unAssignedRequests.push({
+      request: rid,
+      unassignReason: reason,
+      unassignedAt: new Date(),
+      unAssignedBy: 1,
+    });
+
+    await request.save();
+    await worker.save();
+
+    return resp.status(200).send({
+      message: "Unassigned successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.error("Error in UnassignRequest:", error);
+    return resp.status(500).send({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+}
 
 module.exports = {
   RegisterWorker,
@@ -502,4 +555,5 @@ module.exports = {
   GetWorkerAcceptedRequest,
   GetWorkerAssignedRequest,
   GetWorkerCompletedRequest,
+  UnassignRequest,
 };

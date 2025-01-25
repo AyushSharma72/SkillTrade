@@ -65,8 +65,12 @@ async function UserLogin(req, resp) {
       });
     }
 
-    const user = await UserModal.findOne({ MobileNo }).select("-Password");
-    const worker = await WorkerModal.findOne({ MobileNo }).select("-Password");
+    const user = await UserModal.findOne({ MobileNo }).select(
+      "-Password -image"
+    );
+    const worker = await WorkerModal.findOne({ MobileNo }).select(
+      "-Password -image"
+    );
 
     if (!user && !worker) {
       return resp.status(401).send({

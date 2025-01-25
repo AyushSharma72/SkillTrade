@@ -61,6 +61,9 @@ const WorkerSchema = mongoose.Schema(
           type: Date,
           default: null,
         },
+        unAssignedBy:{
+          type:Number // user ,worker
+        }
       },
     ],
     CompletedRequest: {

@@ -22,6 +22,8 @@ import {
 } from "../../../_Arrays/Arrays";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
+import { Textarea } from "@mui/joy";
+import { toast, Toaster } from "react-hot-toast";
 
 const AssignedRequest = () => {
   const [requests, setRequests] = useState([]);
@@ -30,18 +32,51 @@ const AssignedRequest = () => {
   const [error, setError] = useState(null);
   const [pages, SetPages] = useState(1);
   const [pageNumber, SetPageNumber] = useState(1);
-  const [open, setOpen] = React.useState(false);
+  const [unassignModal, SetunassignModal] = useState(false);
+  const [description, setDescription] = useState("");
 
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
   };
 
   const handleOpen = () => {
-    setOpen(true);
+    SetunassignModal(true);
   };
   const handleClose = () => {
-    setOpen(false);
+    SetunassignModal(false);
   };
+  const handleChange = (event) => {
+    if (event.target.value.length <= 100) {
+      setDescription(event.target.value);
+    }
+  };
+  async function UnAssign(rid) {
+    try {
+      const currentdate = new Date();
+      const response = await fetch(
+        `http://localhost:8000/api/v1/workers/UnassignRequest/${rid}/${auth?.user._id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            reason: description,
+            date: currentdate,
+          }),
+        }
+      );
+      if (response.status === 200) {
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error("error making this request");
+    } finally {
+      // SetunassignModal(false);
+      // setDescription("");
+    }
+  }
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -71,6 +106,7 @@ const AssignedRequest = () => {
         </div>
       ) : requests?.length > 0 ? (
         <div className="flex flex-col items-center">
+          <Toaster position="bottom-center" reverseOrder={false} />
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
             Requests Assigned To You
           </p>
@@ -115,7 +151,7 @@ const AssignedRequest = () => {
                           {data.status}
                         </Tag>
                       ) : data.status === "Accepted" ? (
-                        <Tag icon={<CheckCircleOutlin ed />} color="blue">
+                        <Tag icon={<CheckCircleOutlined />} color="blue">
                           {data.status}
                         </Tag>
                       ) : data.status === "Assigned" ? (
@@ -144,19 +180,49 @@ const AssignedRequest = () => {
                         <Button onClick={handleOpen}>Unassign Me</Button>
                       </div>
                     </StyledTableCell>
+                    <Modal
+                      open={unassignModal}
+                      onClose={() => {
+                        SetunassignModal(false);
+                      }}
+                    >
+                      <Box sx={style} className="flex flex-col gap-2">
+                        <p className="font-bold text-center">
+                          Are you sure you want to unassign yourself ?
+                        </p>{" "}
+                        <div>
+                          {" "}
+                          <Textarea
+                            name="description"
+                            placeholder="Type reason"
+                            value={description}
+                            onChange={handleChange}
+                            className="w-full h-20 overflow-y-scroll scrollbar-hide"
+                            required
+                          />
+                          <p className="text-gray-400">
+                            {100 - description.length} characters remaining
+                          </p>
+                        </div>
+                        <Button
+                          onClick={(e) => {
+                            UnAssign(data._id);
+                          }}
+                        >
+                          Unassign
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            SetunassignModal(false);
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </Box>
+                    </Modal>
                   </StyledTableRow>
                 ))}
                 {/* unasssign me modal  */}
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="unassign modal"
-                
-                >
-                  <Box sx={style}>
-                    
-                  </Box>
-                </Modal>
               </TableBody>
             </Table>
           </TableContainer>
