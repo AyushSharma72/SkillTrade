@@ -93,7 +93,7 @@ const RequestDetailsClient = ({
 
               {/* Details Section */}
               <div className="flex flex-col gap-4 lg:w-3/5 bg-gray-50 p-4 rounded-md relative">
-                {auth?.user?.role === 1 ? (
+                {auth?.user?.role === 1 &&  data.status != "Completed" &&  data.status != "Deleted" ? (
                   <div
                     className="absolute top-4 right-5 flex items-center gap-1 cursor-pointer text-gray-500"
                     onClick={() => setOpen(true)}
@@ -188,6 +188,10 @@ const RequestDetailsClient = ({
                       <Tag icon={<CheckCircleOutlined />} color="green">
                         Assigned
                       </Tag>
+                    ) : data.status === "Completed" ? (
+                      <Tag icon={<CheckCircleOutlined />} color="purple">
+                        Completed
+                      </Tag>
                     ) : (
                       <Tag icon={<CheckCircleOutlined />} color="red">
                         {data.status}
@@ -212,26 +216,22 @@ const RequestDetailsClient = ({
                 <div className="flex flex-col sm:flex-row gap-2 mt-6">
                   {auth?.user?.role !== 1 ||
                   data.status === "Completed" ||
-                  data.status === "Deleted"
-                    ? null
-                    : CheckIfAlreadyAccepted(
-                        data.acceptedBy,
-                        auth?.user?._id
-                      )?
-                       <Button
-                          onClick={handleOpen2}
-                          className="w-full sm:w-1/2"
-                          disabled={true}
-                        >
-                        Request Accepted 
-                        </Button>:(
-                        <Button
-                          onClick={handleOpen2}
-                          className="w-full sm:w-1/2"
-                        >
-                          Accept Request
-                        </Button>
-                      )}
+                  data.status === "Deleted" ? null : CheckIfAlreadyAccepted(
+                      data.acceptedBy,
+                      auth?.user?._id
+                    ) ? (
+                    <Button
+                      onClick={handleOpen2}
+                      className="w-full sm:w-1/2"
+                      disabled={true}
+                    >
+                      Request Accepted
+                    </Button>
+                  ) : (
+                    <Button onClick={handleOpen2} className="w-full sm:w-1/2">
+                      Accept Request
+                    </Button>
+                  )}
 
                   <Link
                     href={

@@ -10,6 +10,7 @@ const {
   GetWorkerImage,
   GetWorkerAcceptedRequest,
   GetWorkerAssignedRequest,
+  GetWorkerCompletedRequest,
 } = require("../controllers/WorkerController");
 
 const router = express.Router();
@@ -31,5 +32,7 @@ router.get("/GetWorkerImage/:wid", GetWorkerImage);
 router.get("/GetWorkerAcceptedRequest/:wid", GetWorkerAcceptedRequest);
 
 router.get("/GetWorkerAssignedRequest/:wid", GetWorkerAssignedRequest);
+
+router.get("/GetWorkerCompletedRequest/:wid", GetWorkerCompletedRequest);
 
 module.exports = router;

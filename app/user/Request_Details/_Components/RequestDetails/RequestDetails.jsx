@@ -30,12 +30,11 @@ import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 
-const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
+const RequestDetails = ({ initialData, loadingstate }) => {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(loadingstate);
   const { rid } = useParams();
   const [image, setImage] = useState(null);
-  const [imageUrl, setImageUrl] = useState(imgurl);
   const [open, setOpen] = React.useState(false);
   const [completed, SetCompleted] = useState(false);
   const [reviewmodal, SetReviewModal] = useState(false);
@@ -268,7 +267,7 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
             <div className="flex flex-col items-center lg:flex-row justify-around m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
               <div className="flex flex-col gap-2 items-center">
                 <Image
-                  src={imageUrl}
+                src={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
                   className="object-cover rounded-md responsive-image !h-[300px]"
                   alt="Request Image"
                 />
@@ -601,7 +600,6 @@ const RequestDetails = ({ initialData, loadingstate, imgurl }) => {
                     </Button>
                   </Box>
                 </Modal>
-                
               </div>
             </div>
           )}

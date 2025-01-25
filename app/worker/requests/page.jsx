@@ -3,8 +3,10 @@ import React from "react";
 import { Tabs } from "antd";
 import AssignedRequest from "./_Components/AssignedRequest";
 import AcceptedRequest from "./_Components/AcceptedRequest";
+import CompletedRequest from "./_Components/CompletedRequest";
 import { FaCheck } from "react-icons/fa";
 import { MdAssignmentInd } from "react-icons/md";
+import { MdIncompleteCircle } from "react-icons/md";
 const WorkerRequests = () => {
   const items = [
     {
@@ -18,6 +20,12 @@ const WorkerRequests = () => {
       label: "Assigned Request",
       children: <AssignedRequest />,
       icon: <MdAssignmentInd />,
+    },
+    {
+      key: "3",
+      label: "Completed Request",
+      children: <CompletedRequest />,
+      icon: <MdIncompleteCircle />,
     },
   ];
   return (

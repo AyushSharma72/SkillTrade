@@ -17,7 +17,7 @@ export default async function RequestDetailsServer({ params }) {
         <RequestDetails
           initialData={info.requestdetails}
           loadingstate={false}
-          imgurl={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
+          
         />
       );
     }

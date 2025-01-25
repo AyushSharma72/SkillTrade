@@ -367,10 +367,12 @@ async function GetWorkerAcceptedRequest(req, resp) {
     const skip = (page - 1) * limit;
 
     const totalRequests = await RequestModal.countDocuments({
+      status: { $nin: "Completed" },
       acceptedBy: { $elemMatch: { worker: wid } },
     });
 
     const response = await RequestModal.find({
+      status: { $nin: "Completed" }, // Exclude requests with status "Completed"
       acceptedBy: { $elemMatch: { worker: wid } },
     })
       .select("service location date status user  acceptedBy")
@@ -440,6 +442,46 @@ const GetWorkerAssignedRequest = async (req, resp) => {
       .json({ success: false, error: "Internal server error" });
   }
 };
+const GetWorkerCompletedRequest = async (req, resp) => {
+  try {
+    const { wid } = req.params;
+    const page = parseInt(req.query.pagenumber) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    if (!wid) {
+      return resp
+        .status(400)
+        .json({ success: false, error: "Worker ID is required" });
+    }
+
+    const totalRequests = await RequestModal.countDocuments({
+      assignedTo: wid,
+    });
+
+    const requests = await RequestModal.find({
+      assignedTo: wid,
+      status: "Completed",
+    })
+      .select("service location date status user confirmedAt")
+      .skip(skip)
+      .limit(limit)
+      .sort({ createdAt: -1 });
+
+    const totalPages = Math.ceil(totalRequests / limit);
+
+    return resp.status(200).json({
+      success: true,
+      data: requests,
+      totalPages,
+    });
+  } catch (error) {
+    console.error("Error fetching assigned requests:", error);
+    return resp
+      .status(500)
+      .json({ success: false, error: "Internal server error" });
+  }
+};
 
 // async function RequestDateExceedEmail(req,resp){
 // try {
@@ -459,4 +501,5 @@ module.exports = {
   GetWorkerImage,
   GetWorkerAcceptedRequest,
   GetWorkerAssignedRequest,
+  GetWorkerCompletedRequest,
 };

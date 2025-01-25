@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/_context/UserAuthContent";
-import { FetchAssignedRequest } from "../_FetchFunction/FetchAssignedRequest";
+import { FetchCompletedRequest } from "../_FetchFunction/FetchCompletedRequests";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 import { Tag } from "antd";
@@ -15,32 +15,18 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Empty from "../../../assests/Empty.svg";
 import Image from "next/image";
-import {
-  StyledTableCell,
-  StyledTableRow,
-  style,
-} from "../../../_Arrays/Arrays";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
+import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
 
-const AssignedRequest = () => {
+const CompletedRequest = () => {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(false);
   const [auth, SetAuth] = useAuth();
   const [error, setError] = useState(null);
   const [pages, SetPages] = useState(1);
   const [pageNumber, SetPageNumber] = useState(1);
-  const [open, setOpen] = React.useState(false);
 
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
   };
 
   useEffect(() => {
@@ -48,7 +34,7 @@ const AssignedRequest = () => {
       setLoading(true);
       setError(null);
       try {
-        const data = await FetchAssignedRequest(auth?.user?._id, pageNumber);
+        const data = await FetchCompletedRequest(auth?.user?._id, pageNumber);
         setRequests(data.data);
         SetPages(data.totalPages || 1);
       } catch (err) {
@@ -72,7 +58,7 @@ const AssignedRequest = () => {
       ) : requests?.length > 0 ? (
         <div className="flex flex-col items-center">
           <p className="text-3xl text-center sm:mt-3  mt-20 font-bold">
-            Requests Assigned To You
+            Requests Completed By You
           </p>
           <TableContainer className="cursor-pointer sm:mt-5  mt-10 m-auto   justify-center flex flex-col  pb-3">
             <Table aria-label="customized table">
@@ -135,28 +121,13 @@ const AssignedRequest = () => {
                     <StyledTableCell align="center">
                       {moment(data.confirmedAt).format("MMMM Do YYYY")}
                     </StyledTableCell>
-                    <StyledTableCell align="right">
-                      <div className="flex gap-2">
-                        {" "}
-                        <Link href={`Request_Details/${data._id}`}>
-                          <Button>View</Button>
-                        </Link>
-                        <Button onClick={handleOpen}>Unassign Me</Button>
-                      </div>
+                    <StyledTableCell align="center">
+                      <Link href={`Request_Details/${data._id}`}>
+                        <Button>View</Button>
+                      </Link>
                     </StyledTableCell>
                   </StyledTableRow>
                 ))}
-                {/* unasssign me modal  */}
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="unassign modal"
-                
-                >
-                  <Box sx={style}>
-                    
-                  </Box>
-                </Modal>
               </TableBody>
             </Table>
           </TableContainer>
@@ -181,4 +152,4 @@ const AssignedRequest = () => {
   );
 };
 
-export default AssignedRequest;
+export default CompletedRequest;
