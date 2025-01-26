@@ -6,7 +6,7 @@ export async function GetRequestFilteredData(ServiceType, checkedValues, wid) {
 
     // Construct the final URL
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/Filterrequest/${wid}?${queryParams}`
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/Filterrequest/${wid}?${queryParams}`
     );
 
     const info = await response.json();

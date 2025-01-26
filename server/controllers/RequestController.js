@@ -441,6 +441,7 @@ async function UnassignRequest(req, resp) {
     // Find request and worker
     const request = await RequestModal.findOne({ _id: rid });
     const worker = await WorkerModal.findOne({ _id: wid });
+    
 
     if (!request || !worker) {
       return resp.status(404).send({
@@ -459,6 +460,9 @@ async function UnassignRequest(req, resp) {
       });
     }
 
+     request.acceptedBy = request.acceptedBy.filter(
+       (entry) => entry.worker.toString() !== wid
+     );
     request.confirmedAt = null;
     request.assignedTo = null;
     request.status = "Accepted";
@@ -485,6 +489,8 @@ async function UnassignRequest(req, resp) {
     });
   }
 }
+
+
 async function RequestCompleted(req, resp) {
   try {
     const { rid, wid, uid } = req.params;

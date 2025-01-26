@@ -516,7 +516,9 @@ async function UnassignRequest(req, resp) {
         success: false,
       });
     }
-
+    request.acceptedBy = request.acceptedBy.filter(
+      (entry) => entry.worker.toString() !== wid
+    );
     request.confirmedAt = null;
     request.assignedTo = null;
     request.status = "Accepted";

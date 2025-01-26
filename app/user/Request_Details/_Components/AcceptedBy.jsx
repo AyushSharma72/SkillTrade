@@ -84,7 +84,7 @@ function AcceptedBy() {
     try {
       setLoading2(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/request/AssignRequest/${rid}/${wid}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/AssignRequest/${rid}/${wid}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -118,7 +118,7 @@ function AcceptedBy() {
       <Toaster position="bottom-center" reverseOrder={false} />
       {loading ? (
         <div className="flex justify-center items-center h-screen">
-          <PulseLoader size={20} color="#3f51b5" />
+          <PulseLoader size={20} />
         </div>
       ) : data.length > 0 ? (
         <>

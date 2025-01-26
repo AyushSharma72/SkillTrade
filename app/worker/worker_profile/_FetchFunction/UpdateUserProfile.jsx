@@ -1,7 +1,7 @@
 export async function UpdateProfile(wid, formData) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/workers/UpdateProfile/${wid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/UpdateProfile/${wid}`,
       {
         method: "POST",
         body: formData,

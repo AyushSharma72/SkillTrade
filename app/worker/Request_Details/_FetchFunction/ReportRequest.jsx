@@ -2,7 +2,7 @@ export async function ReportRequest(wid, rid, IssueType) {
   try {
     console.log(IssueType);
     const response = await fetch(
-      `http://localhost:8000/api/v1/workers/report/${wid}/${rid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/report/${wid}/${rid}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -10,7 +10,7 @@ export async function GetUserInfo(uid) {
     }
 
     const response = await fetch(
-      `http://localhost:8000/api/v1/users/Userinfo/${uid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/Userinfo/${uid}`,
     );
 
     if (response.status === 200) {

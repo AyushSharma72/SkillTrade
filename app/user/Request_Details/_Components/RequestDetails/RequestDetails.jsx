@@ -130,7 +130,7 @@ const RequestDetails = ({ initialData, loadingstate }) => {
       formData.append("image", image);
       setFetchLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/request/UpdateRequestPhoto/${rid}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/UpdateRequestPhoto/${rid}`,
         {
           method: "POST",
           body: formData,
@@ -174,13 +174,13 @@ const RequestDetails = ({ initialData, loadingstate }) => {
     try {
       setLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/request/GetSingleUserRequest/${rid}`
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`
       );
       const info = await response.json();
       if (info.success) {
         setData(info.requestdetails);
         setImageUrl(
-          `http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`
+          `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`
         );
       } else {
         toast.error(info.message);
@@ -196,7 +196,7 @@ const RequestDetails = ({ initialData, loadingstate }) => {
     try {
       setFetchLoading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/users/review_request/${rid}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/review_request/${rid}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -267,7 +267,7 @@ const RequestDetails = ({ initialData, loadingstate }) => {
             <div className="flex flex-col items-center lg:flex-row justify-around m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
               <div className="flex flex-col gap-2 items-center">
                 <Image
-                src={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}
+                src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`}
                   className="object-cover rounded-md responsive-image !h-[300px]"
                   alt="Request Image"
                 />

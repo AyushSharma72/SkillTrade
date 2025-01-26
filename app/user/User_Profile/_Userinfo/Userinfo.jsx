@@ -122,7 +122,7 @@ const Userinfo = () => {
         {/* Image Upload Field */}
         <div className="flex flex-col gap-2  ">
           <Image
-            src={`http://localhost:8000/api/v1/users/GetUserImage/${auth?.user?._id}`}
+            src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/GetUserImage/${auth?.user?._id}`}
             className="object-cover w-[300px] h-[300px] responsive-image rounded-sm"
             alt="user image"
             width={200}

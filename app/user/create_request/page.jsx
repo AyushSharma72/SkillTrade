@@ -159,7 +159,7 @@ const CreateRequest = () => {
     formData.append("coordinates", JSON.stringify(coordinates));
     try {
       const request = await fetch(
-        "http://localhost:8000/api/v1/request/CreateRequest",
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/CreateRequest`,
         {
           method: "POST",
           body: formData,

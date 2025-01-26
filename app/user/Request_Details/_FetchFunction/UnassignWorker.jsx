@@ -2,7 +2,7 @@ export async function UnAssign(rid, wid, reason) {
   try {
     const currentdate = new Date();
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/Unassignrequest/${rid}/${wid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/Unassignrequest/${rid}/${wid}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

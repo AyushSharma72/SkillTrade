@@ -7,7 +7,7 @@ export default async function UpdateRequest(date, time, address, pincode, rid) {
     formData.append("pincode", pincode);
 
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/EditRequest/${rid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/EditRequest/${rid}`,
       {
         method: "POST",
         body: formData,

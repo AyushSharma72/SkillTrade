@@ -108,7 +108,7 @@ function ViewRequest() {
     try {
       setloading(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/request/Allrequests/${pageNumber}`
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/Allrequests/${pageNumber}`
       );
       const info = await response.json();
       if (info.success) {
@@ -127,7 +127,7 @@ function ViewRequest() {
   const checkCity = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/workers/CheckCity/${auth?.user?._id}`
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/CheckCity/${auth?.user?._id}`
       );
       const data = await response.json();
 

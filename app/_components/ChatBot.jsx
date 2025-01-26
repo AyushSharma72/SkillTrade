@@ -11,15 +11,14 @@ const ChatBot = () => {
     script.defer = true;
     script.onload = () => {
       window.botpress.init({
-        botId: "9d20dd1d-a9cd-447e-aaf3-a78f4fde92e5",
-        clientId: "ae827dc7-ac9b-42a3-9db0-727c0024ffc9",
+        botId: process.env.NEXT_PUBLIC_BOT_ID,
+        clientId: process.env.NEXT_PUBLIC_CLIENT_ID,
         configuration: {
           composerPlaceholder: "Ask Skill Bot! 😎",
           botName: "Skill Bot",
           botAvatar:
             "https://files.bpcontent.cloud/2025/01/19/11/20250119110053-GI67AVRT.png",
-          botDescription:
-            "Hi, I am Skill Bot how can i help you?",
+          botDescription: "Hi, I am Skill Bot how can i help you?",
           color: "#020202",
           variant: "soft",
           themeMode: "dark",
@@ -48,7 +47,6 @@ const ChatBot = () => {
 
   return (
     <>
-
       <div id="botpress-webchat"></div>
       <div
         id="chatbot-container"

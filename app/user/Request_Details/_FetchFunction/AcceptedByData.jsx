@@ -1,7 +1,7 @@
 export async function GetAcceptedByData(rid, pageNumber) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/GetWhoAcceptedRequest/${rid}/${pageNumber}`
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetWhoAcceptedRequest/${rid}/${pageNumber}`
     );
     if (response) {
       const data = await response.json();

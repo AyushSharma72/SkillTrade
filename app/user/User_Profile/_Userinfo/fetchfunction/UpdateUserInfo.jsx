@@ -1,7 +1,7 @@
 export async function UpdateUserInfo(uid, formData) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/users/UpdateUserInfo/${uid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/UpdateUserInfo/${uid}`,
       {
         method: "POST",
         body: formData,

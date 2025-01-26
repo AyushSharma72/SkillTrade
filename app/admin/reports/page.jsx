@@ -58,7 +58,7 @@ const Page = ({ role }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/admin/view_reports?page=${page}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/view_reports?page=${page}`,
         {
           method: "POST",
           headers: {
@@ -88,7 +88,7 @@ const Page = ({ role }) => {
 
   // delete request
   async function deleteRequest() {
-    const apiUrl = `http://localhost:8000/api/v1/admin/delete_request/${requestId}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/delete_request/${requestId}`;
     setBackdrop(true);
     try {
       const response = await fetch(apiUrl, {
@@ -118,7 +118,7 @@ const Page = ({ role }) => {
 
   // inform user
   async function informUser() {
-    const apiUrl = `http://localhost:8000/api/v1/admin/inform_user/${requestId}`;
+    const apiUrl = `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/inform_user/${requestId}`;
     setBackdrop(true);
     try {
       const response = await fetch(apiUrl, {
@@ -152,7 +152,7 @@ const Page = ({ role }) => {
     try {
       setBackdrop(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/admin/reject_review/${requestId}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/reject_review/${requestId}`,
         {
           method: "POST",
           headers: {
@@ -182,7 +182,7 @@ const Page = ({ role }) => {
     try {
       setBackdrop(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/admin/approve_review/${requestId}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/approve_review/${requestId}`,
         {
           method: "DELETE",
           headers: {

@@ -7,7 +7,7 @@ export default async function WorkerProfile({ params }) {
 
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/workers/GetWorkerData/${wid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerData/${wid}`,
       {
         cache: "no-store", // Prevent caching
       }

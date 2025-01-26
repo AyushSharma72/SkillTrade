@@ -55,7 +55,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
   async function GetWorkerData() {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/workers/GetWorkerData/${wid}`
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerData/${wid}`
       );
       if (response) {
         const data = await response.json();
@@ -137,7 +137,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
                   src={
                     imageError
                       ? demouserimage // Fallback image if error occurs
-                      : `http://localhost:8000/api/v1/workers/GetWorkerImage/${wid}`
+                      : `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerImage/${wid}`
                   }
                   alt="Worker"
                   className="shadow-md !h-[200px] w-[200px] object-cover rounded-[50%]"

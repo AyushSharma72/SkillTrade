@@ -7,7 +7,7 @@ export async function AcceptRequestFetchFunction(
 ) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/workers/AcceptRequest/${wid}/${rid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/AcceptRequest/${wid}/${rid}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

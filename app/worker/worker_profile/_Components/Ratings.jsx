@@ -45,7 +45,7 @@ const Ratings = ({ Reviews }) => {
               <div className="flex items-center gap-2">
                 <Avatar
                   alt={data.user || "User"}
-                  src={`http://localhost:8000/api/v1/users/GetUserImage/${data?.user?._id}`}
+                  src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/GetUserImage/${data?.user?._id}`}
                 />
                 <div>
                   <p className="font-semibold">

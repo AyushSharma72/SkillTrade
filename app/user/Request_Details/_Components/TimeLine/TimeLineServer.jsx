@@ -3,7 +3,7 @@ import TimeLine from "./TimeLine";
 async function GetData(rid) {
   try {
     const response = await fetch(
-      `http://localhost:8000/api/v1/request/GetSingleUserRequest/${rid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`,
       { cache: "no-store" }
     );
     const info = await response.json();

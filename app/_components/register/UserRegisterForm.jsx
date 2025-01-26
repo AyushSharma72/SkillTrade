@@ -34,7 +34,7 @@ const UserRegisterForm = () => {
     try {
       setLoading(true);
       const response = await fetch(
-        "http://localhost:8000/api/v1/users/UserRegister",
+        "${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/UserRegister",
         {
           method: "POST",
           headers: {

@@ -44,7 +44,7 @@ const Page = ({ role }) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/admin/get_verifying_requests?page=${page}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/get_verifying_requests?page=${page}`,
         {
           method: "POST",
           headers: {
@@ -77,7 +77,7 @@ const Page = ({ role }) => {
 
   const handleOpenModal = (wid) => {
     setSelectedImage(
-      `http://localhost:8000/api/v1/admin/get_veriify_id/${wid}`
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/get_veriify_id/${wid}`
     );
     setImageLoading(true);
     setOpenModal(true);
@@ -96,7 +96,7 @@ const Page = ({ role }) => {
     try {
       SetBackDrop(true);
       const response = await fetch(
-        `http://localhost:8000/api/v1/admin/reject_verification_request/${selectedId}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/reject_verification_request/${selectedId}`,
         {
           method: "POST",
           headers: {
@@ -126,7 +126,7 @@ const Page = ({ role }) => {
   const verifyWorker = async (wid) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/admin/verify_worker/${wid}`,
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/admin/verify_worker/${wid}`,
         {
           method: "POST",
           headers: {

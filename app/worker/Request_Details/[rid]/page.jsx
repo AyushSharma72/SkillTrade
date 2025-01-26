@@ -6,7 +6,7 @@ export default async function RequestDetailsServer({params}){
 
  try {
    const response = await fetch(
-     `http://localhost:8000/api/v1/request/GetSingleUserRequest/${rid}`,
+     `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`,
      {
        cache: "no-store", // Prevent caching
      }
@@ -27,5 +27,5 @@ export default async function RequestDetailsServer({params}){
  }
 
 
-   return <RequestDetailsClient IntialRequestData={data.requestdetails} loadingstate={false} requestimage={`http://localhost:8000/api/v1/request/GetRequestPhotoController/${rid}`}/>;
+   return <RequestDetailsClient IntialRequestData={data.requestdetails} loadingstate={false} requestimage={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`}/>;
 }

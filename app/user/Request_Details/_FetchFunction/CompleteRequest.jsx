@@ -4,7 +4,7 @@ export async function CompleteRequest(rid, uid, wid, comment, price, stars) {
     console.log("wid ", wid);
     console.log("uid ", uid);
     const response = await fetch(
-      `http://localhost:8000/api/v1/request//RequestCompleted/${rid}/${uid}/${wid}`,
+      `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request//RequestCompleted/${rid}/${uid}/${wid}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
