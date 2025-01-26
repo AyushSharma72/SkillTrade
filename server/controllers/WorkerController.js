@@ -521,7 +521,11 @@ async function UnassignRequest(req, resp) {
     );
     request.confirmedAt = null;
     request.assignedTo = null;
-    request.status = "Accepted";
+    if (request.acceptedBy.length === 0) {
+      request.status = "Pending";
+    } else {
+      request.status = "Accepted";
+    }
 
     worker.unAssignedRequests.push({
       request: rid,
