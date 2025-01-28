@@ -8,6 +8,8 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import toast, { Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css"; 
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   Select,
@@ -21,6 +23,7 @@ const WorkerRegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [serviceType, setServiceType] = useState("");
+  const [mobileNo, setMobileNo] = useState("");
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -36,20 +39,28 @@ const WorkerRegisterForm = () => {
 
     const Name = formData.get("Name");
     const Email = formData.get("Email");
-    const MobileNo = formData.get("MobileNumber");
     const Address = formData.get("Address");
     const Password = formData.get("Password");
     const pincode = formData.get("pincode");
 
+    // Validation
     if (!serviceType) {
       toast.error("Please select a service type");
+      return;
+    }
+    if (Password.length < 6) {
+      toast.error("Password must be at least 6 characters long");
+      return;
+    }
+    if (!/^\d{6}$/.test(pincode)) {
+      toast.error("Pincode must be exactly 6 digits");
       return;
     }
 
     try {
       setLoading(true);
       const response = await fetch(
-        "${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/WorkerRegister",
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/WorkerRegister`,
         {
           method: "POST",
           headers: {
@@ -58,7 +69,7 @@ const WorkerRegisterForm = () => {
           body: JSON.stringify({
             Name,
             Email,
-            MobileNo,
+            MobileNo: mobileNo,
             Address,
             Password,
             ServiceType: serviceType,
@@ -85,10 +96,7 @@ const WorkerRegisterForm = () => {
 
   return (
     <div className="flex flex-col items-center mb-4">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Backdrop
         sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
         open={loading}
@@ -110,6 +118,27 @@ const WorkerRegisterForm = () => {
           type="text"
           name="Name"
         />
+        <div className="w-3/4">
+          <label className="text-sm text-gray-600 mb-1 block">
+            Mobile Number
+          </label>
+          <PhoneInput
+            country={"in"}
+            value={mobileNo}
+            onChange={(value) => setMobileNo(value)}
+            inputStyle={{
+              width: "100%",
+              height: "56px",
+              borderRadius: "4px",
+              border: "1px solid #ccc",
+              paddingLeft: "48px",
+            }}
+            buttonStyle={{
+              border: "none",
+              borderRadius: "4px 0 0 4px",
+            }}
+          />
+        </div>
         <TextField
           id="email"
           label="Email"
@@ -119,16 +148,7 @@ const WorkerRegisterForm = () => {
           type="email"
           name="Email"
         />
-        <TextField
-          id="mobile"
-          label="Mobile Number"
-          variant="outlined"
-          className="w-3/4"
-          required
-          type="tel"
-          inputProps={{ maxLength: 10 }}
-          name="MobileNumber"
-        />
+
         <TextField
           id="address"
           label="Full Address"
@@ -145,6 +165,7 @@ const WorkerRegisterForm = () => {
           className="w-3/4"
           required
           type="number"
+          inputProps={{ maxLength: 6 }}
           name="pincode"
         />
         <TextField

@@ -8,8 +8,8 @@ import { UpdateUserInfo } from "./fetchfunction/UpdateUserInfo";
 import { Toaster, toast } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
-import Backdrop from "@mui/material/Backdrop"; // Import Backdrop
-import CircularProgress from "@mui/material/CircularProgress"; // Import CircularProgress
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Userinfo = () => {
   const [auth, setAuth] = useAuth();
@@ -23,9 +23,8 @@ const Userinfo = () => {
   });
 
   const [imageFile, setImageFile] = useState(null);
-
-  const [openBackdrop, setOpenBackdrop] = useState(false); // State to manage backdrop visibility
-
+  const [openBackdrop, setOpenBackdrop] = useState(false);
+   const [imgurl,SetImgUrl] = useState(`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/GetUserImage/${auth?.user?._id}`)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -36,9 +35,7 @@ const Userinfo = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-    }
+    if (file) setImageFile(file);
   };
 
   async function getuserdata() {
@@ -61,18 +58,19 @@ const Userinfo = () => {
   async function updateuserdata() {
     if (auth?.user?._id) {
       try {
-        setOpenBackdrop(true); // Show the backdrop
+        setOpenBackdrop(true);
         const data = new FormData();
-
         data.append("Name", formData.name);
         data.append("MobileNo", formData.mobile);
         data.append("Email", formData.email);
         data.append("Address", formData.address);
         data.append("Pincode", formData.pincode);
 
-        if (imageFile) {
-          console.log(imageFile);
-          data.append("image", imageFile);
+        if (imageFile) data.append("image", imageFile);
+
+        if (!/^\d{6}$/.test(formData.pincode)) {
+          toast.error("Pincode must be exactly 6 digits");
+          return;
         }
 
         const response = await UpdateUserInfo(auth?.user?._id, data);
@@ -91,44 +89,41 @@ const Userinfo = () => {
             })
           );
           toast.success(response.message);
+          SetImgUrl(`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/GetUserImage/${auth?.user?._id}`);
         } else {
           toast.error(response.message);
         }
       } catch (error) {
-        console.log(error);
+        console.error(error);
         toast.error("An error occurred while updating user info");
       } finally {
-        setOpenBackdrop(false); // Hide the backdrop once the process is complete
+        setOpenBackdrop(false);
       }
     }
   }
 
   useEffect(() => {
-    if (auth?.user?._id) {
-      getuserdata();
-    }
+    if (auth?.user?._id) getuserdata();
   }, [auth]);
 
   return (
-    <div className="w-full mb-2">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
-      <div className="flex flex-col justify-center gap-4 border-2 border-gray-300 m-auto w-[85%] lg:w-3/4 xl:w-1/2 rounded-lg p-5">
-        <p className="text-3xl text-center font-medium">Personal Information</p>
-        <hr />
+    <div className="flex justify-center items-center  bg-gray-50">
+      <Toaster position="bottom-center" reverseOrder={false} />
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-3xl">
+        <p className="text-2xl font-semibold text-gray-800 text-center">
+          Personal Information
+        </p>
+        <hr className="my-4" />
 
-        {/* Image Upload Field */}
-        <div className="flex flex-col gap-2  ">
+        {/* Profile Image */}
+        <div className="flex flex-col items-center gap-4">
           <Image
-            src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/GetUserImage/${auth?.user?._id}`}
-            className="object-cover w-[300px] h-[300px] responsive-image rounded-sm"
-            alt="user image"
-            width={200}
-            height={100}
+            src={imgurl}
+            alt="User Profile"
+            className="w-[200px] h-[200px] rounded-full object-cover shadow"
+            width={228}
+            height={228}
           />
-          <label className="font-medium w-full">Profile photo</label>
           <Input
             type="file"
             accept="image/*"
@@ -138,33 +133,34 @@ const Userinfo = () => {
           />
         </div>
 
-        <div className="flex flex-col gap-2">
-          {/* Name and mobile number */}
-          <div className="flex sm:flex-row flex-col gap-4">
-            <div className="flex flex-col gap-2 sm:w-1/2 ">
-              <label className="font-medium">Name</label>
+        {/* Form Fields */}
+        <div className="mt-6">
+          <div className="flex flex-wrap gap-4">
+            <div className="flex-1">
+              <label className="font-medium text-gray-700">Name</label>
               <Input
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
                 size="md"
+                placeholder="Enter your name"
               />
             </div>
-            <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className="font-medium">Mobile Number</label>
+            <div className="flex-1">
+              <label className="font-medium text-gray-700">Mobile Number</label>
               <Input
                 name="mobile"
                 value={formData.mobile}
                 onChange={handleInputChange}
                 size="md"
+                placeholder="Enter your mobile number"
               />
             </div>
           </div>
 
-          {/* Email and address */}
-          <div className="flex sm:flex-row flex-col gap-4">
-            <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className="font-medium">Email</label>
+          <div className="flex flex-wrap gap-4 mt-4">
+            <div className="flex-1">
+              <label className="font-medium text-gray-700">Email</label>
               <Input
                 name="email"
                 value={formData.email}
@@ -173,44 +169,45 @@ const Userinfo = () => {
                 disabled
               />
             </div>
-            <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className="font-medium">Address</label>
+            <div className="flex-1">
+              <label className="font-medium text-gray-700">Address</label>
               <Input
                 name="address"
                 value={formData.address}
                 onChange={handleInputChange}
                 size="md"
+                placeholder="Enter your address"
               />
             </div>
           </div>
 
-          {/* Pincode */}
-          <div className="flex sm:flex-row flex-col gap-4">
-            <div className="flex flex-col gap-2 sm:w-1/2">
-              <label className="font-medium">Pincode</label>
+          <div className="flex flex-wrap gap-4 mt-4 items-center">
+            <div className="flex-1">
+              <label className="font-medium text-gray-700">Pincode</label>
               <Input
                 name="pincode"
                 value={formData.pincode}
                 onChange={handleInputChange}
                 size="md"
+                type="number"
+                placeholder="Enter your pincode"
               />
             </div>
-            <div className="flex flex-col gap-2 w-1/4 justify-end">
-              <Button onClick={updateuserdata}>Save</Button>
-            </div>
+            <Button onClick={updateuserdata} className="px-6 py-2 mt-4">
+              Save
+            </Button>
           </div>
+        </div>
+
+        <div className="text-center mt-6">
+          <Link href="/">
+            <Button className="px-4 py-2">Home</Button>
+          </Link>
         </div>
       </div>
 
-      <div className="text-center mt-4 mb-2 ">
-        <Link href="/" className="w-[100px]">
-          <Button className="w-[100px]">Home</Button>
-        </Link>
-      </div>
-
-      {/* Backdrop Component */}
-      <Backdrop open={openBackdrop} className="backdrop-color">
-        <CircularProgress color="inherit" />
+      <Backdrop open={openBackdrop} className="z-50">
+        <CircularProgress color="primary" />
       </Backdrop>
     </div>
   );

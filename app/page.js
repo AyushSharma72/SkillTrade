@@ -1,7 +1,11 @@
 "use client";
 import { Button } from "../components/ui/button";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
+import { useAuth } from "./_context/UserAuthContent";
+import Link from "next/link";
+
 export default function Home() {
+  const [auth, SetAuth] = useAuth();
   return (
     <div>
       {/* hero section  */}
@@ -21,11 +25,13 @@ export default function Home() {
         </p>
         <div className="flex gap-2  flex-col sm:flex-row">
           <Button className="bg-white text-black hover:bg-gray-300 font-bold">
-            Book A Service Now
+            <Link href="user/create_request"> Book A Service Now</Link>
           </Button>
-          <Button className="bg-white text-black hover:bg-gray-300 font-bold">
-            Get Started
-          </Button>
+          {auth?.user ? null : (
+            <Button className="bg-white text-black hover:bg-gray-300 font-bold">
+              Get Started
+            </Button>
+          )}
         </div>
       </div>
 
@@ -40,10 +46,10 @@ export default function Home() {
 
           <div className="md:w-[45%] xl:w-1/2">
             <DotLottieReact
-      src="https://lottie.host/bf9750c3-8c66-4641-a213-da2eea812c93/DyZztCGG34.lottie"
-      loop  
-      autoplay
-    />
+              src="https://lottie.host/bf9750c3-8c66-4641-a213-da2eea812c93/DyZztCGG34.lottie"
+              loop
+              autoplay
+            />
           </div>
 
           {/* Text Section */}
@@ -79,9 +85,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row justify-around items-center mt-10 px-5">
           {/* Lottie Animation Section */}
           {/* Text Section */}
-          <div className="text-center md:text-left md:w-[55%] xl:w-1/2 space-y-5 p-2">
-           
-          </div>
+          <div className="text-center md:text-left md:w-[55%] xl:w-1/2 space-y-5 p-2"></div>
         </div>
       </div>
     </div>

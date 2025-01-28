@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-
 const ChatBot = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
 
@@ -18,7 +17,7 @@ const ChatBot = () => {
           botName: "Skill Bot",
           botAvatar:
             "https://files.bpcontent.cloud/2025/01/19/11/20250119110053-GI67AVRT.png",
-          botDescription: "Hi, I am Skill Bot how can i help you?",
+          botDescription: "Hi, I am Skill Bot how can I help you?",
           color: "#020202",
           variant: "soft",
           themeMode: "dark",
@@ -47,10 +46,10 @@ const ChatBot = () => {
 
   return (
     <>
-      <div id="botpress-webchat"></div>
+      <div id="botpress-webchat" className="!fixed !left-[2%] !bottom-[2%]"></div>
       <div
         id="chatbot-container"
-        className={`webchat h-[600px] w-[400px] fixed right-5 bottom-1 ${
+        className={`webchat fixed h-[600px] w-[400px] !left-[2%] !bottom-[2%] ${
           isChatOpen ? "pointer-events-auto" : "pointer-events-none"
         }`}
         style={{ display: "none" }}

@@ -217,8 +217,10 @@ async function GetAllRequests(req, resp) {
     const totalrequests = await RequestModal.countDocuments({
       status: { $in: ["Accepted", "Pending"] },
     });
+    const currentDate = new Date();
     const requests = await RequestModal.find({
       status: { $in: ["Accepted", "Pending"] },
+      date: { $gte: currentDate },
     })
       .select("service location date status user coordinates")
       .skip((pagenumber - 1) * 5)
@@ -467,7 +469,7 @@ async function UnassignRequest(req, resp) {
     if (request.acceptedBy.length === 0) {
       request.status = "Pending";
     } else {
-       request.status = "Accepted";
+      request.status = "Accepted";
     }
 
     worker.UnAssignedRequest.push({

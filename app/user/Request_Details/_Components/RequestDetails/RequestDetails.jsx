@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Tag, Image } from "antd";
 import { useRouter } from "next/navigation";
@@ -30,7 +30,7 @@ import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 
-const RequestDetails = ({ initialData, loadingstate }) => {
+const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(loadingstate);
   const { rid } = useParams();
@@ -49,7 +49,9 @@ const RequestDetails = ({ initialData, loadingstate }) => {
   const [fetchLoading, setFetchLoading] = useState(false);
   const [unassignModal, SetunassignModal] = useState(false);
   const [description, setDescription] = useState("");
-
+  const [dateExpiredModal, SetdateExpiredModal] = useState(false);
+  const [imageurl,SetImgUrl] = useState(intialimage)
+  
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
   }
@@ -142,7 +144,7 @@ const RequestDetails = ({ initialData, loadingstate }) => {
       if (response.ok) {
         toast.success("Photo updated successfully!");
 
-        setImageUrl(`${imageUrl}?timestamp=${new Date().getTime()}`);
+       SetImgUrl(`${imageurl}?timestamp=${new Date().getTime()}`);
       } else {
         toast.error(result.message);
       }
@@ -178,10 +180,10 @@ const RequestDetails = ({ initialData, loadingstate }) => {
       );
       const info = await response.json();
       if (info.success) {
-        setData(info.requestdetails);
-        setImageUrl(
+        SetImgUrl(
           `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`
         );
+        setData(info.requestdetails);
       } else {
         toast.error(info.message);
       }
@@ -192,6 +194,16 @@ const RequestDetails = ({ initialData, loadingstate }) => {
     }
   }
 
+
+  useEffect(() => {
+    if (data) {
+      if (new Date(data.date) < new Date()) {
+        SetdateExpiredModal(true);
+      }
+    }
+  }, []);
+
+  
   async function RequestReview(rid) {
     try {
       setFetchLoading(true);
@@ -267,7 +279,7 @@ const RequestDetails = ({ initialData, loadingstate }) => {
             <div className="flex flex-col items-center lg:flex-row justify-around m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
               <div className="flex flex-col gap-2 items-center">
                 <Image
-                src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`}
+                  src={imageurl}
                   className="object-cover rounded-md responsive-image !h-[300px]"
                   alt="Request Image"
                 />
@@ -597,6 +609,30 @@ const RequestDetails = ({ initialData, loadingstate }) => {
                       }}
                     >
                       Cancel
+                    </Button>
+                  </Box>
+                </Modal>
+
+                {/* {date expires}  */}
+                <Modal
+                  open={dateExpiredModal}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <Box
+                    sx={style}
+                    className="flex flex-col gap-2 sm:w-[400px] w-[300px] "
+                  >
+                    <p className="text-red-600 text-center">
+                      The visiting date for this request is expired please
+                      reschedule this request in the reschedule tab !
+                    </p>{" "}
+                    <Button
+                      onClick={() => {
+                        SetdateExpiredModal(false);
+                      }}
+                    >
+                      Ignore
                     </Button>
                   </Box>
                 </Modal>

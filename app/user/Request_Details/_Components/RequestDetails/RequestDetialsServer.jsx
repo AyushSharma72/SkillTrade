@@ -17,7 +17,7 @@ export default async function RequestDetailsServer({ params }) {
         <RequestDetails
           initialData={info.requestdetails}
           loadingstate={false}
-          
+          intialimage={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`}
         />
       );
     }

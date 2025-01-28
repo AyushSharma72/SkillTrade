@@ -26,7 +26,7 @@ function ViewRequest() {
   const [pages, SetPages] = useState(1);
   const [pageNumber, SetPageNumber] = useState(1);
   const [loading, setloading] = useState(false);
-
+  const currentDate = new Date();
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
   };
@@ -62,10 +62,7 @@ function ViewRequest() {
 
   return (
     <div>
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       {loading ? (
         <div className="h-[600px] w-full  flex  ">
           <PulseLoader size={20} className="m-auto" />
@@ -102,8 +99,13 @@ function ViewRequest() {
                       {" "}
                       <div className="flex flex-col">
                         <span className="font-bold">
-                          {moment(data.date).format("MMMM Do YYYY")}
+                          {moment(data.date).format("MMMM Do YYYY")}{" "}
                         </span>
+                        {new Date(data.date) < currentDate &&
+                        data.status != "Completed" &&
+                        data.status != "Deleted" ? (
+                          <span className="text-red-500">(Date Expired)</span>
+                        ) : null}
                       </div>
                     </StyledTableCell>
 

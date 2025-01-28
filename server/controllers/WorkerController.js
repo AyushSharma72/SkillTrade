@@ -550,6 +550,51 @@ async function UnassignRequest(req, resp) {
   }
 }
 
+async function RecommandedForYou(req, resp) {
+  try {
+    const { wid } = req.params;
+
+    const worker = await WorkerModal.findById(wid).select(
+      "pincode city ServiceType"
+    );
+
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+
+    const query = {
+      status: { $nin: ["Completed", "Deleted"] }, 
+      $or: [
+        { pincode: worker.pincode },
+        { city: worker.city },
+        { service: worker.ServiceType },
+      ],
+    };
+
+    const requests = await RequestModal.find(query).select("-image");
+
+    if (requests.length > 0) {
+      return resp.status(200).send({
+        success: true,
+        requests,
+      });
+    } else {
+      return resp.status(200).send({
+        success: true,
+        message: "No requests found",
+      });
+    }
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
 module.exports = {
   RegisterWorker,
   CheckCity,
@@ -562,4 +607,5 @@ module.exports = {
   GetWorkerAssignedRequest,
   GetWorkerCompletedRequest,
   UnassignRequest,
+  RecommandedForYou,
 };

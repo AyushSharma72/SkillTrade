@@ -26,7 +26,7 @@ import Paper from "@mui/material/Paper";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 import { calculateDistance } from "../../_Arrays/Arrays";
 import Alert from "@mui/material/Alert";
-
+import RecommadedJobs from "./RecommadedJobs"
 import {
   Select,
   SelectContent,
@@ -184,10 +184,8 @@ function ViewRequest() {
 
   return (
     <div>
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
+      <>
       <div className="lg:flex lg:flex-row p-5 flex flex-col ">
         {/* Filters */}
         <div className="lg:w-1/4 flex flex-row lg:flex lg:flex-col gap-2 items-start mt-20 sm:mt-0">
@@ -418,7 +416,6 @@ function ViewRequest() {
                 </TableBody>
               </Table>
             </TableContainer>
-
             {ServiceType ||
             checkedValues.nearBy ||
             checkedValues.yourCity ? null : (
@@ -430,7 +427,9 @@ function ViewRequest() {
                 onChange={handlePageChange}
               />
             )}
+           
           </div>
+          
         ) : (
           <div className="sm:w-3/4 flex flex-col justify-center items-center">
             <p className="font-bold text-3xl text-center mt-10">No Data</p>
@@ -440,7 +439,10 @@ function ViewRequest() {
             </Link>
           </div>
         )}
+       
       </div>
+        <RecommadedJobs/>
+      </>
     </div>
   );
 }
