@@ -50,7 +50,7 @@ const RecommadedJobs = () => {
   }, []);
 
   return (
-    <div className="bg-slate-200 mt-5 p-4">
+    <div className="mt-5 p-4">
       <p className="text-center text-2xl font-semibold">Recommended for you</p>
       {error ? (
         <div className="text-red-500 text-center h-[100px] mt-10">
@@ -59,7 +59,6 @@ const RecommadedJobs = () => {
       ) : (
         <Swiper
           effect={"coverflow"}
-          
           slidesPerView={1}
           navigation={true}
           grabCursor={true}
@@ -70,19 +69,18 @@ const RecommadedJobs = () => {
             modifier: 0,
             slideShadows: true,
           }}
-          modules={[EffectCoverflow, Pagination, Navigation]}
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 10 }, // Smallest screens
-            480: { slidesPerView: 1, spaceBetween: 15 },
-            768: { slidesPerView: 1, spaceBetween: 20 }, // Tablets
-            1024: { slidesPerView: 2, spaceBetween: 40 }, // Laptops
-            1440: { slidesPerView: 3, spaceBetween: 40 }, // Larger screens
+            0: { slidesPerView: 1 },
+            480: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1440: { slidesPerView: 2 },
           }}
-          className="mt-5 "
+          modules={[EffectCoverflow, Pagination, Navigation]}
+          className="mt-5 w-[90%] lg:w-3/4 m-auto"
         >
           {jobs?.map((data, index) => (
-            <SwiperSlide key={index} className="w-full ">
-              <div className="flex flex-col items-start bg-white p-4 rounded-lg shadow-lg w-full max-w-[90%] sm::max-w-[400px]">
+            <SwiperSlide key={index}>
+              <div className="flex flex-col items-start  p-4 rounded-lg shadow-lg w-[500px] m-auto border-2">
                 <div className="font-bold">{data.service}</div>
                 <Divider className="w-full mb-2" />
                 <p className="text-sm text-gray-600 mt-2">

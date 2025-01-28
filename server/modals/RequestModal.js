@@ -92,7 +92,8 @@ const RequestSchema = new mongoose.Schema(
         type: Boolean,
       },
       Review:{
-        type:Boolean
+        type:Boolean,
+        default:false
       }
       
     },

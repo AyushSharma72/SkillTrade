@@ -30,7 +30,7 @@ import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 
-const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
+const RequestDetails = ({ initialData, loadingstate, intialimage }) => {
   const [data, setData] = useState(initialData);
   const [loading, setLoading] = useState(loadingstate);
   const { rid } = useParams();
@@ -50,8 +50,8 @@ const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
   const [unassignModal, SetunassignModal] = useState(false);
   const [description, setDescription] = useState("");
   const [dateExpiredModal, SetdateExpiredModal] = useState(false);
-  const [imageurl,SetImgUrl] = useState(intialimage)
-  
+  const [imageurl, SetImgUrl] = useState(intialimage);
+
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
   }
@@ -144,7 +144,7 @@ const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
       if (response.ok) {
         toast.success("Photo updated successfully!");
 
-       SetImgUrl(`${imageurl}?timestamp=${new Date().getTime()}`);
+        SetImgUrl(`${imageurl}?timestamp=${new Date().getTime()}`);
       } else {
         toast.error(result.message);
       }
@@ -194,16 +194,18 @@ const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
     }
   }
 
-
   useEffect(() => {
     if (data) {
-      if (new Date(data.date) < new Date()) {
+      if (
+        new Date(data.date) < new Date() &&
+        data.status != "Completed" &&
+        data.status != "Deleted"
+      ) {
         SetdateExpiredModal(true);
       }
     }
   }, []);
 
-  
   async function RequestReview(rid) {
     try {
       setFetchLoading(true);
@@ -250,7 +252,7 @@ const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
       </Backdrop>{" "}
       <p className="text-2xl font-bold">Request Details</p>
       {data.ReportedInfo?.Info && data.ReportedInfo?.Review == false ? (
-        <Alert severity="warning" className="w-full">
+        <Alert severity="warning" className="w-full mt-3">
           Warning: please follow the below guidelines otherwise the request will
           be deleted
           <br></br>
@@ -265,7 +267,7 @@ const RequestDetails = ({ initialData, loadingstate,intialimage }) => {
           </span>
         </Alert>
       ) : data.ReportedInfo?.Review ? (
-        <Alert severity="info" className="w-full">
+        <Alert severity="info" className="w-full mt-3">
           The request is submitted for review
         </Alert>
       ) : null}

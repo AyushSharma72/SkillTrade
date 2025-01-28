@@ -16,7 +16,6 @@ import {
   IconButton,
   Backdrop,
   CircularProgress,
-  Box,
 } from "@mui/material";
 import { Button } from "../../../components/ui/button";
 import { MdDelete } from "react-icons/md";
@@ -25,9 +24,17 @@ import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import Empty from "../../assests/Empty.svg";
 import { toast, Toaster } from "react-hot-toast";
 import { StyledTableCell, style } from "../../_Arrays/Arrays";
-import Modal from "@mui/material/Modal";
 import { Textarea } from "@mui/joy";
 import isAdmin from "@/app/_components/privateroutes/isAdmin";
+import Tooltip from "@mui/material/Tooltip";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const Page = ({ role }) => {
   const [reports, setReports] = useState([]);
@@ -141,7 +148,7 @@ const Page = ({ role }) => {
     } catch (error) {
       toast.error("An Error occurred");
     } finally {
-       SetRequestId(null);
+      SetRequestId(null);
       setBackdrop(false); // Hide the backdrop
     }
   }
@@ -158,7 +165,7 @@ const Page = ({ role }) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ info,role }),
+          body: JSON.stringify({ info, role }),
         }
       );
 
@@ -172,7 +179,7 @@ const Page = ({ role }) => {
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
-       SetRequestId(null);
+      SetRequestId(null);
       setBackdrop(false); // Hide the backdrop
     }
   }
@@ -202,17 +209,14 @@ const Page = ({ role }) => {
     } catch (error) {
       toast.error("An unexpected error occurred. Please try again.");
     } finally {
-       SetRequestId(null);
+      SetRequestId(null);
       setBackdrop(false); // Hide the backdrop
     }
   }
 
   return (
-    <div className=" mx-auto p-4 sm:m-0 mt-20">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+    <div className="mx-auto p-4 sm:m-0 mt-20">
+      <Toaster position="bottom-center" reverseOrder={false} />
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} />
@@ -229,10 +233,10 @@ const Page = ({ role }) => {
                   <StyledTableCell />
                   <StyledTableCell align="center">Request ID</StyledTableCell>
                   <StyledTableCell align="center">
-                    Number of times reported
+                    Reports Count
                   </StyledTableCell>
                   <StyledTableCell align="center">Actions</StyledTableCell>
-                  <StyledTableCell align="center">Review</StyledTableCell>
+                  <StyledTableCell align="center">Review Request</StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -254,7 +258,6 @@ const Page = ({ role }) => {
                       </StyledTableCell>
 
                       <StyledTableCell align="center">
-                        {" "}
                         <Link
                           href={`/worker/Request_Details/${report.requestId}`}
                           className="text-blue-700"
@@ -262,44 +265,46 @@ const Page = ({ role }) => {
                           {report.requestId}
                         </Link>
                       </StyledTableCell>
+
                       <StyledTableCell align="center">
                         {report.Report.length} times
                       </StyledTableCell>
 
-                      {/* actions  */}
+                      {/* Actions */}
                       <StyledTableCell align="center">
                         <div className="flex gap-3 justify-center items-center">
-                          {report.ReviewRequested ? null : (
-                            <IoIosInformationCircle
-                              className="text-xl cursor-pointer text-blue-700"
-                              title="Inform User"
+                          {!report.ReviewRequested && (
+                            <Tooltip title="Inform User">
+                              <IoIosInformationCircle
+                                className="text-xl cursor-pointer text-blue-700"
+                                onClick={() => {
+                                  SetRequestId(report.requestId);
+                                  SetInfoModal(true);
+                                }}
+                              />
+                            </Tooltip>
+                          )}
+                          <Tooltip title="Delete Request">
+                            <MdDelete
+                              className="text-xl cursor-pointer text-red-600"
                               onClick={() => {
                                 SetRequestId(report.requestId);
-                                SetInfoModal(true);
+                                SetOpenModal(true);
                               }}
                             />
-                          )}
-                          <MdDelete
-                            className="text-xl cursor-pointer text-red-600"
-                            title="Delete Request"
-                            onClick={() => {
-                              SetRequestId(report.requestId);
-                              SetOpenModal(true);
-                            }}
-                          />
+                          </Tooltip>
                         </div>
                       </StyledTableCell>
 
-                      {/* reviews  */}
-
+                      {/* Review Section */}
                       <StyledTableCell align="center">
                         {report.ReviewRequested ? (
-                          <div className="flex flex-col gap-2">
-                            <span>A review is requested by the user</span>
+                        
+                            
                             <div className="flex gap-4 justify-center items-center">
-                              {" "}
                               <Button
-                                title="Approving this review will remove this request from reported request"
+                                title="Approve the review"
+                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
                                 onClick={() => {
                                   SetRequestId(report.requestId);
                                   if (requestId) {
@@ -307,11 +312,11 @@ const Page = ({ role }) => {
                                   }
                                 }}
                               >
-                                {" "}
                                 Approve
                               </Button>
                               <Button
-                                title="reject the review request of the user"
+                                title="Reject the review"
+                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded"
                                 onClick={() => {
                                   SetRequestId(report.requestId);
                                   SetRejectReviewModal(true);
@@ -319,17 +324,17 @@ const Page = ({ role }) => {
                               >
                                 Reject
                               </Button>
-                            </div>
+                           
                           </div>
                         ) : (
-                          "N/A"
+                          <span className="text-gray-500">N/A</span>
                         )}
                       </StyledTableCell>
                     </TableRow>
                     <TableRow>
                       <StyledTableCell
                         style={{ paddingBottom: 0, paddingTop: 0 }}
-                        colSpan={3}
+                        colSpan={5}
                       >
                         <Collapse
                           in={openRows[report._id]}
@@ -378,6 +383,8 @@ const Page = ({ role }) => {
               </TableBody>
             </Table>
           </TableContainer>
+
+          {/* Pagination */}
           <div className="flex justify-center mt-4">
             <Pagination
               count={totalPages}
@@ -399,6 +406,7 @@ const Page = ({ role }) => {
         </div>
       )}
 
+      {/* Backdrop */}
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={backdrop}
@@ -406,109 +414,106 @@ const Page = ({ role }) => {
         <CircularProgress color="inherit" />
       </Backdrop>
 
-      {/* delete modal  */}
+      <div>
+        {/* // deleteRequest dialog */}
+        <AlertDialog open={openmodal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Deletion</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to delete this item? This action cannot be
+                undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  SetOpenModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  deleteRequest();
+                }}
+              >
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-      <Modal
-        open={openmodal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style} className="flex flex-col gap-2 sm:w-[400px] w-[320px]">
-          <p className="font-bold text-center">
-            Are you sure you want to delete this request ?
-          </p>{" "}
-          <Button
-            className="bg-red-600 hover:bg-red-700"
-            onClick={() => {
-              deleteRequest();
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            onClick={() => {
-              SetOpenModal(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </Box>
-      </Modal>
+        {/*informUser dialog */}
 
-      {/* info modal  */}
+        <AlertDialog open={infomodal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Inform the user</AlertDialogTitle>
+              <AlertDialogDescription>
+                <Textarea
+                  name="description"
+                  placeholder="Inform the user about problem in the request"
+                  value={info}
+                  onChange={(e) => SetInfo(e.target.value)}
+                  className="w-full h-40 overflow-y-scroll scrollbar-hide"
+                  required
+                />
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Button
+                onClick={() => {
+                  SetInfoModal(false);
+                }}
+              >
+                Close
+              </Button>
+              <Button
+                onClick={() => {
+                  informUser();
+                }}
+              >
+                Submit
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
 
-      <Modal
-        open={infomodal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={style}
-          className="flex flex-col gap-2 sm:w-[400px] w-[300px] !p-5"
-        >
-          <p className="text-center text-xl">Inform User</p>{" "}
-          <Textarea
-            name="description"
-            placeholder="Inform the user about problem in the request"
-            value={info}
-            onChange={(e) => SetInfo(e.target.value)}
-            className="w-full h-40 overflow-y-scroll scrollbar-hide"
-            required
-          />
-          <Button
-            onClick={() => {
-              informUser();
-            }}
-          >
-            Inform
-          </Button>
-          <Button
-            onClick={() => {
-              SetInfoModal(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </Box>
-      </Modal>
+        {/* // rejectReviewRequest dialog */}
 
-      {/* rejectReviewModal */}
-
-      <Modal
-        open={rejectReviewModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box
-          sx={style}
-          className="flex flex-col gap-2 sm:w-[400px] w-[300px] !p-5"
-        >
-          <p className="text-center text-xl">Reject Request</p>{" "}
-          <Textarea
-            name="description"
-            placeholder="Enter reason for rejection"
-            value={info}
-            onChange={(e) => SetInfo(e.target.value)}
-            className="w-full h-40 overflow-y-scroll scrollbar-hide"
-            required
-          />
-          <Button
-            onClick={() => {
-              rejectReviewRequest();
-            }}
-            className="bg-red-600"
-          >
-            Reject
-          </Button>
-          <Button
-            onClick={() => {
-              SetRejectReviewModal(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </Box>
-      </Modal>
+        <AlertDialog open={rejectReviewModal}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Reject Review Request</AlertDialogTitle>
+              <AlertDialogDescription>
+                Are you sure you want to reject this review request? This action
+                is irreversible.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  SetRejectReviewModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() => {
+                  rejectReviewRequest();
+                }}
+              >
+                Reject
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 };
