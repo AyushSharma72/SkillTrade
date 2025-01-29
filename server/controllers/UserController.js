@@ -363,7 +363,7 @@ async function SendOtp(req, resp) {
 
 async function VerifyOtp(req, resp) {
   try {
-    const { email, otp } = req.body;
+  const { email, otp, foremail = false } = req.body;
 
     if (!email || !otp) {
       return resp.status(400).send({
@@ -394,10 +394,13 @@ async function VerifyOtp(req, resp) {
         message: "otp has expired. Please request a new one.",
       });
     }
-
+    if (foremail) {
+      user.email_verified = true;
+      await user.save();
+    }
     return resp.status(200).send({
       success: true,
-      message: "Valid OTP",
+      message: "Verification successfull",
     });
   } catch (error) {
     console.error("Error verifying OTP:", error);
@@ -488,6 +491,92 @@ async function SubmitForReview(req, resp) {
   }
 }
 
+async function SendEmailVerificationOtp(req, resp) {
+  const { GeneratedOtp, email } = req.body;
+
+  try {
+    if (!GeneratedOtp || !email) {
+      return resp.status(400).send({
+        success: false,
+        message: "OTP and Email are required",
+      });
+    }
+
+    const user = await UserModal.findOne({ Email: email });
+    if (!user) {
+      return resp.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
+    user.otp = GeneratedOtp;
+    user.otpExpiry = otpExpiry;
+    await user.save();
+
+    if (!process.env.email_id || !process.env.pass_key) {
+      return resp.status(500).send({
+        success: false,
+        message: "Email configuration missing on the server",
+      });
+    }
+
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.email_id,
+        pass: process.env.pass_key,
+      },
+    });
+
+    const emailTemplate = `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
+        <div style="text-align: center;">
+        <img src="https://yourdomain.com/path-to-your-image/skill-trade-logo.png" alt="Skill Trade Logo" style="width: 250px; margin-bottom: 10px; background-color: black;">
+
+          <h1 style="color: #333;">Your Otp To Verify Email</h1>
+          <p style="font-size: 18px; color: #555;">Hello,</p>
+          <p style="font-size: 16px; color: #555;">We received a request to verify your email. Use the OTP below to proceed:</p>
+          <p style="font-size: 24px; font-weight: bold; color: #007BFF;">${GeneratedOtp}</p>
+          <p style="font-size: 14px; color: #999; margin-top: 20px;">If you didn't request a email verification, you can safely ignore this email.</p>
+          <hr style="margin: 20px 0;">
+          <p style="font-size: 12px; color: #999;">© ${new Date().getFullYear()} Skill Trade. All rights reserved.</p>
+        </div>
+      </div>
+    `;
+
+    const mailOptions = {
+      from: process.env.email_id,
+      to: email,
+      subject: "Reset Password - Skill Trade",
+      html: emailTemplate, // No need for attachments, the image is now linked
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.error("Error sending email:", error);
+        return resp.status(500).send({
+          success: false,
+          message: "Error sending email. Please try again later.",
+        });
+      } else {
+        console.log("Email sent:", info.response);
+        return resp.status(200).send({
+          success: true,
+          message: "OTP sent successfully to the provided email",
+        });
+      }
+    });
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    resp.status(500).send({
+      success: false,
+      message: "An unexpected error occurred. Please try again later.",
+    });
+  }
+}
+
 module.exports = {
   RegisterUser,
   UserLogin,
@@ -499,4 +588,5 @@ module.exports = {
   VerifyOtp,
   ResetPassword,
   SubmitForReview,
+  SendEmailVerificationOtp,
 };
