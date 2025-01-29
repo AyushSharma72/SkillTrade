@@ -70,17 +70,17 @@ const RecommadedJobs = () => {
             slideShadows: true,
           }}
           breakpoints={{
-            0: { slidesPerView: 1 },
-            480: { slidesPerView: 1 },
-            768: { slidesPerView: 2 },
-            1440: { slidesPerView: 2 },
+            0: { slidesPerView: 1, spaceBetween: 10 }, 
+            480: { slidesPerView: 1, spaceBetween: 15 }, 
+            768: { slidesPerView: 2, spaceBetween: 20 }, 
+            1440: { slidesPerView: 2, spaceBetween: 30 }, 
           }}
           modules={[EffectCoverflow, Pagination, Navigation]}
-          className="mt-5 w-[90%] lg:w-3/4 m-auto"
+          className="mt-5 w-full m-auto"
         >
           {jobs?.map((data, index) => (
             <SwiperSlide key={index}>
-              <div className="flex flex-col items-start  p-4 rounded-lg shadow-lg w-[500px] m-auto border-2">
+              <div className="flex flex-col items-start  p-4 rounded-lg shadow-lg  m-auto border-2">
                 <div className="font-bold">{data.service}</div>
                 <Divider className="w-full mb-2" />
                 <p className="text-sm text-gray-600 mt-2">

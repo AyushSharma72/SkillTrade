@@ -71,7 +71,7 @@ body::-webkit-scrollbar {
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.bpFab {
+/* .bpFab {
   position: fixed !important;
   left: 2% !important;
   bottom: 13% !important;
@@ -80,7 +80,7 @@ body::-webkit-scrollbar {
   position: fixed !important;
   left: 2% !important;
   bottom: 10% !important;
-}
+} */
 @media screen and (max-width: 400px) {
   .ant-image {
     height: 300px !important;

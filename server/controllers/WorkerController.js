@@ -321,10 +321,11 @@ async function UpdateProfile(req, resp) {
         message: "verification image processing failed",
       });
     }
+    updatedWorker.Verified.verified = "Pending";
   } else {
     console.log("No verification image exists");
   }
-  updatedWorker.Verified.verified = "Pending";
+
   await updatedWorker.save();
 
   return resp.status(200).send({
@@ -442,6 +443,7 @@ const GetWorkerAssignedRequest = async (req, resp) => {
       .json({ success: false, error: "Internal server error" });
   }
 };
+
 const GetWorkerCompletedRequest = async (req, resp) => {
   try {
     const { wid } = req.params;
@@ -566,7 +568,7 @@ async function RecommandedForYou(req, resp) {
     }
 
     const query = {
-      status: { $nin: ["Completed", "Deleted"] }, 
+      status: { $nin: ["Completed", "Deleted"] },
       $or: [
         { pincode: worker.pincode },
         { city: worker.city },

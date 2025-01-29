@@ -1,8 +1,14 @@
-export async function GetRequestFilteredData(ServiceType, checkedValues, wid) {
+export async function GetRequestFilteredData(
+  ServiceType,
+  checkedValues,
+  distance,
+  wid
+) {
   try {
     let queryParams = new URLSearchParams(checkedValues).toString();
 
     queryParams += `&ServiceType=${ServiceType}`;
+    queryParams += `&maxDistance=${distance}`;
 
     // Construct the final URL
     const response = await fetch(

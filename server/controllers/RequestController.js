@@ -249,56 +249,7 @@ async function GetAllRequests(req, resp) {
   }
 }
 
-async function FilterRequests(req, resp) {
-  try {
-    const { wid } = req.params;
-    const { nearBy, yourCity, ServiceType } = req.query;
 
-    const worker = await WorkerModal.findById(wid).select("pincode city");
-
-    if (!worker) {
-      return resp.status(404).send({
-        success: false,
-        message: "Worker not found",
-      });
-    }
-    let query = {
-      status: { $nin: ["Completed", "Deleted"] }, // Exclude completed and deleted requests
-    };
-
-    // Add dynamic filtering based on query parameters
-    if (nearBy === "true" && worker.pincode) {
-      query.pincode = worker.pincode;
-    }
-    if (ServiceType) {
-      query.service = ServiceType;
-    }
-    if (yourCity === "true" && worker.city) {
-      query.city = worker.city;
-    }
-    // console.log(worker.city);
-    const requests = await RequestModal.find(query).select("-image");
-
-    if (requests.length > 0) {
-      return resp.status(200).send({
-        success: true,
-        requests,
-        message: "All requests fetched",
-      });
-    } else {
-      return resp.status(200).send({
-        success: true,
-        message: "No requests found",
-      });
-    }
-  } catch (error) {
-    console.error("Error in FilterRequests:", error);
-    return resp.status(500).send({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-}
 
 async function UpdateRequestPhoto(req, resp) {
   try {
@@ -558,6 +509,88 @@ async function RequestCompleted(req, resp) {
     resp.status(500).send({
       success: false,
       message: "internal server error",
+    });
+  }
+}
+
+
+async function FilterRequests(req, resp) {
+  try {
+    const { wid } = req.params;
+    const { ServiceType, maxDistance, yourCity } = req.query;
+
+    const worker = await WorkerModal.findById(wid).select(
+      "coordinates pincode"
+    );
+
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+
+    let query = {
+      status: { $nin: ["Completed", "Deleted"] },
+    };
+
+    if (ServiceType) {
+      query.service = ServiceType;
+    }
+    if (yourCity === "true" && worker.city) {
+      query.city = worker.city;
+    }
+    
+    let requests;
+
+    if (worker.coordinates && worker.coordinates.coordinates?.length === 2) {
+      // If worker has coordinates, find nearby requests with valid coordinates
+      const maxDistanceInMeters = (maxDistance || 5) * 1000; // Default to 5km
+
+      requests = await RequestModal.aggregate([
+        {
+          $geoNear: {
+            near: {
+              type: "Point",
+              coordinates: worker.coordinates.coordinates,
+            },
+            distanceField: "distance",
+            maxDistance: maxDistanceInMeters,
+            spherical: true,
+            query: { "coordinates.coordinates": { $exists: true, $ne: null } }, // Only requests with coordinates
+          },
+        },
+        { $match: query },
+        { $project: { image: 0 } }, // Exclude image field
+      ]);
+
+      if (requests.length === 0 && worker.pincode) {
+        // If no results from geospatial query, fall back to pincode
+        query.pincode = worker.pincode;
+        requests = await RequestModal.find(query).select("-image");
+      }
+    } else if (worker.pincode) {
+      // If worker has no coordinates, filter by pincode
+      query.pincode = worker.pincode;
+      requests = await RequestModal.find(query).select("-image");
+    } else {
+      return resp.status(400).send({
+        success: false,
+        message: "Worker location data is missing",
+      });
+    }
+
+    return resp.status(200).send({
+      success: true,
+      requests,
+      message:
+        requests.length > 0 ? "All requests fetched" : "No requests found",
+    });
+  } catch (error) {
+    console.error("Error in FilterRequests:", error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
     });
   }
 }

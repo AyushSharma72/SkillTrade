@@ -23,10 +23,14 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import SmallScreennmodal from "./SmallScreenmodal";
 import Paper from "@mui/material/Paper";
-import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
-import { calculateDistance } from "../../_Arrays/Arrays";
+import {
+  StyledTableCell,
+  StyledTableRow,
+  calculateDistance,
+  marks,
+} from "../../_Arrays/Arrays";
 import Alert from "@mui/material/Alert";
-import RecommadedJobs from "./RecommadedJobs"
+import RecommadedJobs from "./RecommadedJobs";
 import {
   Select,
   SelectContent,
@@ -34,7 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
 import { TbFilterSearch } from "react-icons/tb";
 
 function ViewRequest() {
@@ -57,10 +62,11 @@ function ViewRequest() {
     longitude: null,
   });
   const [alertshow, Setalertshow] = useState(true);
+  const [distance, setDistance] = useState(5); // Default is 5km
 
   //  get location
+
   useEffect(() => {
-   
     const getUserLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -149,6 +155,7 @@ function ViewRequest() {
       const info = await GetRequestFilteredData(
         ServiceType,
         checkedValues,
+        distance,
         auth?.user?._id
       );
 
@@ -164,6 +171,10 @@ function ViewRequest() {
     }
   }
 
+  function valuetext(value) {
+    return `${value} km`;
+  }
+
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setCheckedValues((prev) => ({
@@ -173,42 +184,41 @@ function ViewRequest() {
   };
 
   useEffect(() => {
-    if (ServiceType || checkedValues.nearBy || checkedValues.yourCity) {
+    if (
+      ServiceType ||
+      checkedValues.nearBy ||
+      checkedValues.yourCity ||
+      distance
+    ) {
       GetFilteredData();
       checkCity();
     } else {
       GetData();
       checkCity();
     }
-  }, [pageNumber, auth, ServiceType, checkedValues]);
+  }, [pageNumber, auth, ServiceType, checkedValues, distance]);
 
   return (
     <div>
       <Toaster position="bottom-center" reverseOrder={false} />
-      <>
-      <div className="lg:flex lg:flex-row p-5 flex flex-col ">
+
+      <div className="lg:flex lg:flex-row lg:justify-between lg:gap-5 p-5 flex flex-col ">
         {/* Filters */}
-        <div className="lg:w-1/4 flex flex-row lg:flex lg:flex-col gap-2 items-start mt-20 sm:mt-0">
+        <div className="lg:w-[23%] flex flex-col gap-4 items-start mt-20 sm:mt-0">
+         
+
+         {/* tags */}
           <span
-            className="flex sm:hidden lg:flex items-center gap-1 font-bold cursor-pointer sm:pointer-events-none"
+            className="flex sm:hidden lg:flex items-center gap-2 font-bold cursor-pointer sm:pointer-events-none hover:text-blue-600 transition"
             onClick={handleOpen}
           >
-            <TbFilterSearch />
-            Apply Filters{" "}
-            <span>
-              {ServiceType ? <Tag color="default">{ServiceType}</Tag> : null}
-            </span>
-            <span>
-              {checkedValues.nearBy ? <Tag color="default">NearBy</Tag> : null}
-            </span>
-            <span>
-              {checkedValues.yourCity ? (
-                <Tag color="default">YourCity</Tag>
-              ) : null}
-            </span>
+            <TbFilterSearch className="text-lg" />
+            Apply Filters
+            {ServiceType && <Tag color="default">{ServiceType}</Tag>}
+            {checkedValues.yourCity && <Tag color="default">YourCity</Tag>}
           </span>
 
-          {/* modal filter small screen */}
+          {/* Small Screen Filter Modal */}
           <SmallScreennmodal
             open={open}
             handleClose={handleClose}
@@ -218,58 +228,83 @@ function ViewRequest() {
             handleChange={handleChange}
             Disabled={Disabled}
             checkedValues={checkedValues}
+            distance={distance}
+            setDistance={setDistance}
           />
 
-          <div className="w-full sm:flex flex-col gap-4 hidden">
-            <p className="font-semibold">Service type</p>
+          {/* Service Type Filter */}
+          <div className="w-full hidden sm:flex flex-col gap-3 p-4 bg-white shadow-md rounded-xl">
+            <p className="font-semibold text-gray-700">Service Type</p>
             <Select
               required
               onValueChange={handleServiceTypeChange}
               value={ServiceType}
             >
-              <SelectTrigger className="w-3/4">
-                <SelectValue placeholder="Service Type" />
+              <SelectTrigger className="w-full border-gray-300 rounded-lg shadow-sm">
+                <SelectValue placeholder="Select a Service" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="electrician">Electrician</SelectItem>
-                <SelectItem value="carpenter">Carpenter</SelectItem>
-                <SelectItem value="plumber">Plumber</SelectItem>
-                <SelectItem value="painter">Painter</SelectItem>
-                <SelectItem value="gardener">Gardener</SelectItem>
-                <SelectItem value="mechanic">Mechanic</SelectItem>
-                <SelectItem value="locksmith">Locksmith</SelectItem>
-                <SelectItem value="handyman">Handyman</SelectItem>
-                <SelectItem value="welder">Welder</SelectItem>
-                <SelectItem value="pest_control">Pest Control</SelectItem>
-                <SelectItem value="roofer">Roofer</SelectItem>
-                <SelectItem value="tiler">Tiler</SelectItem>
-                <SelectItem value="appliance_repair">
-                  Appliance Repair
-                </SelectItem>
-                <SelectItem value="flooring_specialist">
-                  Flooring Specialist
-                </SelectItem>
+                {[
+                  "Electrician",
+                  "Carpenter",
+                  "Plumber",
+                  "Painter",
+                  "Gardener",
+                  "Mechanic",
+                  "Locksmith",
+                  "Handyman",
+                  "Welder",
+                  "Pest Control",
+                  "Roofer",
+                  "Tiler",
+                  "Appliance Repair",
+                  "Flooring Specialist",
+                ].map((service) => (
+                  <SelectItem key={service} value={service.toLowerCase()}>
+                    {service}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <Button
-              className="w-1/2"
-              onClick={() => {
-                setServiceType("");
-              }}
+              className="w-full  rounded-lg transition"
+              onClick={() => setServiceType("")}
             >
-              Clear service filter
+              Clear Service Filter
             </Button>
           </div>
 
-          <div className="w-full sm:flex flex-col hidden  mt-3">
-            <p className="font-semibold">Location</p>
-            <FormControlLabel
-              name="nearBy"
-              control={<Checkbox />}
-              checked={checkedValues.nearBy}
-              onChange={handleChange}
-              label="Near By"
-            />
+          {/* Location Filter */}
+          <div className="w-full hidden sm:flex flex-col gap-3 p-4 bg-white shadow-md rounded-xl mt-4">
+            <p className="font-semibold text-gray-700">Location</p>
+            <div className="flex flex-col gap-2">
+              <p className="text-sm text-gray-600">Distance range in kms</p>
+              <Box sx={{ width: "100%" }}>
+                <Slider
+                  aria-label="Distance"
+                  value={distance}
+                  onChange={(event, newValue) => setDistance(newValue)}
+                  valueLabelDisplay="auto"
+                  shiftStep={30}
+                  step={5}
+                  marks={marks}
+                  min={0}
+                  max={20}
+                  sx={{
+                    color: "black", // Changes the slider track and thumb to black
+                    "& .MuiSlider-thumb": {
+                      backgroundColor: "black",
+                    },
+                    "& .MuiSlider-track": {
+                      backgroundColor: "black",
+                    },
+                    "& .MuiSlider-rail": {
+                      backgroundColor: "gray", // Change this if you want a different rail color
+                    },
+                  }}
+                />
+              </Box>
+            </div>
             <FormControlLabel
               name="yourCity"
               control={<Checkbox disabled={Disabled} />}
@@ -277,21 +312,19 @@ function ViewRequest() {
               checked={checkedValues.yourCity}
               onChange={handleChange}
             />
-            {Disabled ? (
-              <p className="text-red-600">
-                update your city to enable this filter
+            {Disabled && (
+              <p className="text-sm text-red-500">
+                Update your city to enable this filter.
               </p>
-            ) : null}
+            )}
             <Button
-              className="w-1/2"
+              className="w-full  rounded-lg transition"
               onClick={() => {
-                setCheckedValues({
-                  nearBy: false,
-                  yourCity: false,
-                });
+                setCheckedValues({ nearBy: false, yourCity: false });
+                setDistance(5);
               }}
             >
-              Clear Locations
+              Clear Location Filters
             </Button>
           </div>
         </div>
@@ -427,9 +460,8 @@ function ViewRequest() {
                 onChange={handlePageChange}
               />
             )}
-           
+            <RecommadedJobs />
           </div>
-          
         ) : (
           <div className="sm:w-3/4 flex flex-col justify-center items-center">
             <p className="font-bold text-3xl text-center mt-10">No Data</p>
@@ -439,10 +471,7 @@ function ViewRequest() {
             </Link>
           </div>
         )}
-       
       </div>
-        <RecommadedJobs/>
-      </>
     </div>
   );
 }

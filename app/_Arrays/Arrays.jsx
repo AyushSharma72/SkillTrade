@@ -95,7 +95,34 @@ const labels = {
   }
 
 
-export { services, steps, style, StyledTableCell, StyledTableRow ,labels , calculateDistance };
+
+const marks = [
+  {
+    value: 0,
+    label: "0 km",
+  },
+  {
+    value: 5,
+    label: "5 km",
+  },
+  {
+    value: 10,
+    label: "10 km ",
+  },
+  {
+    value: 15,
+    label: "15 km",
+  },
+  {
+    value: 20,
+    label: "20 km",
+  },
+];
+
+
+
+
+export { services, steps, style, StyledTableCell, StyledTableRow ,labels , calculateDistance,  marks };
 
 
 

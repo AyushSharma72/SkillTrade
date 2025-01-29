@@ -23,6 +23,8 @@ import { style } from "../../_Arrays/Arrays";
 import ModalComponent from "../Modal";
 import ResetPassModal from "./ResetPassModal";
 import Link from "next/link";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
@@ -44,6 +46,7 @@ const LoginForm = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const handleResetPassClose = () => SetResetPass(false);
+  const [mobileNo, setMobileNo] = useState("");
 
   const verifyOtp = async () => {
     if (!otp) {
@@ -111,7 +114,7 @@ const LoginForm = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            MobileNo,
+            MobileNo: mobileNo,
             Password,
           }),
         }
@@ -184,10 +187,7 @@ const LoginForm = () => {
         Welcome Back
       </p>
       <div className="relative flex justify-around sm:mt-20 mt-5">
-        <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+        <Toaster position="bottom-center" reverseOrder={false} />
 
         <Image
           src={loginimage}
@@ -199,15 +199,21 @@ const LoginForm = () => {
             className="w-full flex justify-center flex-col items-center gap-y-10"
             onSubmit={HandleLogin}
           >
-            <TextField
-              id="standard-basic"
-              label="Mobile Number"
-              variant="outlined"
-              className="w-full"
-              required
-              type="tel"
-              inputProps={{ maxLength: 10 }}
-              name="MobileNo"
+            <PhoneInput
+              country={"in"}
+              value={mobileNo}
+              onChange={(value) => setMobileNo(value)}
+              inputStyle={{
+                width: "100%",
+                height: "56px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+                paddingLeft: "48px",
+              }}
+              buttonStyle={{
+                border: "none",
+                borderRadius: "4px 0 0 4px",
+              }}
             />
             <div className="w-full flex flex-col gap-2  items-end">
               <TextField

@@ -27,7 +27,7 @@ const RequestSchema = new mongoose.Schema(
     coordinates: {
       type: {
         type: String,
-        enum: ["Point"], // GeoJSON type must be 'Point'
+        enum: ["Point"], 
       },
       coordinates: {
         type: [Number], // Array of numbers for [longitude, latitude]
