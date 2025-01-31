@@ -19,7 +19,7 @@ export default function RootLayout({ children }) {
 
           {children}
         </AuthProvider>
-        <GoogleTranslator />
+        {/* <GoogleTranslator /> */}
         <Chatbot/>
       </body>
     </html>

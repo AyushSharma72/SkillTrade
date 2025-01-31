@@ -9,6 +9,7 @@ import {
 import { toast,Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Ayush from "../assests/Ayush2.jpg";
+import Footer from "../_components/Footer";
 
 const ContactForm = () => {
   const [Name, SetName] = useState("");
@@ -111,9 +112,10 @@ const ContactForm = () => {
 
 const Contact = () => {
   return (
+    <>
     <div className="flex flex-col items-center w-full px-4 mt-8">
         <Toaster/>
-      <div className="flex flex-wrap justify-center gap-8 w-3/4 p-3 bg-white shadow-lg">
+      <div className="flex flex-wrap justify-center gap-8 sm:w-3/4 p-3 bg-white shadow-lg mt-3">
         <ContactForm />
         <div className="flex flex-col p-3 rounded-lg">
           <Image
@@ -188,6 +190,8 @@ const Contact = () => {
         </div>
       </div>
     </div>
+    <Footer/>
+    </>
   );
 };
 
