@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+
 const WorkerSchema = mongoose.Schema(
   {
     Name: {
@@ -32,6 +33,13 @@ const WorkerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    coordinates: {
+      type: { type: String, enum: ["Point"], default: "Point" },
+      coordinates: {
+        type: [Number], // [longitude, latitude]
+        required: true,
+      },
+    },
     pincode: {
       type: Number,
       required: true,
@@ -46,7 +54,6 @@ const WorkerSchema = mongoose.Schema(
     gender: {
       type: String,
     },
-
     UnAssignedRequest: [
       {
         request: {
@@ -61,9 +68,9 @@ const WorkerSchema = mongoose.Schema(
           type: Date,
           default: null,
         },
-        unAssignedBy:{
-          type:Number // user ,worker
-        }
+        unAssignedBy: {
+          type: Number, // user, worker
+        },
       },
     ],
     CompletedRequest: {
@@ -97,7 +104,6 @@ const WorkerSchema = mongoose.Schema(
     Verified: {
       verified: {
         type: String,
-        // enum: ["Pending", "Verified", "Unverified", "Rejected"],
         default: "Unverified",
       },
       rejectedReason: {
@@ -116,5 +122,8 @@ const WorkerSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+// Create a geospatial index on coordinates for efficient location-based queries
+WorkerSchema.index({ coordinates: "2dsphere" });
 
 module.exports = mongoose.model("Workers", WorkerSchema);

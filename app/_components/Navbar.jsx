@@ -108,6 +108,14 @@ const Navbar = () => {
               >
                 Create request
               </Link>
+              <Link
+                href="/user/hire"
+                className={`${
+                  pathname === "/user/hire" ? "border-b-2 " : ""
+                }`}
+              >
+                Hire
+              </Link>
               <Menu2 />
             </>
           ) : auth?.user?.role == 1 ? (
@@ -292,7 +300,7 @@ const Navbar = () => {
 
               {/* worker  */}
               {auth?.user?.role === 1 && (
-                 <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3">
                   {/* home  */}
                   <ListItem disablePadding>
                     <ListItemButton>
@@ -426,7 +434,7 @@ const Navbar = () => {
                         onClick={() => {
                           handleClose();
                           handleDrawerClose();
-                            handleOpenModal();
+                          handleOpenModal();
                         }}
                       >
                         Logout

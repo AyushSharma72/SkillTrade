@@ -363,7 +363,7 @@ async function SendOtp(req, resp) {
 
 async function VerifyOtp(req, resp) {
   try {
-  const { email, otp, foremail = false } = req.body;
+    const { email, otp, foremail = false } = req.body;
 
     if (!email || !otp) {
       return resp.status(400).send({
@@ -577,6 +577,26 @@ async function SendEmailVerificationOtp(req, resp) {
   }
 }
 
+async function ListWorkers(req, resp) {
+  try {
+    const { ServiceType, Coordinates, Pincode } = req.body;
+    const Workers = await WorkerModal.aggregate([
+      {
+        $geoNear: {
+          near: {
+            type: "Point",
+            coordinates: Coordinates.coordinates,
+          },
+          distanceField: "distance",
+          maxDistance: maxDistanceInMeters,
+          spherical: true,
+          query: { "coordinates.coordinates": { $exists: true, $ne: null } },
+        },
+      },
+    ]);
+  } catch (error) {}
+}
+
 module.exports = {
   RegisterUser,
   UserLogin,
@@ -589,4 +609,5 @@ module.exports = {
   ResetPassword,
   SubmitForReview,
   SendEmailVerificationOtp,
+  ListWorkers,
 };

@@ -9,7 +9,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import toast, { Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css"; 
+import "react-phone-input-2/lib/style.css";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   Select,
@@ -24,6 +24,10 @@ const WorkerRegisterForm = () => {
   const [loading, setLoading] = useState(false);
   const [serviceType, setServiceType] = useState("");
   const [mobileNo, setMobileNo] = useState("");
+  const [address, setAddress] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [coordinates, setCoordinates] = useState({ lat: "", lon: "" });
+  const API_KEY = process.env.NEXT_PUBLIC_HERE_API_KEY;
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -33,17 +37,33 @@ const WorkerRegisterForm = () => {
     setServiceType(value);
   };
 
+  // Fetch location suggestions using HERE Maps API
+  const handleAddressChange = async (query) => {
+    console.log("working");
+    setAddress(query);
+    if (query.length < 2) return;
+
+    const response = await fetch(
+      `https://autosuggest.search.hereapi.com/v1/autosuggest?at=28.6139,77.2090&q=${query}&apiKey=${API_KEY}`
+    );
+    const data = await response.json();
+    setSuggestions(data.items || []);
+  };
+
+  const selectAddress = (place) => {
+    setAddress(place.title);
+    setCoordinates({ lat: place.position.lat, lon: place.position.lng });
+    setSuggestions([]);
+  };
+
   async function RegisterWorker(event) {
     event.preventDefault();
     const formData = new FormData(event.target);
-
     const Name = formData.get("Name");
     const Email = formData.get("Email");
-    const Address = formData.get("Address");
     const Password = formData.get("Password");
     const pincode = formData.get("pincode");
 
-    // Validation
     if (!serviceType) {
       toast.error("Please select a service type");
       return;
@@ -54,6 +74,10 @@ const WorkerRegisterForm = () => {
     }
     if (!/^\d{6}$/.test(pincode)) {
       toast.error("Pincode must be exactly 6 digits");
+      return;
+    }
+    if (!address || !coordinates.lat || !coordinates.lon) {
+      toast.error("Please select a valid address from the suggestions");
       return;
     }
 
@@ -70,7 +94,9 @@ const WorkerRegisterForm = () => {
             Name,
             Email,
             MobileNo: mobileNo,
-            Address,
+            Address: address,
+            Latitude: coordinates.lat,
+            Longitude: coordinates.lon,
             Password,
             ServiceType: serviceType,
             pincode,
@@ -84,6 +110,8 @@ const WorkerRegisterForm = () => {
         setLoading(false);
         toast.success(result.message);
         event.target.reset();
+        setAddress("");
+        setCoordinates({ lat: "", lon: "" });
       } else {
         setLoading(false);
         toast.error(result.message);
@@ -93,7 +121,6 @@ const WorkerRegisterForm = () => {
       toast.error("Please try again");
     }
   }
-
   return (
     <div className="flex flex-col items-center mb-4">
       <Toaster position="bottom-center" reverseOrder={false} />
@@ -149,15 +176,33 @@ const WorkerRegisterForm = () => {
           name="Email"
         />
 
-        <TextField
-          id="address"
-          label="Full Address"
-          variant="outlined"
-          className="w-3/4"
-          required
-          type="text"
-          name="Address"
-        />
+        <div className="w-3/4 relative">
+          <label className="text-sm text-gray-600 mb-1 block">
+            Closest location
+          </label>
+          <TextField
+            id="address"
+            variant="outlined"
+            className="w-full"
+            required
+            value={address}
+            onChange={(e) => handleAddressChange(e.target.value)}
+          />
+          {suggestions.length > 0 && (
+            <ul className="absolute bg-white border border-gray-300 w-full z-10 max-h-48 overflow-auto">
+              {suggestions.map((place, index) => (
+                <li
+                  key={index}
+                  onClick={() => selectAddress(place)}
+                  className="p-2 hover:bg-gray-200 cursor-pointer"
+                >
+                  {place.title}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
         <TextField
           id="pincode"
           label="Area Pincode"

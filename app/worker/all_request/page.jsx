@@ -156,7 +156,8 @@ function ViewRequest() {
         ServiceType,
         checkedValues,
         distance,
-        auth?.user?._id
+        auth?.user?._id,
+        WorkerCoordinates
       );
 
       if (info.success) {

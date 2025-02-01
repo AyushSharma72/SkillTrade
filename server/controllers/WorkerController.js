@@ -7,8 +7,17 @@ const fs = require("fs").promises;
 
 async function RegisterWorker(req, resp) {
   try {
-    const { Name, MobileNo, ServiceType, Password, Address, pincode, Email } =
-      req.body;
+    const {
+      Name,
+      MobileNo,
+      ServiceType,
+      Password,
+      Address,
+      pincode,
+      Email,
+      Latitude,
+      Longitude,
+    } = req.body;
 
     if (
       !Name ||
@@ -52,6 +61,10 @@ async function RegisterWorker(req, resp) {
       Address,
       pincode,
       Email,
+      coordinates: {
+        type: "Point",
+        coordinates: [Longitude, Latitude], 
+      },
     });
     await newWorker.save();
 

@@ -249,8 +249,6 @@ async function GetAllRequests(req, resp) {
   }
 }
 
-
-
 async function UpdateRequestPhoto(req, resp) {
   try {
     const requestId = req.params.rid;
@@ -513,15 +511,12 @@ async function RequestCompleted(req, resp) {
   }
 }
 
-
 async function FilterRequests(req, resp) {
   try {
     const { wid } = req.params;
-    const { ServiceType, maxDistance, yourCity } = req.query;
+    const { ServiceType, maxDistance, yourCity, lat, lon } = req.query;
 
-    const worker = await WorkerModal.findById(wid).select(
-      "coordinates pincode"
-    );
+    const worker = await WorkerModal.findById(wid).select("pincode city");
 
     if (!worker) {
       return resp.status(404).send({
@@ -540,44 +535,51 @@ async function FilterRequests(req, resp) {
     if (yourCity === "true" && worker.city) {
       query.city = worker.city;
     }
-    
+
     let requests;
+    const maxDistanceInMeters = (maxDistance || 5) * 1000; // Default to 5km
 
-    if (worker.coordinates && worker.coordinates.coordinates?.length === 2) {
-      // If worker has coordinates, find nearby requests with valid coordinates
-      const maxDistanceInMeters = (maxDistance || 5) * 1000; // Default to 5km
+    // Check if lat and lon are provided and valid
+    if (lat && lon) {
+      const parsedLat = parseFloat(lat);
+      const parsedLon = parseFloat(lon);
 
-      requests = await RequestModal.aggregate([
-        {
-          $geoNear: {
-            near: {
-              type: "Point",
-              coordinates: worker.coordinates.coordinates,
+      if (!isNaN(parsedLat) && !isNaN(parsedLon)) {
+        console.log("Using coordinates:", parsedLat, parsedLon);
+
+        requests = await RequestModal.aggregate([
+          {
+            $geoNear: {
+              near: {
+                type: "Point",
+                coordinates: [parsedLon, parsedLat],
+              },
+              distanceField: "distance",
+              maxDistance: maxDistanceInMeters,
+              spherical: true,
+              query: {
+                "coordinates.coordinates": { $exists: true, $ne: null },
+              }, 
+              key: "coordinates",
             },
-            distanceField: "distance",
-            maxDistance: maxDistanceInMeters,
-            spherical: true,
-            query: { "coordinates.coordinates": { $exists: true, $ne: null } }, // Only requests with coordinates
           },
-        },
-        { $match: query },
-        { $project: { image: 0 } }, // Exclude image field
-      ]);
+          { $match: query },
+          { $project: { image: 0 } }, // Exclude image field
+        ]);
+      }
+    }
 
-      if (requests.length === 0 && worker.pincode) {
-        // If no results from geospatial query, fall back to pincode
+    // If no valid coordinates or no results, fallback to pincode
+    if (!requests || requests.length === 0) {
+      if (worker.pincode) {
         query.pincode = worker.pincode;
         requests = await RequestModal.find(query).select("-image");
+      } else {
+        return resp.status(400).send({
+          success: false,
+          message: "Worker location data is missing",
+        });
       }
-    } else if (worker.pincode) {
-      // If worker has no coordinates, filter by pincode
-      query.pincode = worker.pincode;
-      requests = await RequestModal.find(query).select("-image");
-    } else {
-      return resp.status(400).send({
-        success: false,
-        message: "Worker location data is missing",
-      });
     }
 
     return resp.status(200).send({
@@ -594,6 +596,7 @@ async function FilterRequests(req, resp) {
     });
   }
 }
+
 
 module.exports = {
   CreateRequest,
