@@ -1,11 +1,7 @@
-"use client";
 import { Button } from "../components/ui/button";
-import { DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useAuth } from "./_context/UserAuthContent";
 import Link from "next/link";
-
+import   LottieAnimation from "./_components/homepageanimation"
 export default function Home() {
-  const [auth, SetAuth] = useAuth();
   return (
     <div>
       {/* hero section  */}
@@ -27,11 +23,7 @@ export default function Home() {
           <Button className="bg-white text-black hover:bg-gray-300 font-bold">
             <Link href="user/create_request"> Book A Service Now</Link>
           </Button>
-          {auth?.user ? null : (
-            <Button className="bg-white text-black hover:bg-gray-300 font-bold">
-              Get Started
-            </Button>
-          )}
+         
         </div>
       </div>
 
@@ -45,11 +37,7 @@ export default function Home() {
           {/* Lottie Animation Section */}
 
           <div className="md:w-[45%] xl:w-1/2">
-            <DotLottieReact
-              src="https://lottie.host/bf9750c3-8c66-4641-a213-da2eea812c93/DyZztCGG34.lottie"
-              loop
-              autoplay
-            />
+            < LottieAnimation/>
           </div>
 
           {/* Text Section */}

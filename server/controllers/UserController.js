@@ -580,21 +580,76 @@ async function SendEmailVerificationOtp(req, resp) {
 async function ListWorkers(req, resp) {
   try {
     const { ServiceType, Coordinates, Pincode } = req.body;
-    const Workers = await WorkerModal.aggregate([
-      {
-        $geoNear: {
-          near: {
-            type: "Point",
-            coordinates: Coordinates.coordinates,
+
+    let query = {};
+
+    if (ServiceType) {
+      query.ServiceType = ServiceType;
+    }
+
+    let Workers;
+    const maxDistanceInMeters = 5000;
+
+    // Check if coordinates are provided and valid
+    if (
+      Coordinates &&
+      Coordinates.coordinates &&
+      Coordinates.coordinates.length === 2
+    ) {
+      const [lon, lat] = Coordinates.coordinates;
+
+      if (!isNaN(lat) && !isNaN(lon)) {
+        console.log("Searching by coordinates:", lat, lon);
+
+        Workers = await WorkerModal.aggregate([
+          {
+            $geoNear: {
+              near: {
+                type: "Point",
+                coordinates: [lon, lat],
+              },
+              distanceField: "distance",
+              maxDistance: maxDistanceInMeters,
+              spherical: true,
+              query: {
+                "coordinates.coordinates": { $exists: true, $ne: null },
+                ...query,
+              },
+            },
           },
-          distanceField: "distance",
-          maxDistance: maxDistanceInMeters,
-          spherical: true,
-          query: { "coordinates.coordinates": { $exists: true, $ne: null } },
-        },
-      },
-    ]);
-  } catch (error) {}
+          { $project: { password: 0 } },
+        ]);
+      }
+    }
+
+    if (!Workers || Workers.length === 0) {
+      if (Pincode) {
+        console.log("Searching by Pincode:", Pincode);
+
+        query.pincode = Pincode;
+        Workers = await WorkerModal.find(query).select(
+          "Name MobileNo ServiceType coordinates city OverallRaitngs Reviews"
+        );
+      } else {
+        return resp.status(400).send({
+          success: false,
+          message: "Coordinates or Pincode is required",
+        });
+      }
+    }
+
+    return resp.status(200).send({
+      success: true,
+      Workers,
+      message: Workers.length > 0 ? "Workers found" : "No workers found",
+    });
+  } catch (error) {
+    console.error("Error in ListWorkers:", error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
 }
 
 module.exports = {

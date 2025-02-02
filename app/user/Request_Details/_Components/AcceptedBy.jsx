@@ -1,9 +1,7 @@
 "use client";
 import * as React from "react";
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -25,6 +23,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Alert from "@mui/material/Alert";
 import Typography from "@mui/material/Typography";
 import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
+import moment from "moment";
 
 function AcceptedBy() {
   const [auth] = useAuth();
@@ -147,6 +146,7 @@ function AcceptedBy() {
                   <StyledTableCell align="center">
                     Price Justification
                   </StyledTableCell>
+                  <StyledTableCell align="center">Accepted At</StyledTableCell>
                   <StyledTableCell align="center">Action</StyledTableCell>
                 </TableRow>
               </TableHead>
@@ -165,6 +165,11 @@ function AcceptedBy() {
                           accepted.priceJustification
                         ) : (
                           <span className="text-red-600">Not provided</span>
+                        )}
+                      </StyledTableCell>
+                      <StyledTableCell align="center">
+                        {moment(accepted.acceptedAt).format(
+                          "MMMM Do YYYY, h:mm A"
                         )}
                       </StyledTableCell>
                       <StyledTableCell className="!flex justify-center gap-2">

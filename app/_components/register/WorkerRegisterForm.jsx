@@ -37,7 +37,6 @@ const WorkerRegisterForm = () => {
     setServiceType(value);
   };
 
-  // Fetch location suggestions using HERE Maps API
   const handleAddressChange = async (query) => {
     console.log("working");
     setAddress(query);
@@ -178,7 +177,7 @@ const WorkerRegisterForm = () => {
 
         <div className="w-3/4 relative">
           <label className="text-sm text-gray-600 mb-1 block">
-            Closest location
+            Your closet working location
           </label>
           <TextField
             id="address"

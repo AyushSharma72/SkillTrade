@@ -12,6 +12,7 @@ const {
   ResetPassword,
   SubmitForReview,
   SendEmailVerificationOtp,
+  ListWorkers,
 } = require("../controllers/UserController");
 
 const Isloggedin = require("../middleware/Isloggedin");
@@ -42,4 +43,7 @@ router.post("/Resetpassword", ResetPassword);
 router.post("/review_request/:rid", SubmitForReview);
 
 router.post("/SendEmailVerificationOtp", SendEmailVerificationOtp);
+
+router.post("/ListWorkers", ListWorkers);
+
 module.exports = router;
