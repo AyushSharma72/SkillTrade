@@ -86,8 +86,8 @@ function ViewRequest() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {data.map((data) => (
-                  <StyledTableRow>
+                {data.map((data, index) => (
+                  <StyledTableRow key={data._id || index}>
                     <StyledTableCell component="th" scope="row" align="center">
                       {data.service}
                     </StyledTableCell>
@@ -96,14 +96,13 @@ function ViewRequest() {
                     </StyledTableCell>
 
                     <StyledTableCell align="center">
-                      {" "}
                       <div className="flex flex-col">
                         <span className="font-bold">
                           {moment(data.date).format("MMMM Do YYYY")}{" "}
                         </span>
                         {new Date(data.date) < currentDate &&
-                        data.status != "Completed" &&
-                        data.status != "Deleted" ? (
+                        data.status !== "Completed" &&
+                        data.status !== "Deleted" ? (
                           <span className="text-red-500">(Date Expired)</span>
                         ) : null}
                       </div>

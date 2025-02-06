@@ -75,7 +75,7 @@ const AcceptedRequest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {requests.map((data) => (
+                {requests.map((data,index) => (
                   <StyledTableRow>
                     <StyledTableCell component="th" scope="row" align="center">
                       {data.service}

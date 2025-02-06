@@ -77,7 +77,7 @@ const CompletedRequest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {requests.map((data) => (
+                {requests.map((data,index) => (
                   <StyledTableRow>
                     <StyledTableCell component="th" scope="row" align="center">
                       {data.service}
@@ -101,7 +101,7 @@ const CompletedRequest = () => {
                           {data.status}
                         </Tag>
                       ) : data.status === "Accepted" ? (
-                        <Tag icon={<CheckCircleOutlin ed />} color="blue">
+                        <Tag icon={<CheckCircleOutlined />} color="blue">
                           {data.status}
                         </Tag>
                       ) : data.status === "Assigned" ? (

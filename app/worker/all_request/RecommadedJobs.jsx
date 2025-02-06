@@ -46,8 +46,11 @@ const RecommadedJobs = () => {
   }
 
   useEffect(() => {
-    fetchRecommandedForYou();
-  }, []);
+    if (auth?.user?._id) {
+      fetchRecommandedForYou();
+    }
+  }, [auth?.user?._id]);
+
 
   return (
     <div className="mt-5 p-4">

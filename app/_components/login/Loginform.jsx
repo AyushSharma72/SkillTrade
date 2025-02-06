@@ -191,6 +191,7 @@ const LoginForm = () => {
 
         <Image
           src={loginimage}
+          alt="welcome image"
           className="lg:w-[500px] lg:h-[400px] sm:w-[300px] sm:h-[300px] hidden md:block"
         />
         <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%] formshadow py-10 px-2 rounded-md h-fit ">
