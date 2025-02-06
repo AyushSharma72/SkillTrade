@@ -1,6 +1,13 @@
 import { Button } from "../components/ui/button";
 import Link from "next/link";
-import   LottieAnimation from "./_components/homepageanimation"
+import dynamic from "next/dynamic";
+const LottieAnimation = dynamic(
+  () => import("./_components/homepageanimation"),
+  {
+    ssr: false,
+  }
+);
+
 export default function Home() {
   return (
     <div>
@@ -23,7 +30,6 @@ export default function Home() {
           <Button className="bg-white text-black hover:bg-gray-300 font-bold">
             <Link href="user/create_request"> Book A Service Now</Link>
           </Button>
-         
         </div>
       </div>
 
@@ -37,7 +43,7 @@ export default function Home() {
           {/* Lottie Animation Section */}
 
           <div className="md:w-[45%] xl:w-1/2">
-            < LottieAnimation/>
+            <LottieAnimation />
           </div>
 
           {/* Text Section */}

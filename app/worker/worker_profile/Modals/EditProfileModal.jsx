@@ -97,19 +97,17 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
       sx={style}
       className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
     >
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <p className="text-xl font-semibold text-center">Edit your profile</p>
       <hr />{" "}
       <div className="flex flex-col items-center w-full mt-2">
-        {data.Verified.verified === "Verified" ? null : (
+        {data.Verified.verified === "Verified" ||
+        data?.Verified.verified === "Pending" ? null : (
           <Button
             component="label"
             variant="outlined"
             color="neutral"
-            className="w-full"
+            className="w-full" 
             startDecorator={
               <SvgIcon>
                 <svg

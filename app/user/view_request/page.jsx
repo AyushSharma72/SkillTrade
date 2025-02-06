@@ -1,23 +1,49 @@
 "use client";
-import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
+import dynamic from "next/dynamic";
+
+const Table = dynamic(() => import("@mui/material/Table"), { ssr: false });
+const TableBody = dynamic(() => import("@mui/material/TableBody"), {
+  ssr: false,
+});
+const TableContainer = dynamic(() => import("@mui/material/TableContainer"), {
+  ssr: false,
+});
+const TableHead = dynamic(() => import("@mui/material/TableHead"), {
+  ssr: false,
+});
+const TableRow = dynamic(() => import("@mui/material/TableRow"), {
+  ssr: false,
+});
+const Pagination = dynamic(() => import("@mui/material/Pagination"), {
+  ssr: false,
+});
+const PulseLoader = dynamic(
+  () => import("react-spinners").then((mod) => mod.PulseLoader),
+  { ssr: false }
+);
+const Tag = dynamic(() => import("antd").then((mod) => mod.Tag), {
+  ssr: false,
+});
+const CheckCircleOutlined = dynamic(
+  () => import("@ant-design/icons").then((mod) => mod.CheckCircleOutlined),
+  { ssr: false }
+);
+const ClockCircleOutlined = dynamic(
+  () => import("@ant-design/icons").then((mod) => mod.ClockCircleOutlined),
+  { ssr: false }
+);
+
+const Empty = dynamic(() => import("../../assests/Empty.svg"), { ssr: false });
+const Image = dynamic(() => import("next/image"), { ssr: false });
+const Link = dynamic(() => import("next/link"), { ssr: false });
+
+// Import custom components
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
-import { Button } from "@/components/ui/button";
 import moment from "moment";
-import { Tag } from "antd";
-import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-import Pagination from "@mui/material/Pagination";
-import { PulseLoader } from "react-spinners";
-import Empty from "../../assests/Empty.svg";
-import Image from "next/image";
-import Link from "next/link";
-import UserPrivateRoutes from "./../../_components/privateroutes/UserPrivateRoutes";
+import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 
 function ViewRequest() {

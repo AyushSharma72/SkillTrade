@@ -34,10 +34,9 @@ const WorkerSchema = mongoose.Schema(
       required: true,
     },
     coordinates: {
-      type: { type: String, enum: ["Point"], default: "Point" },
+      type: { type: String, enum: ["Point"] },
       coordinates: {
         type: [Number], // [longitude, latitude]
-        required: true,
       },
     },
     pincode: {

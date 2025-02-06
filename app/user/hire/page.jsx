@@ -1,12 +1,26 @@
-import React from "react";
-import Avatar from "@mui/material/Avatar";
-import Chip from "@mui/material/Chip";
-import { MdVerifiedUser } from "react-icons/md";
-import Rating from "@mui/material/Rating";
-import { MdOutlineLocationOn } from "react-icons/md";
-import { Tag } from "antd";
-import { FaPhoneAlt } from "react-icons/fa";
+"use client";
+import dynamic from "next/dynamic";
+const Avatar = dynamic(() => import("@mui/material/Avatar"), { ssr: false });
+const Chip = dynamic(() => import("@mui/material/Chip"), { ssr: false });
+const Rating = dynamic(() => import("@mui/material/Rating"), { ssr: false });
+const MdVerifiedUser = dynamic(
+  () => import("react-icons/md").then((mod) => mod.MdVerifiedUser),
+  { ssr: false }
+);
+const MdOutlineLocationOn = dynamic(
+  () => import("react-icons/md").then((mod) => mod.MdOutlineLocationOn),
+  { ssr: false }
+);
+const FaPhoneAlt = dynamic(
+  () => import("react-icons/fa").then((mod) => mod.FaPhoneAlt),
+  { ssr: false }
+);
+
+const Tag = dynamic(() => import("antd").then((mod) => mod.Tag), {
+  ssr: false,
+});
 import { Button } from "@/components/ui/button";
+
 const Hire = () => {
   return (
     <div>
@@ -70,8 +84,13 @@ const Hire = () => {
               <span>
                 <Tag>Completed Request</Tag>10
               </span>
-             <div className="flex gap-2"><Button>View Profile</Button>
-              <Button className="gap-2 flex items-center"><FaPhoneAlt />Contact</Button></div> 
+              <div className="flex gap-2">
+                <Button>View Profile</Button>
+                <Button className="gap-2 flex items-center">
+                  <FaPhoneAlt />
+                  Contact
+                </Button>
+              </div>
             </div>
           </div>
         </div>
