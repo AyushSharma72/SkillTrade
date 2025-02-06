@@ -5,11 +5,14 @@ import { MdVerifiedUser } from "react-icons/md";
 import Rating from "@mui/material/Rating";
 import { MdOutlineLocationOn } from "react-icons/md";
 import { Tag } from "antd";
+import { FaPhoneAlt } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
 const Hire = () => {
   return (
     <div>
-      <p className="text-center w-full font-semibold text-3xl">Hire Service Providers Directly</p>
+      <p className="text-center w-full font-semibold text-3xl">
+        Hire Service Providers Directly
+      </p>
 
       <div className="flex justify-around mt-5">
         {/* filters  */}
@@ -19,8 +22,8 @@ const Hire = () => {
 
         {/* service providers */}
         <div className="w-1/2 flex flex-col items-center">
-        <p>Service providers according to your preferences</p>
-          <div className="w-full flex flex-col gap-4 border p-3">
+          <p>Service providers according to your preferences</p>
+          <div className="w-full flex flex-col gap-4 border p-4 rounded-lg">
             {/* header  */}
             <div className="flex gap-3">
               {/* image  */}
@@ -64,8 +67,11 @@ const Hire = () => {
             <hr></hr>
             {/* other details */}
             <div className="flex justify-between">
-              <span><Tag>Completed Request</Tag>10</span>
-              <Button>View Profile</Button>
+              <span>
+                <Tag>Completed Request</Tag>10
+              </span>
+             <div className="flex gap-2"><Button>View Profile</Button>
+              <Button className="gap-2 flex items-center"><FaPhoneAlt />Contact</Button></div> 
             </div>
           </div>
         </div>
