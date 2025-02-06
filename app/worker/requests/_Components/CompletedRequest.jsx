@@ -77,8 +77,8 @@ const CompletedRequest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {requests.map((data,index) => (
-                  <StyledTableRow>
+                {requests.map((data, index) => (
+                  <StyledTableRow key={data._id || index}>
                     <StyledTableCell component="th" scope="row" align="center">
                       {data.service}
                     </StyledTableCell>

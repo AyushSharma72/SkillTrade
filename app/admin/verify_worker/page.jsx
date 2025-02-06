@@ -24,7 +24,7 @@ import Modal from "@mui/material/Modal";
 import isAdmin from "@/app/_components/privateroutes/isAdmin";
 import { Textarea } from "@mui/joy";
 import { toast, Toaster } from "react-hot-toast";
-import  Backdrop  from "@mui/material/Backdrop";
+import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const Page = ({ role }) => {
@@ -104,7 +104,7 @@ const Page = ({ role }) => {
           },
           body: JSON.stringify({
             reason: rejectionReason,
-            role:role
+            role: role,
           }),
         }
       );
@@ -158,10 +158,7 @@ const Page = ({ role }) => {
 
   return (
     <div className="container mx-auto p-4 sm:m-0 mt-20">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       {loading ? (
         <div className="flex justify-center items-center h-screen">
           <PulseLoader size={20} />
@@ -183,8 +180,8 @@ const Page = ({ role }) => {
                 </StyledTableRow>
               </TableHead>
               <TableBody>
-                {requests.map((request) => (
-                  <StyledTableRow key={request._id}>
+                {requests.map((request, index) => (
+                  <StyledTableRow key={request._id || index}>
                     <StyledTableCell align="center">
                       <Link
                         href={`/worker/worker_profile/${request._id}`}

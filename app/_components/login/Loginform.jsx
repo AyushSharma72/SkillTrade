@@ -254,7 +254,7 @@ const LoginForm = () => {
                 Login
               </Button>
               <p>
-                Don't have an account ?{" "}
+                Don&#39;t have an account?{" "}
                 <Link href="/register" className="text-blue-700">
                   Register
                 </Link>

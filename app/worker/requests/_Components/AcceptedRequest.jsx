@@ -75,15 +75,14 @@ const AcceptedRequest = () => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {requests.map((data,index) => (
-                  <StyledTableRow>
+                {requests.map((data, index) => (
+                  <StyledTableRow key={data._id || index}>
                     <StyledTableCell component="th" scope="row" align="center">
                       {data.service}
                     </StyledTableCell>
                     <StyledTableCell align="center">
                       {data.location}
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
                       {" "}
                       <div className="flex flex-col">
@@ -92,7 +91,6 @@ const AcceptedRequest = () => {
                         </span>
                       </div>
                     </StyledTableCell>
-
                     <StyledTableCell align="center">
                       {data.status === "Pending" ? (
                         <Tag icon={<ClockCircleOutlined />} color="warning">
@@ -117,9 +115,11 @@ const AcceptedRequest = () => {
                       ) : null}
                     </StyledTableCell>
                     <StyledTableCell align="center" className="font-bold">
-                      {moment(data.acceptedBy[0].acceptedAt).format("MMMM Do YYYY")}
+                      {moment(data.acceptedBy[0].acceptedAt).format(
+                        "MMMM Do YYYY"
+                      )}
                     </StyledTableCell>
-                    <StyledTableCell align="center" >
+                    <StyledTableCell align="center">
                       <Link href={`Request_Details/${data._id}`}>
                         <Button>View</Button>
                       </Link>
