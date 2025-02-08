@@ -215,7 +215,7 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
             UpdateUser();
             setTimeout(() => {
               handleClose();
-              GetWorkerData();
+              // GetWorkerData();
             }, 2000);
           }}
         >

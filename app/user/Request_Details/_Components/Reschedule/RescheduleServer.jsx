@@ -4,7 +4,7 @@ async function GetData(rid) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`,
-      { cache: "no-store" }
+      { next: { revalidate: 100 } }
     );
     const info = await response.json();
     if (info.success) {
@@ -16,9 +16,8 @@ async function GetData(rid) {
     return null;
   }
 }
-export default async function RescheduleServer({rid}){
-const data = await GetData(rid) 
+export default async function RescheduleServer({ rid }) {
+  const data = await GetData(rid);
 
-return <Reschedule intialData={data}/>
-
+  return <Reschedule intialData={data} />;
 }

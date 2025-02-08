@@ -4,7 +4,7 @@ async function GetData(rid) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`,
-      { cache: "no-store" }
+      { next: { revalidate: 100 } }
     );
     const info = await response.json();
     if (info.success) {
@@ -19,10 +19,6 @@ async function GetData(rid) {
 export default async function TimeLineServer({ rid }) {
   const data = await GetData(rid);
   return (
-    <>{ data?
-      <TimeLine intialData={data} loadingstate={false}/>
-      :null
-    }
-    </>
+    <>{data ? <TimeLine intialData={data} loadingstate={false} /> : null}</>
   );
 }

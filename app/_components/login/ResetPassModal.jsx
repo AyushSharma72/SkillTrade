@@ -12,19 +12,18 @@ const ResetPassModal = ({ handleClose, email }) => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
 
   const handleResetPassword = async () => {
     if (!newPassword || !confirmPassword) {
-      toast.error("All fields are required!");
+      toast.error("All fields are required !");
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error("Passwords do not match!");
+      toast.error("Passwords do not match !");
       return;
     }
     if (newPassword.length < 6) {
-      toast.error("Password length must be more than 6 characters!");
+      toast.error("Password length must be more than 6 characters !");
       return;
     }
 
@@ -49,7 +48,6 @@ const ResetPassModal = ({ handleClose, email }) => {
       const result = await response.json();
 
       if (response.ok) {
-        ResetSuccess(true);
         toast.success(result.message || "Password reset successful!");
       } else {
         toast.error(result.message || "Failed to reset password.");
@@ -67,10 +65,6 @@ const ResetPassModal = ({ handleClose, email }) => {
       sx={style}
       className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
     >
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
       <p className="text-xl font-semibold text-center">Reset Password</p>
 
       <hr />

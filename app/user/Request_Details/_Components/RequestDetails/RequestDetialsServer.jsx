@@ -9,7 +9,7 @@ export default async function RequestDetailsServer({ params }) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`,
-      { cache: "no-store" }
+      { next: { revalidate: 100 } }
     );
     const info = await response.json();
     if (info.success) {
@@ -24,6 +24,10 @@ export default async function RequestDetailsServer({ params }) {
     throw new Error("Failed to fetch request details.");
   } catch (error) {
     console.error("Error fetching data:", error);
-    return <p className="text-red-600  text-center text-2xl">Failed to load request details.</p>;
+    return (
+      <p className="text-red-600  text-center text-2xl">
+        Failed to load request details.
+      </p>
+    );
   }
 }
