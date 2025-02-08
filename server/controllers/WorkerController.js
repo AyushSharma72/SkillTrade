@@ -5,6 +5,7 @@ const ReportModal = require("../modals/ReportModal");
 const RequestModal = require("../modals/RequestModal");
 const fs = require("fs").promises;
 
+
 async function RegisterWorker(req, resp) {
   try {
     const {
@@ -63,7 +64,7 @@ async function RegisterWorker(req, resp) {
       Email,
       coordinates: {
         type: "Point",
-        coordinates: [Longitude, Latitude], 
+        coordinates: [Longitude, Latitude],
       },
     });
     await newWorker.save();
@@ -542,10 +543,11 @@ async function UnassignRequest(req, resp) {
       request.status = "Accepted";
     }
 
-    worker.unAssignedRequests.push({
+    let currentdate = new Date();
+    worker.UnAssignedRequest.push({
       request: rid,
       unassignReason: reason,
-      unassignedAt: new Date(),
+      unassignedAt: currentdate,
       unAssignedBy: 1,
     });
 
@@ -610,6 +612,29 @@ async function RecommandedForYou(req, resp) {
   }
 }
 
+async function CheckBan(req, resp) {
+  try {
+    const { wid } = req.params;
+    const worker = await WorkerModal.findById(wid).select("Banned");
+    if (!worker) {
+      return resp.status(400).send({
+        message: "no such worker found",
+        success: false,
+      });
+    }
+    return resp.status(200).send({
+      worker,
+    });
+  } catch (error) {
+    console.log(error);
+    return resp.status(500).send({
+      message: "internal server error",
+      success: false,
+    });
+  }
+}
+
+
 module.exports = {
   RegisterWorker,
   CheckCity,
@@ -623,4 +648,5 @@ module.exports = {
   GetWorkerCompletedRequest,
   UnassignRequest,
   RecommandedForYou,
+  CheckBan,
 };

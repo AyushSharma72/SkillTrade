@@ -76,7 +76,7 @@ const Page = ({ role }) => {
       );
       const data = await response.json();
       if (!response.ok) {
-        toast.error(data.message);
+        // toast.error(data.message);
       }
       if (data.success) {
         setReports(data.reports || []);
@@ -395,11 +395,11 @@ const Page = ({ role }) => {
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center">
+        <div className="flex flex-col items-center gap-5">
           <Typography variant="h5" className="mb-4 text-center">
             No Reported Requests
           </Typography>
-          <Image src={Empty} alt="No Data" width={300} height={300} />
+          <Image src={Empty} alt="No Data" width={500} height={400} className="sm:!w-[500px]  !w-[300px]"/>
           <Link href="/">
             <Button className="mt-4">Go Home</Button>
           </Link>

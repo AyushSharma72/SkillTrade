@@ -1,17 +1,8 @@
 "use client";
-import dynamic from "next/dynamic";
-// Dynamically import the Tabs component with ssr: false
-const Tabs = dynamic(() => import("@/components/ui/tabs"), { ssr: false });
-const UserRegisterForm = dynamic(
-  () => import("../_components/register/UserRegisterForm"),
-  { ssr: false }
-);
-const WorkerRegisterForm = dynamic(
-  () => import("../_components/register/WorkerRegisterForm"),
-  { ssr: false }
-);
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import UserRegisterForm from "../_components/register/UserRegisterForm";
+import WorkerRegisterForm from "../_components/register/WorkerRegisterForm";
 import CheckLogin from "../_components/privateroutes/CheckLogin";
-
 const Register = () => {
   return (
     <div className="flex justify-center sm:mt-0 mt-20">

@@ -103,6 +103,16 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
             <br></br>
             Reason:{WorkerData?.Verified.rejectedReason}
           </Alert>
+        ) : WorkerData?.Banned.ban ? (
+          <Alert severity="error" className="w-[73%] mt-5">
+            {`Your profile was banned until ${new Date(
+              WorkerData?.Banned?.tillDate
+            ).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })} due to lack of a solid reason for unassigning requests.`}
+          </Alert>
         ) : null
       ) : null}
       <div className="flex justify-center md:gap-5 items-center md:items-start p-3 w-full md:flex-row flex-col  gap-5">

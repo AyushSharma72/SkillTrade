@@ -34,10 +34,11 @@ const RequestDetailsClient = ({
     latitude: null,
     longitude: null,
   });
+  const [ban, SetBan] = useState(false);
   const [auth, Setauth] = useAuth();
   const handleClose = () => setOpen(false);
   const handleOpen2 = () => setOpen2(true);
-  const handleClose2 = () => setOpen2(false); 
+  const handleClose2 = () => setOpen2(false);
 
   useEffect(() => {
     const userCoordinates = JSON.parse(localStorage.getItem("userCoordinates"));
@@ -49,15 +50,37 @@ const RequestDetailsClient = ({
     } else {
       console.log("No user coordinates found in localStorage.");
     }
+    checkBan();
   }, []);
 
- function CheckIfAlreadyAccepted(acceptedBy, authUserId) {
-   return acceptedBy.some((obj) => {
-     if (!obj.worker) return false; 
-     return String(obj.worker) === String(authUserId);// if the worker id is same as the person who accepted request
-   });
- }
+  function CheckIfAlreadyAccepted(acceptedBy, authUserId) {
+    return acceptedBy.some((obj) => {
+      if (!obj.worker) return false;
+      return String(obj.worker) === String(authUserId); // if the worker id is same as the person who accepted request
+    });
+  }
+  const checkBan = async () => {
+    try {
+      if (!auth.user) {
+        return;
+      }
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/CheckBan/${auth?.user?._id}`
+      );
+      const data = await response.json();
 
+      if (!response.ok) {
+        throw new Error(data.message || "Something went wrong");
+      } else {
+        SetBan(data.worker.Banned.ban);
+        // console.log("data", data.worker.Banned.ban);
+      }
+      return data;
+    } catch (error) {
+      console.error("Error checking ban status:", error);
+      return { success: false, message: error.message };
+    }
+  };
   return (
     <div className="flex flex-col items-center justify-center mb-10 sm:mt-0 mt-20">
       <Toaster position="bottom-center" reverseOrder={false} />
@@ -93,7 +116,9 @@ const RequestDetailsClient = ({
 
               {/* Details Section */}
               <div className="flex flex-col gap-4 lg:w-3/5 bg-gray-50 p-4 rounded-md relative">
-                {auth?.user?.role === 1 &&  data.status != "Completed" &&  data.status != "Deleted" ? (
+                {auth?.user?.role === 1 &&
+                data.status != "Completed" &&
+                data.status != "Deleted" ? (
                   <div
                     className="absolute top-4 right-5 flex items-center gap-1 cursor-pointer text-gray-500"
                     onClick={() => setOpen(true)}
@@ -228,7 +253,11 @@ const RequestDetailsClient = ({
                       Request Accepted
                     </Button>
                   ) : (
-                    <Button onClick={handleOpen2} className="w-full sm:w-1/2">
+                    <Button
+                      onClick={handleOpen2}
+                      className="w-full sm:w-1/2"
+                      disabled={ban}
+                    >
                       Accept Request
                     </Button>
                   )}

@@ -1,43 +1,25 @@
 "use client";
-import dynamic from "next/dynamic";
-
-const Select = dynamic(() => import("react-select"), { ssr: false });
-const Input = dynamic(() => import("@mui/joy").then((mod) => mod.Input), {
-  ssr: false,
-});
-const Textarea = dynamic(() => import("@mui/joy").then((mod) => mod.Textarea), {
-  ssr: false,
-});
-const Button = dynamic(() => import("@mui/joy").then((mod) => mod.Button), {
-  ssr: false,
-});
-const Box = dynamic(() => import("@mui/material/Box"), { ssr: false });
-const Stepper = dynamic(() => import("@mui/material/Stepper"), { ssr: false });
-const Step = dynamic(() => import("@mui/material/Step"), { ssr: false });
-const StepLabel = dynamic(() => import("@mui/material/StepLabel"), {
-  ssr: false,
-});
-const SvgIcon = dynamic(() => import("@mui/joy/SvgIcon"), { ssr: false });
-const DatePicker = dynamic(() => import("react-datepicker"), { ssr: false });
-const Toaster = dynamic(
-  () => import("react-hot-toast").then((mod) => mod.Toaster),
-  { ssr: false }
-);
-const toast = dynamic(
-  () => import("react-hot-toast").then((mod) => mod.toast),
-  { ssr: false }
-);
-
+import React, { useState } from "react";
+import Select from "react-select";
+import { Input, Textarea } from "@mui/joy";
+import { Button as CustomButton } from "@/components/ui/button";
+import Button from "@mui/joy/Button";
+import Box from "@mui/material/Box";
+import Stepper from "@mui/material/Stepper";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import SvgIcon from "@mui/joy/SvgIcon";
 import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
 import { useAuth } from "@/app/_context/UserAuthContent";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { services, steps } from "../../_Arrays/Arrays";
 import success from "../../assests/success.svg";
 import Image from "next/image";
 import Link from "next/link";
 import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
-import { services, steps } from "../../_Arrays/Arrays";
-
-// Your component logic and JSX goes here
+import { Toaster, toast } from "react-hot-toast";
 
 const CreateRequest = () => {
   //mui
@@ -124,12 +106,12 @@ const CreateRequest = () => {
           const position = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
               enableHighAccuracy: true,
-              timeout: 10000,
+              timeout: 10000, 
             });
           });
 
           const { latitude, longitude } = position.coords;
-          setCoordinates({ latitude, longitude });
+          setCoordinates({ latitude, longitude }); 
 
           const address = await getHumanReadableAddress(latitude, longitude);
           setCustomLocation(address);
@@ -202,7 +184,10 @@ const CreateRequest = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Toaster position="bottom-center" reverseOrder={false} />
+      <Toaster
+  position="bottom-center"
+  reverseOrder={false}
+/>
       <p className="w-full text-center font-bold text-3xl mt-20 sm:mt-2">
         Create Request
       </p>
@@ -221,7 +206,7 @@ const CreateRequest = () => {
           <p className="font-bold text-2xl">Request submitted</p>
           <Image src={success} className="w-[300px]"></Image>
           <Link href="/user/view_request">
-            <CustomButton>View request</CustomButton>
+            < CustomButton>View request</ CustomButton>
           </Link>
         </div>
       ) : (

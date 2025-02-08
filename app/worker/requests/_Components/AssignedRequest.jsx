@@ -64,13 +64,14 @@ const AssignedRequest = () => {
           }),
         }
       );
+      const data = await response.json();
       if (response.status === 200) {
         toast.success(data.message);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
-      console.log(error)
+      console.log(error);
       toast.error("error making this request");
     } finally {
       // SetunassignModal(false);
@@ -186,9 +187,12 @@ const AssignedRequest = () => {
                         SetunassignModal(false);
                       }}
                     >
-                      <Box sx={style} className="flex flex-col gap-2">
+                      <Box sx={style} className="flex flex-col gap-1">
                         <p className="font-bold text-center">
                           Are you sure you want to unassign yourself ?
+                          <br></br>
+                         <span className="!text-red-600">Warning: your profile may get banned for unassigning
+                          yourself multiple times without solid reason.</span> 
                         </p>{" "}
                         <div>
                           {" "}

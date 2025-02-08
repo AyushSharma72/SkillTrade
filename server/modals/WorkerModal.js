@@ -70,6 +70,10 @@ const WorkerSchema = mongoose.Schema(
         unAssignedBy: {
           type: Number, // user, worker
         },
+        markAsValid: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
     CompletedRequest: {
@@ -115,6 +119,14 @@ const WorkerSchema = mongoose.Schema(
     VerifyId: {
       data: Buffer,
       contentType: String,
+    },
+    Banned: {
+      ban: {
+        type: Boolean,
+      },
+      tillDate: {
+        type: Date,
+      },
     },
   },
   {

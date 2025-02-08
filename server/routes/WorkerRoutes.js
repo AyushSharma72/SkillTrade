@@ -13,6 +13,7 @@ const {
   GetWorkerCompletedRequest,
   UnassignRequest,
   RecommandedForYou,
+  CheckBan,
 } = require("../controllers/WorkerController");
 
 const router = express.Router();
@@ -40,5 +41,7 @@ router.get("/GetWorkerCompletedRequest/:wid", GetWorkerCompletedRequest);
 router.post("/UnassignRequest/:rid/:wid", UnassignRequest);
 
 router.get("/RecommandedForYou/:wid", RecommandedForYou);
+
+router.get("/CheckBan/:wid", CheckBan);
 
 module.exports = router;

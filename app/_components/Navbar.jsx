@@ -90,7 +90,11 @@ const Navbar = () => {
     <div className="bg-black flex justify-center text-white sticky top-0 z-[10] !font-serif">
       {/* navbar big screen  */}
       <div className="w-full  xl:w-3/4 justify-between sm:flex hidden">
-        <Image src={logo} className="w-[200px] h-[70px]" alt="skill trade logo"></Image>
+        <Image
+          src={logo}
+          className="w-[200px] h-[70px]"
+          alt="skill trade logo"
+        ></Image>
         <div className=" xl:w-1/2 sm:w-1/2 flex items-center justify-around xl:justify-around font-bold">
           {auth?.user?.role == 0 ? (
             <>
@@ -110,9 +114,7 @@ const Navbar = () => {
               </Link>
               <Link
                 href="/user/hire"
-                className={`${
-                  pathname === "/user/hire" ? "border-b-2 " : ""
-                }`}
+                className={`${pathname === "/user/hire" ? "border-b-2 " : ""}`}
               >
                 Hire
               </Link>
@@ -143,6 +145,14 @@ const Navbar = () => {
                 className={`${pathname === "/" ? "border-b-2 " : ""}`}
               >
                 Home
+              </Link>{" "}
+              <Link
+                href="/admin/verify_worker"
+                className={`${
+                  pathname === "/admin/verify_worker" ? "border-b-2 " : ""
+                }`}
+              >
+                Verify Workers
               </Link>{" "}
               <AdminMenu />
             </>

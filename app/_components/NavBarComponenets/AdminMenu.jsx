@@ -41,11 +41,7 @@ const AdminMenu = () => {
         onClose={onClose}
         open={open}
       >
-        <Link href="/admin/verify_worker">
-          <CustomButton className="w-full flex gap-2" onClick={onClose}>
-            <SiTicktick /> Verify Workers
-          </CustomButton>
-        </Link>
+       
         <Link href="/admin/reports">
           <CustomButton
             className="w-full flex gap-2 items-center"
@@ -53,6 +49,15 @@ const AdminMenu = () => {
           >
             <TbMessageReport className="text-lg" />
             Reports
+          </CustomButton>
+        </Link>
+        <Link href="/admin/UnasssignedByWorker">
+          <CustomButton
+            className="w-full flex gap-2 items-center"
+            onClick={onClose}
+          >
+            <TbMessageReport className="text-lg" />
+            Unassigned Request
           </CustomButton>
         </Link>
 

@@ -1,6 +1,7 @@
 const WorkerModal = require("../modals/WorkerModal");
 const ReportModal = require("../modals/ReportModal");
 const RequestModal = require("../modals/RequestModal");
+const cron = require("node-cron");
 
 async function GetVerifyingRequest(req, resp) {
   try {
@@ -275,6 +276,138 @@ async function RejectReviewRequest(req, resp) {
   }
 }
 
+const getWorkersWithUnAssignedRequests = async (req, resp) => {
+  try {
+    const page = parseInt(req.params.page, 5) || 1;
+    const limit = 5;
+    const skip = (page - 1) * limit;
+
+    // Query to get workers with unassigned requests
+    const workers = await WorkerModal.find({
+      UnAssignedRequest: {
+        $elemMatch: { unAssignedBy: 1, markAsValidate: false },
+      },
+      "Banned.ban": false,
+    })
+      .select("Name UnAssignedRequest Banned")
+      .skip(skip)
+      .limit(limit);
+
+    const totalWorkers = await WorkerModal.countDocuments({
+      UnAssignedRequest: {
+        $elemMatch: { unAssignedBy: 1, markAsValidate: false },
+      },
+      "Banned.ban": false,
+    });
+
+    if (workers.length === 0) {
+      return resp.status(200).send({
+        success: true,
+        message: "No workers found with unassigned requests.",
+      });
+    }
+
+    return resp.status(200).send({
+      success: true,
+      data: workers,
+      currentPage: page,
+      totalPages: Math.ceil(totalWorkers / limit),
+    });
+  } catch (error) {
+    console.error("Error fetching workers:", error);
+    return resp.status(500).send({
+      success: false,
+      message: "An error occurred while fetching workers.",
+    });
+  }
+};
+
+async function BanWorker(req, resp) {
+  try {
+    const { wid } = req.params;
+    const worker = await WorkerModal.findById(wid);
+    if (!worker) {
+      return resp.status(400).send({
+        success: false,
+        message: "No such worker found",
+      });
+    }
+
+    const tilldate = new Date(Date.now() + 3 * 24 * 60 * 60 * 1000);
+    worker.Banned.ban = true;
+    worker.Banned.tillDate = tilldate;
+    await worker.save();
+    return resp.status(200).send({
+      success: true,
+      message: "the worker was banned is 3 days",
+    });
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
+async function ValidateUnassignedRequest(req, resp) {
+  try {
+    const { rid } = req.params;
+    const worker = await WorkerModal.findOneAndUpdate(
+      { "UnAssignedRequest.request": rid },
+      { $set: { "UnAssignedRequest.$.markAsValid": true } },
+      { new: true }
+    );
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Request not found",
+      });
+    }
+
+    return resp.status(200).send({
+      success: true,
+      message: "request marked as valid",
+    });
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "internal server error",
+    });
+  }
+}
+
+// remove the ban after 3 days automatically
+const removeExpiredBans = async () => {
+  try {
+    const currentDate = new Date();
+
+    // Find workers whose ban is active and tillDate has passed
+    const workersToUnban = await Worker.find({
+      "Banned.ban": true,
+      "Banned.tillDate": { $lte: currentDate },
+    });
+
+    if (workersToUnban.length > 0) {
+      await Worker.updateMany(
+        { "Banned.ban": true, "Banned.tillDate": { $lte: currentDate } },
+        { $set: { "Banned.ban": false, "Banned.tillDate": null } }
+      );
+
+      console.log(`Unbanned ${workersToUnban.length} workers.`);
+    } else {
+      console.log("No workers to unban today.");
+    }
+  } catch (error) {
+    console.error("Error unbanning workers:", error);
+  }
+};
+
+// run the unban function everyday 10 am
+cron.schedule("0 10 * * *", () => {
+  console.log("Running scheduled job to unban workers...");
+  removeExpiredBans();
+});
+
 module.exports = {
   VerifyWorker,
   GetVerifyingRequest,
@@ -285,4 +418,7 @@ module.exports = {
   InformUser,
   ApproveRequest,
   RejectReviewRequest,
+  getWorkersWithUnAssignedRequests,
+  BanWorker,
+  ValidateUnassignedRequest,
 };

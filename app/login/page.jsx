@@ -1,13 +1,7 @@
 "use client";
 import React from "react";
 import LoginForm from "../_components/login/Loginform.jsx";
-import dynamic from "next/dynamic";
-const CheckLogin = dynamic(
-  () => import("../_components/privateroutes/CheckLogin"),
-  {
-    ssr: false,
-  }
-);
+import CheckLogin from "../_components/privateroutes/CheckLogin";
 
 const Login = () => {
   return <LoginForm />;

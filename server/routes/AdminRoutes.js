@@ -9,6 +9,9 @@ const {
   InformUser,
   ApproveRequest,
   RejectReviewRequest,
+  getWorkersWithUnAssignedRequests,
+  BanWorker,
+  ValidateUnassignedRequest,
 } = require("../controllers/AdminController");
 
 const router = express.Router();
@@ -35,5 +38,15 @@ router.post("/inform_user/:rid", isAdmin, InformUser);
 router.delete("/approve_review/:rid", isAdmin, ApproveRequest);
 
 router.post("/reject_review/:rid", isAdmin, RejectReviewRequest);
+
+router.post(
+  "/getWorkersWithUnAssignedRequests/:page",
+  isAdmin,
+  getWorkersWithUnAssignedRequests
+);
+
+router.post("/banWorker/:wid", isAdmin, BanWorker);
+
+router.put("/ValidateUnassignedRequest/:rid", ValidateUnassignedRequest);
 
 module.exports = router;

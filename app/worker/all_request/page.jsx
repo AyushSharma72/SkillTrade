@@ -1,83 +1,36 @@
 "use client";
-import dynamic from "next/dynamic";
-
-// Dynamically import MUI components
-const Table = dynamic(() => import("@mui/material/Table"), { ssr: false });
-const TableBody = dynamic(() => import("@mui/material/TableBody"), {
-  ssr: false,
-});
-const TableContainer = dynamic(() => import("@mui/material/TableContainer"), {
-  ssr: false,
-});
-const TableHead = dynamic(() => import("@mui/material/TableHead"), {
-  ssr: false,
-});
-const TableRow = dynamic(() => import("@mui/material/TableRow"), {
-  ssr: false,
-});
-const Pagination = dynamic(() => import("@mui/material/Pagination"), {
-  ssr: false,
-});
-const Paper = dynamic(() => import("@mui/material/Paper"), { ssr: false });
-const Alert = dynamic(() => import("@mui/material/Alert"), { ssr: false });
-const FormControlLabel = dynamic(
-  () => import("@mui/material/FormControlLabel"),
-  { ssr: false }
-);
-const Checkbox = dynamic(() => import("@mui/material/Checkbox"), {
-  ssr: false,
-});
-const Slider = dynamic(() => import("@mui/material/Slider"), { ssr: false });
-
-// Dynamically import Ant Design components
-const Tag = dynamic(() => import("antd").then((mod) => mod.Tag), {
-  ssr: false,
-});
-const CheckCircleOutlined = dynamic(
-  () => import("@ant-design/icons").then((mod) => mod.CheckCircleOutlined),
-  { ssr: false }
-);
-const ClockCircleOutlined = dynamic(
-  () => import("@ant-design/icons").then((mod) => mod.ClockCircleOutlined),
-  { ssr: false }
-);
-
-// Dynamically import React Spinners
-const PulseLoader = dynamic(
-  () => import("react-spinners").then((mod) => mod.PulseLoader),
-  { ssr: false }
-);
-
-// Dynamically import other components
-const Empty = dynamic(() => import("../../assests/Empty.svg"), { ssr: false });
-const Image = dynamic(() => import("next/image"), { ssr: false });
-const Link = dynamic(() => import("next/link"), { ssr: false });
-
-// Dynamically import custom components
-const RecommadedJobs = dynamic(() => import("./RecommadedJobs"), {
-  ssr: false,
-});
-const SmallScreennmodal = dynamic(() => import("./SmallScreenmodal"), {
-  ssr: false,
-});
-const GetRequestFilteredData = dynamic(
-  () => import("./GetRequestFilteredData"),
-  { ssr: false }
-);
-
-// Importing other functions or utilities
+import * as React from "react";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
-import { TbFilterSearch } from "react-icons/tb";
+import { Tag } from "antd";
+import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import Pagination from "@mui/material/Pagination";
+import { GetRequestFilteredData } from "./GetRequestFilteredData";
+import { PulseLoader } from "react-spinners";
+import Empty from "../../assests/Empty.svg";
+import Image from "next/image";
+import Link from "next/link";
+// import UserPrivateRoutes from "./../../_components/privateroutes/UserPrivateRoutes"; // use later
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import SmallScreennmodal from "./SmallScreenmodal";
+import Paper from "@mui/material/Paper";
 import {
   StyledTableCell,
   StyledTableRow,
   calculateDistance,
   marks,
 } from "../../_Arrays/Arrays";
+import Alert from "@mui/material/Alert";
+import RecommadedJobs from "./RecommadedJobs";
 import {
   Select,
   SelectContent,
@@ -86,6 +39,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
+import { TbFilterSearch } from "react-icons/tb";
 
 function ViewRequest() {
   const [auth, setauth] = useAuth();
@@ -196,7 +151,6 @@ function ViewRequest() {
   async function GetFilteredData() {
     try {
       setloading(true);
-
       const info = await GetRequestFilteredData(
         ServiceType,
         checkedValues,
@@ -217,10 +171,7 @@ function ViewRequest() {
     }
   }
 
-  function valuetext(value) {
-    return `${value} km`;
-  }
-
+ 
   const handleChange = (event) => {
     const { name, checked } = event.target;
     setCheckedValues((prev) => ({
@@ -484,9 +435,11 @@ function ViewRequest() {
                       </StyledTableCell>
                       {/* Action */}
                       <StyledTableCell align="center">
-                        <Link href={`Request_Details/${data._id}`}>
-                          <Button>View</Button>
-                        </Link>
+                        {
+                          <Link href={`Request_Details/${data._id}`}>
+                            <Button>View</Button>
+                          </Link>
+                        }
                       </StyledTableCell>
                     </StyledTableRow>
                   ))}
