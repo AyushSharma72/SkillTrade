@@ -182,15 +182,20 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
                       </span>
                     )}
                   </p>
-                  <div className="flex flex-col gap-2 items-start">
-                    <p className="font-semibold tracking-wider flex items-center gap-1">
-                      Expertise
-                      <Chip label={`${WorkerData.ServiceType}`} />
-                    </p>
+                  <div className="flex gap-2 items-start">
+                    <p className="tracking-wider flex items-center gap-1 font-semibold">
+                      Expertise:
+                    </p>{" "}
+                    <Chip label={`${WorkerData.ServiceType}`} size="small" />
                   </div>
                   <div className="flex gap-1 items-start flex-wrap">
                     {WorkerData.SubSerives.map((subservice, index) => (
-                      <Chip key={index} label={`${subservice}`} size="small" />
+                      <Chip
+                        key={index}
+                        label={`${subservice}`}
+                        size="small"
+                        variant="outlined"
+                      />
                     ))}
                   </div>
                 </div>
@@ -199,7 +204,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
                 <div
                   className="flex  items-center gap-2 cursor-pointer"
                   onClick={() => {
-                    const url = `https://wa.me/+91${WorkerData?.MobileNo}`;
+                    const url = `https://wa.me/${WorkerData?.MobileNo}`;
                     window.open(url, "_blank");
                   }}
                 >

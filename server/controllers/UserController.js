@@ -635,7 +635,7 @@ async function ListWorkers(req, resp) {
         query.pincode = Pincode;
         Workers = await WorkerModal.find(query)
           .select(
-            "Name MobileNo ServiceType coordinates city OverallRaitngs overAllSentimentScore Reviews"
+            "Name MobileNo ServiceType coordinates city OverallRaitngs  Reviews SubSerives"
           )
           .sort({ overAllSentimentScore: -1, OverallRaitngs: -1 }); // Sort by sentiment, then ratings
       } else {
