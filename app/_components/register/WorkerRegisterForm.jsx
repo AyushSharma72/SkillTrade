@@ -177,7 +177,7 @@ const WorkerRegisterForm = () => {
 
         <div className="w-3/4 relative">
           <label className="text-sm text-gray-600 mb-1 block">
-            Your closet working location
+            Your closest working location
           </label>
           <TextField
             id="address"

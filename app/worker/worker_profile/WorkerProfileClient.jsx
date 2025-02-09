@@ -183,8 +183,15 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
                     )}
                   </p>
                   <div className="flex flex-col gap-2 items-start">
-                    <p className="font-semibold tracking-wider">Expertise</p>
-                    <Chip label={`${WorkerData.ServiceType}`} />
+                    <p className="font-semibold tracking-wider flex items-center gap-1">
+                      Expertise
+                      <Chip label={`${WorkerData.ServiceType}`} />
+                    </p>
+                  </div>
+                  <div className="flex gap-1 items-start flex-wrap">
+                    {WorkerData.SubSerives.map((subservice, index) => (
+                      <Chip key={index} label={`${subservice}`} size="small" />
+                    ))}
                   </div>
                 </div>
               </div>

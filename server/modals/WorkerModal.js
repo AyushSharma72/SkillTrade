@@ -16,6 +16,10 @@ const WorkerSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    SubSerives: {
+      type: [String],
+      default: [],
+    },
     image: {
       data: Buffer,
       contentType: String,
@@ -92,6 +96,9 @@ const WorkerSchema = mongoose.Schema(
         comment: {
           type: String,
         },
+        sentimentScore: {
+          type: Number,
+        },
         user: {
           type: Schema.Types.ObjectId,
           ref: "Users",
@@ -101,6 +108,9 @@ const WorkerSchema = mongoose.Schema(
         },
       },
     ],
+    overAllSentimentScore: {
+      type: Number,
+    },
     TotalStars: {
       type: Number,
     },

@@ -95,7 +95,7 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   return (
     <Box
       sx={style}
-      className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
+      className="w-[300px] sm:w-[550px] flex flex-col gap-3 rounded-md"
     >
       <Toaster position="bottom-center" reverseOrder={false} />
       <p className="text-xl font-semibold text-center">Edit your profile</p>
@@ -107,7 +107,7 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
             component="label"
             variant="outlined"
             color="neutral"
-            className="w-full" 
+            className="w-full"
             startDecorator={
               <SvgIcon>
                 <svg

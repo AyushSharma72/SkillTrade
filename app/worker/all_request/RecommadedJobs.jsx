@@ -51,7 +51,6 @@ const RecommadedJobs = () => {
     }
   }, [auth?.user?._id]);
 
-
   return (
     <div className="mt-5 p-4">
       <p className="text-center text-2xl font-semibold">Recommended for you</p>
@@ -59,7 +58,7 @@ const RecommadedJobs = () => {
         <div className="text-red-500 text-center h-[100px] mt-10">
           There was an error loading jobs
         </div>
-      ) : (
+      ) : jobs?.length > 0 ? (
         <Swiper
           effect={"coverflow"}
           slidesPerView={1}
@@ -73,10 +72,10 @@ const RecommadedJobs = () => {
             slideShadows: true,
           }}
           breakpoints={{
-            0: { slidesPerView: 1, spaceBetween: 10 }, 
-            480: { slidesPerView: 1, spaceBetween: 15 }, 
-            768: { slidesPerView: 2, spaceBetween: 20 }, 
-            1440: { slidesPerView: 2, spaceBetween: 30 }, 
+            0: { slidesPerView: 1, spaceBetween: 10 },
+            480: { slidesPerView: 1, spaceBetween: 15 },
+            768: { slidesPerView: 2, spaceBetween: 20 },
+            1440: { slidesPerView: 2, spaceBetween: 30 },
           }}
           modules={[EffectCoverflow, Pagination, Navigation]}
           className="mt-5 w-full m-auto"
@@ -108,6 +107,8 @@ const RecommadedJobs = () => {
             </SwiperSlide>
           ))}
         </Swiper>
+      ) : (
+        <p className="text-center mt-10 text-2xl">No jobs found ☹️</p>
       )}
     </div>
   );

@@ -613,11 +613,17 @@ async function ListWorkers(req, resp) {
               spherical: true,
               query: {
                 "coordinates.coordinates": { $exists: true, $ne: null },
+                "Banned.ban": { $ne: true }, // do not include banned workers
                 ...query,
               },
             },
           },
-          { $project: { password: 0 } },
+          {
+            $sort: { overAllSentimentScore: -1, OverallRaitngs: -1 },
+          },
+          {
+            $project: { password: 0 },
+          },
         ]);
       }
     }
@@ -627,9 +633,11 @@ async function ListWorkers(req, resp) {
         console.log("Searching by Pincode:", Pincode);
 
         query.pincode = Pincode;
-        Workers = await WorkerModal.find(query).select(
-          "Name MobileNo ServiceType coordinates city OverallRaitngs Reviews"
-        );
+        Workers = await WorkerModal.find(query)
+          .select(
+            "Name MobileNo ServiceType coordinates city OverallRaitngs overAllSentimentScore Reviews"
+          )
+          .sort({ overAllSentimentScore: -1, OverallRaitngs: -1 }); // Sort by sentiment, then ratings
       } else {
         return resp.status(400).send({
           success: false,

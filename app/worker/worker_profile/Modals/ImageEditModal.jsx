@@ -16,13 +16,16 @@ import { Button as CustomButton } from "@/components/ui/button";
 import { UpdateProfile } from "../_FetchFunction/UpdateUserProfile";
 import { style } from "../../../_Arrays/Arrays";
 
-
 const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
   const [image, setImage] = useState(null);
   const [name, SetName] = useState(data.Name);
   const [service, setService] = useState(data.ServiceType);
   const [MobileNo, SetMobileNo] = useState(data.MobileNo);
   const [loading, setLoading] = useState(false);
+  const [subServiceOptions, setSubServiceOptions] = useState([data.SubSerives]);
+ const [selectedSubServices, setSelectedSubServices] = useState(
+   data.SubSerives.map((sub) => ({ value: sub, label: sub.replace(/_/g, " ") }))
+ );
 
   async function UpdateUser() {
     setLoading(true);
@@ -53,6 +56,12 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
       }
       if (MobileNo) {
         formData.append("MobileNo", MobileNo);
+      }
+      if (selectedSubServices.length > 0) {
+        formData.append(
+          "SubServices",
+          JSON.stringify(selectedSubServices.map((sub) => sub.value))
+        );
       }
 
       const result = await UpdateProfile(auth.user._id, formData);
@@ -96,8 +105,9 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
       SetMobileNo(e.target.value);
     }
   }
+
   useEffect(() => {
-    // Set the initial value of the service dropdown
+    console.log(data)
     const initialService = services.find(
       (option) => option.value === data.ServiceType
     );
@@ -106,15 +116,23 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
     }
   }, [data.ServiceType]);
 
+  useEffect(() => {
+    if (service.subServices) {
+      setSubServiceOptions(
+        service.subServices.map((sub) => ({
+          value: sub.toLowerCase().replace(/\s+/g, "_"),
+          label: sub,
+        }))
+      );
+    }
+  }, [service]);
+
   return (
     <Box
       sx={style}
-      className="w-[300px] sm:w-[400px] flex flex-col gap-3 rounded-md"
+      className="w-[300px] sm:w-[550px] flex flex-col gap-3 rounded-md"
     >
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+      <Toaster position="bottom-center" reverseOrder={false} />
       <Backdrop
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
         open={loading}
@@ -192,6 +210,24 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
           onChange={setService}
           className="w-full"
           placeholder="Change expertise"
+        />
+      </div>
+      <div>
+        <label
+          htmlFor="subService"
+          className="text-sm font-medium text-gray-700"
+        >
+          Select Sub Services
+        </label>
+        <Select
+          id="subService"
+          required
+          options={subServiceOptions}
+          value={selectedSubServices}
+          onChange={setSelectedSubServices}
+          isMulti
+          className="w-full"
+          placeholder="Add sub service"
         />
       </div>
 

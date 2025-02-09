@@ -1,5 +1,6 @@
 const RequestModal = require("../modals/RequestModal");
 const WorkerModal = require("../modals/WorkerModal");
+const vader = require("vader-sentiment");
 const fs = require("fs").promises;
 
 async function CreateRequest(req, resp) {
@@ -448,10 +449,11 @@ async function RequestCompleted(req, resp) {
   try {
     const { rid, wid, uid } = req.params;
     const { stars, comment, price } = req.body;
+
     if (!rid || !wid || !uid) {
       return resp.status(400).send({
         success: false,
-        message: "request id or worker id is missing",
+        message: "Request ID, Worker ID, or User ID is missing",
       });
     }
     if (!stars || !comment || !price) {
@@ -460,19 +462,20 @@ async function RequestCompleted(req, resp) {
         message: "All fields are required",
       });
     }
+
+    // Fetch request and worker details
     const request = await RequestModal.findById(rid);
     if (!request) {
-      return resp.status(404).send({
-        success: false,
-        message: "request not found",
-      });
+      return resp
+        .status(404)
+        .send({ success: false, message: "Request not found" });
     }
     if (request.status === "Completed") {
-      return resp.status(400).send({
-        success: false,
-        message: "request was already completed",
-      });
+      return resp
+        .status(400)
+        .send({ success: false, message: "Request was already completed" });
     }
+
     const worker = await WorkerModal.findById(wid);
     if (!worker) {
       return resp
@@ -480,34 +483,48 @@ async function RequestCompleted(req, resp) {
         .send({ success: false, message: "Worker not found" });
     }
 
+    // Perform Sentiment Analysis on Comment
+    const sentimentScores =
+      vader.SentimentIntensityAnalyzer.polarity_scores(comment);
+    const sentimentScore = sentimentScores.compound;
+
     request.status = "Completed";
     request.actualPrice = price;
     request.completedAt = new Date();
     await request.save();
 
-    worker.TotalStars = worker.TotalStars || 0; // Ensure TotalStars is initialized
+    worker.TotalStars = worker.TotalStars || 0;
     worker.TotalStars += stars;
+
     worker.OverallRaitngs = worker.TotalStars / (worker.Reviews.length + 1);
+
+    const totalReviews = worker.Reviews.length + 1; // Including the new review
+    worker.overAllSentimentScore =
+      ((worker.overAllSentimentScore || 0) * (totalReviews - 1) +
+        sentimentScore) /
+      totalReviews;
+
+    // Add new review with sentiment score
     worker.Reviews.push({
-      stars: stars,
-      comment: comment,
+      stars,
+      comment,
+      sentimentScore, // Store the compound sentiment score
       user: uid,
       date: new Date(),
     });
-    worker.CompletedRequest += 1;
 
+    worker.CompletedRequest += 1;
     await worker.save();
 
-    resp.status(200).send({
+    return resp.status(200).send({
       success: true,
       message: "Request was completed",
     });
   } catch (error) {
-    console.log(error);
-    resp.status(500).send({
-      success: false,
-      message: "internal server error",
-    });
+    console.error(error);
+    return resp
+      .status(500)
+      .send({ success: false, message: "Internal server error" });
   }
 }
 
@@ -559,7 +576,7 @@ async function FilterRequests(req, resp) {
               spherical: true,
               query: {
                 "coordinates.coordinates": { $exists: true, $ne: null },
-              }, 
+              },
               key: "coordinates",
             },
           },
@@ -596,7 +613,6 @@ async function FilterRequests(req, resp) {
     });
   }
 }
-
 
 module.exports = {
   CreateRequest,

@@ -5,7 +5,6 @@ const ReportModal = require("../modals/ReportModal");
 const RequestModal = require("../modals/RequestModal");
 const fs = require("fs").promises;
 
-
 async function RegisterWorker(req, resp) {
   try {
     const {
@@ -281,71 +280,100 @@ async function GetWorkerData(req, resp) {
 }
 
 async function UpdateProfile(req, resp) {
-  const { wid } = req.params;
+  try {
+    const { wid } = req.params;
 
-  const worker = await WorkerModal.findById(wid);
-  if (!worker) {
-    return resp.status(404).send({
+    const worker = await WorkerModal.findById(wid);
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+
+    const { fields, files } = req;
+
+    let updatedSubServices = worker.SubSerives;
+    if (fields.SubServices) {
+      try {
+        updatedSubServices = JSON.parse(fields.SubServices);
+        if (!Array.isArray(updatedSubServices)) {
+          return resp.status(400).send({
+            success: false,
+            message: "Invalid format for SubServices",
+          });
+        }
+      } catch (error) {
+        return resp.status(400).send({
+          success: false,
+          message: "Error parsing SubServices",
+        });
+      }
+    }
+
+    const updatedData = {
+      Name: fields.Name || worker.Name,
+      MobileNo: fields.MobileNo || worker.MobileNo,
+      ServiceType: fields.ServiceType || worker.ServiceType,
+      Address: fields.address || worker.Address,
+      pincode: fields.pincode || worker.pincode,
+      city: fields.city || worker.city,
+      SubSerives: updatedSubServices,
+    };
+
+    const updatedWorker = await WorkerModal.findByIdAndUpdate(
+      wid,
+      updatedData,
+      {
+        new: true,
+      }
+    );
+
+    const image = files.image;
+    const vimage = files.vimage;
+
+    if (image) {
+      try {
+        updatedWorker.image = {
+          data: await fs.readFile(image.filepath || image.path),
+          contentType: image.mimetype || image.type,
+        };
+      } catch (error) {
+        return resp.status(400).send({
+          success: false,
+          message: "Image processing failed",
+        });
+      }
+    }
+
+    if (vimage) {
+      try {
+        updatedWorker.VerifyId = {
+          data: await fs.readFile(vimage.filepath || vimage.path),
+          contentType: vimage.mimetype || vimage.type,
+        };
+      } catch (error) {
+        return resp.status(400).send({
+          success: false,
+          message: "Verification image processing failed",
+        });
+      }
+      updatedWorker.Verified.verified = "Pending";
+    }
+
+    await updatedWorker.save();
+
+    return resp.status(200).send({
+      success: true,
+      message: "Worker updated successfully",
+    });
+  } catch (error) {
+    return resp.status(500).send({
       success: false,
-      message: "worker not found",
+      message: "Internal server error",
+      error: error.message,
     });
   }
-
-  const { fields, files } = req;
-
-  const updatedData = {
-    Name: fields.Name || worker.Name,
-    MobileNo: fields.MobileNo || worker.MobileNo,
-    ServiceType: fields.ServiceType || worker.ServiceType,
-    Address: fields.address || worker.Address,
-    pincode: fields.pincode || worker.pincode,
-    city: fields.city || worker.city,
-  };
-
-  const updatedWorker = await WorkerModal.findByIdAndUpdate(wid, updatedData, {
-    new: true,
-  });
-
-  const image = files.image;
-  const vimage = files.vimage;
-  if (image) {
-    try {
-      updatedWorker.image = {
-        data: await fs.readFile(image.filepath || image.path),
-        contentType: image.mimetype || image.type,
-      };
-    } catch (error) {
-      return resp.status(400).send({
-        success: false,
-        message: "Image processing failed",
-      });
-    }
-  } else {
-    console.log("No image exists");
-  }
-  if (vimage) {
-    try {
-      updatedWorker.VerifyId = {
-        data: await fs.readFile(vimage.filepath || vimage.path),
-        contentType: vimage.mimetype || vimage.type,
-      };
-    } catch (error) {
-      return resp.status(400).send({
-        success: false,
-        message: "verification image processing failed",
-      });
-    }
-    updatedWorker.Verified.verified = "Pending";
-  } else {
-    console.log("No verification image exists");
-  }
-
-  await updatedWorker.save();
-
-  return resp.status(200).send({
-    success: true,
-    message: "Worker updated successfully",
-  });
 }
 
 async function GetWorkerImage(req, resp) {
@@ -584,11 +612,8 @@ async function RecommandedForYou(req, resp) {
 
     const query = {
       status: { $nin: ["Completed", "Deleted"] },
-      $or: [
-        { pincode: worker.pincode },
-        { city: worker.city },
-        { service: worker.ServiceType },
-      ],
+      service: worker.ServiceType,
+      $or: [{ pincode: worker.pincode }, { city: worker.city }],
     };
 
     const requests = await RequestModal.find(query).select("-image");
@@ -633,7 +658,6 @@ async function CheckBan(req, resp) {
     });
   }
 }
-
 
 module.exports = {
   RegisterWorker,
