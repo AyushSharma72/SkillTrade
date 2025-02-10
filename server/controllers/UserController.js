@@ -580,17 +580,21 @@ async function SendEmailVerificationOtp(req, resp) {
 async function ListWorkers(req, resp) {
   try {
     const { ServiceType, Coordinates, Pincode } = req.body;
-
+    let { page } = req.params;
     let query = {};
+    const limit = 5;
+
+    page = parseInt(page) || 1;
 
     if (ServiceType) {
       query.ServiceType = ServiceType;
     }
 
-    let Workers;
-    const maxDistanceInMeters = 5000;
+    let Workers = [];
+    let totalWorkers = 0;
+    const maxDistanceInMeters = 10000;
 
-    // Check if coordinates are provided and valid
+    // Search by coordinates
     if (
       Coordinates &&
       Coordinates.coordinates &&
@@ -601,7 +605,7 @@ async function ListWorkers(req, resp) {
       if (!isNaN(lat) && !isNaN(lon)) {
         console.log("Searching by coordinates:", lat, lon);
 
-        Workers = await WorkerModal.aggregate([
+        const geoResults = await WorkerModal.aggregate([
           {
             $geoNear: {
               near: {
@@ -613,7 +617,7 @@ async function ListWorkers(req, resp) {
               spherical: true,
               query: {
                 "coordinates.coordinates": { $exists: true, $ne: null },
-                "Banned.ban": { $ne: true }, // do not include banned workers
+                "Banned.ban": { $ne: true }, // Exclude banned workers
                 ...query,
               },
             },
@@ -624,32 +628,43 @@ async function ListWorkers(req, resp) {
           {
             $project: { password: 0 },
           },
+          { $skip: (page - 1) * limit },
+          { $limit: limit },
         ]);
+
+        totalWorkers = await WorkerModal.countDocuments(query);
+        Workers = geoResults;
       }
     }
 
-    if (!Workers || Workers.length === 0) {
-      if (Pincode) {
-        console.log("Searching by Pincode:", Pincode);
+    // If no workers found by coordinates, search by Pincode
+    if (!Workers.length && Pincode) {
+      console.log("Searching by Pincode:", Pincode);
 
-        query.pincode = Pincode;
-        Workers = await WorkerModal.find(query)
-          .select(
-            "Name MobileNo ServiceType coordinates city OverallRaitngs  Reviews SubSerives"
-          )
-          .sort({ overAllSentimentScore: -1, OverallRaitngs: -1 }); // Sort by sentiment, then ratings
-      } else {
-        return resp.status(400).send({
-          success: false,
-          message: "Coordinates or Pincode is required",
-        });
-      }
+      query.pincode = Pincode;
+
+      totalWorkers = await WorkerModal.countDocuments(query);
+      Workers = await WorkerModal.find(query)
+        .select(
+          "Name MobileNo ServiceType coordinates city OverallRaitngs Reviews SubSerives"
+        )
+        .sort({ overAllSentimentScore: -1, OverallRaitngs: -1 })
+        .limit(limit)
+        .skip((page - 1) * limit);
+    }
+
+    if (!Workers.length) {
+      return resp.status(400).send({
+        success: false,
+        message: "No workers found. Please check Coordinates or Pincode.",
+      });
     }
 
     return resp.status(200).send({
       success: true,
       Workers,
-      message: Workers.length > 0 ? "Workers found" : "No workers found",
+      totalPages: Math.ceil(totalWorkers / limit),
+
     });
   } catch (error) {
     console.error("Error in ListWorkers:", error);

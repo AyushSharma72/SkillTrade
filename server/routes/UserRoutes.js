@@ -44,6 +44,6 @@ router.post("/review_request/:rid", SubmitForReview);
 
 router.post("/SendEmailVerificationOtp", SendEmailVerificationOtp);
 
-router.post("/ListWorkers", ListWorkers);
+router.post("/ListWorkers/:page", ListWorkers);
 
 module.exports = router;
