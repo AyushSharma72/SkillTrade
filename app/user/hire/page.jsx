@@ -17,6 +17,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Textarea } from "@mui/joy";
+import { toast, Toaster } from "react-hot-toast";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+
 
 const Hire = () => {
   const [workers, setWorkers] = useState([]);
@@ -26,7 +39,13 @@ const Hire = () => {
   const [ServiceType, setServiceType] = useState("");
   const [WorkerCoordinates, setWorkerCoordinates] = useState(null);
   const [auth, setAuth] = useAuth();
-
+  const [hireModal, setHireModal] = useState(false);
+  const [workerid, SetWorkerId] = useState("");
+  const [workername, SetWorkerName] = useState("");
+  const [description, SetDescription] = useState("");
+  const [backdrop, setBackDrop] = useState(false);
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   // Function to get user location
   const getUserLocation = () => {
     return new Promise((resolve, reject) => {
@@ -110,16 +129,57 @@ const Hire = () => {
       setLoading(false);
     }
   };
+
   const handleServiceTypeChange = (value) => {
     setServiceType(value);
   };
+
+  function handleOpenHireModal(id, workerName) {
+    if (id) {
+      SetWorkerId(id);
+      SetWorkerName(workerName);
+      setHireModal(true);
+    }
+  }
+
+  async function SendHireRequest() {
+    try {
+      setBackDrop(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/hire/${workerid}/${auth?.user?._id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            description: description,
+            date: date,
+            time: time,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setHireModal(false);
+        toast.success(data.message);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error("error try again later");
+    } finally {
+      SetDescription("");
+      setBackDrop(false);
+    }
+  }
 
   return (
     <div className="max-w-7xl mx-auto p-6">
       <p className="text-center font-bold text-4xl text-gray-800">
         Hire Service Providers Directly
       </p>
-
+      <Toaster></Toaster>
       <div className="flex justify-between mt-6">
         {/* Filters */}
         <div className="w-1/4 bg-white shadow-md rounded-xl p-4 h-[400px]">
@@ -248,7 +308,12 @@ const Hire = () => {
                           View Profile
                         </Button>
                       </Link>
-                      <Button className="flex items-center gap-2  text-white px-4 py-2 rounded-lg shadow-md  transition">
+                      <Button
+                        className="flex items-center gap-2  text-white px-4 py-2 rounded-lg shadow-md  transition"
+                        onClick={() => {
+                          handleOpenHireModal(worker._id, worker.Name);
+                        }}
+                      >
                         <FaHandshake />
                         Hire
                       </Button>
@@ -256,9 +321,77 @@ const Hire = () => {
                   </div>
                 </div>
               ))}
+              <AlertDialog open={hireModal}>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="text-center flex items-center justify-center gap-2">
+                      <Avatar
+                        alt={workername}
+                        src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerImage/${workerid}`}
+                        sx={{ width: 40, height: 40 }}
+                      />{" "}
+                      Hire {workername}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      <Textarea
+                        name="description"
+                        placeholder="Give a description of your request"
+                        value={description}
+                        onChange={(e) => SetDescription(e.target.value)}
+                        className="w-full h-40 overflow-y-scroll scrollbar-hide"
+                        required
+                      />
+
+                      {/* Date Input */}
+                      <label className="block mt-4 text-sm font-medium text-gray-700">
+                        Select Date:
+                      </label>
+                      <input
+                        type="date"
+                        value={date}
+                        onChange={(e) => setDate(e.target.value)}
+                        className="w-full p-2 border rounded-md mt-1"
+                        required
+                      />
+
+                      {/* Time Input */}
+                      <label className="block mt-4 text-sm font-medium text-gray-700">
+                        Select Time:
+                      </label>
+                      <input
+                        type="time"
+                        value={time}
+                        onChange={(e) => setTime(e.target.value)}
+                        className="w-full p-2 border rounded-md mt-1"
+                        required
+                      />
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <Button onClick={() => setHireModal(false)}>Close</Button>
+                    <Button
+                      onClick={() =>
+                        SendHireRequest({ description, date, time })
+                      }
+                    >
+                      Send Request
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+
+              {/* backdrop */}
+              <Backdrop
+                sx={(theme) => ({
+                  color: "#fff",
+                  zIndex: theme.zIndex.drawer + 1,
+                })}
+                open={backdrop}
+              >
+                <CircularProgress color="inherit" />
+              </Backdrop>
 
               {/* Pagination */}
-
               <Pagination
                 count={totalPages}
                 page={currentPage}

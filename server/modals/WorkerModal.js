@@ -26,7 +26,7 @@ const WorkerSchema = mongoose.Schema(
     },
     Email: {
       type: String,
-      required: true, 
+      required: true,
       unique: true,
     },
     Password: {
@@ -138,6 +138,26 @@ const WorkerSchema = mongoose.Schema(
         type: Date,
       },
     },
+    HireRequests: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "Users",
+        },
+        description: {
+          type: String,
+        },
+        visitingDate:{
+          type:Date
+        },
+        time:{
+           type: String,
+        },
+        date: {
+          type: Date,
+        },
+      },
+    ],
   },
   {
     timestamps: true,

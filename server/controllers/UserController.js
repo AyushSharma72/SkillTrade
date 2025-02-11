@@ -664,13 +664,64 @@ async function ListWorkers(req, resp) {
       success: true,
       Workers,
       totalPages: Math.ceil(totalWorkers / limit),
-
     });
   } catch (error) {
     console.error("Error in ListWorkers:", error);
     return resp.status(500).send({
       success: false,
       message: "Internal server error",
+    });
+  }
+}
+
+async function SendHireRequest(req, resp) {
+  try {
+    const { wid, uid } = req.params;
+    const { description, time, date } = req.body;
+
+    if (!description || !time || !date) {
+      return resp.status(400).send({
+        success: false,
+        message: "all fields are required",
+      });
+    }
+    const worker = await WorkerModal.findById(wid);
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "worker not found",
+      });
+    }
+    const existingRequest = worker.HireRequests.find(
+      (request) => request.user.toString() === uid
+    );
+    if (existingRequest) {
+      return resp.status(400).send({
+        success: false,
+        message: "You have already sent a hire request to this worker",
+      });
+    }
+    const currentdate = new Date();
+
+    worker.HireRequests.push({
+      user: uid,
+      description: description,
+      visitingDate: date,
+      time: time,
+      date: currentdate,
+    });
+
+    await worker.save();
+
+    return resp.status(200).send({
+      success: true,
+      message: "hire request sent",
+    });
+  } catch (error) {
+    console.log(error);
+    return resp.status(500).send({
+      success: false,
+      message: "internal server error",
     });
   }
 }
@@ -688,4 +739,5 @@ module.exports = {
   SubmitForReview,
   SendEmailVerificationOtp,
   ListWorkers,
+  SendHireRequest,
 };

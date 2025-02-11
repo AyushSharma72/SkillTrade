@@ -11,10 +11,9 @@ import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
 import Select from "react-select";
 import "react-datepicker/dist/react-datepicker.css";
-import { services } from "../../../_Arrays/Arrays";
 import { Button as CustomButton } from "@/components/ui/button";
 import { UpdateProfile } from "../_FetchFunction/UpdateUserProfile";
-import { style } from "../../../_Arrays/Arrays";
+import { style, services } from "../../../_Arrays/Arrays";
 
 const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
   const [image, setImage] = useState(null);
@@ -107,7 +106,6 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
   }
 
   useEffect(() => {
-    console.log(data)
     const initialService = services.find(
       (option) => option.value === data.ServiceType
     );
