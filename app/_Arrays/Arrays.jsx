@@ -265,8 +265,6 @@ const marks = [
 ];
 
 
-console.log(services);
-
 export {
   services,
   steps,
@@ -276,5 +274,4 @@ export {
   labels,
   calculateDistance,
   marks,
-  SubServices,
 };

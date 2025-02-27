@@ -1,34 +1,42 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Tag, Image } from "antd";
-import { useRouter } from "next/navigation";
-import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-import { MdOutlineHandyman } from "react-icons/md";
-import { FaLocationDot } from "react-icons/fa6";
-import { FaCalendarCheck } from "react-icons/fa";
-import { SiStatuspage } from "react-icons/si";
-import moment from "moment";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import { TbMapPinCode } from "react-icons/tb";
-import { FaAddressCard } from "react-icons/fa";
-import { Button } from "../../../../../components/ui/button";
-import { toast, Toaster } from "react-hot-toast";
-import { DeleteRequestFetchFunction } from "../../_FetchFunction/DeleteRequest";
-import Modal from "@mui/material/Modal";
-import { MdOutlineAssignmentTurnedIn } from "react-icons/md";
-import { Textarea } from "@mui/joy";
-import Rating from "@mui/material/Rating";
-import { Input } from "@mui/joy";
-import StarIcon from "@mui/icons-material/Star";
-import { CompleteRequest } from "../../_FetchFunction/CompleteRequest";
-import { useAuth } from "@/app/_context/UserAuthContent";
-import { labels, style } from "../../../../_Arrays/Arrays";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import moment from "moment";
+import { toast, Toaster } from "react-hot-toast";
+
+// UI Components
+import { Tag, Image } from "antd";
+import { Button } from "../../../../../components/ui/button";
+import { Textarea, Input } from "@mui/joy";
+import Modal from "@mui/material/Modal";
+import Rating from "@mui/material/Rating";
 import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+
+// Icons
+
+import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import {
+  MdOutlineHandyman,
+  MdOutlineAssignmentTurnedIn,
+  MdOutlineTextSnippet,
+} from "react-icons/md";
+import { FaLocationDot, FaCalendarCheck, FaAddressCard } from "react-icons/fa6";
+import { SiStatuspage } from "react-icons/si";
+import { TbMapPinCode } from "react-icons/tb";
+import StarIcon from "@mui/icons-material/Star";
+
+// Utility Functions
+import { DeleteRequestFetchFunction } from "../../_FetchFunction/DeleteRequest";
+import { CompleteRequest } from "../../_FetchFunction/CompleteRequest";
 import { UnAssign } from "../../_FetchFunction/UnassignWorker";
+
+// Context & Constants
+import { useAuth } from "@/app/_context/UserAuthContent";
+import { labels, style } from "../../../../_Arrays/Arrays";
 
 const RequestDetails = ({ initialData, intialimage }) => {
   const [data, setData] = useState(initialData);
@@ -37,7 +45,7 @@ const RequestDetails = ({ initialData, intialimage }) => {
   const [image, setImage] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [completed, SetCompleted] = useState(false);
-  const [reviewmodal, SetReviewModal] = useState(false);
+  const [reviewmodal, setReviewModal] = useState(false);
   const router = useRouter();
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -50,7 +58,7 @@ const RequestDetails = ({ initialData, intialimage }) => {
   const [unassignModal, SetunassignModal] = useState(false);
   const [description, setDescription] = useState("");
   const [dateExpiredModal, SetdateExpiredModal] = useState(false);
-  const [imageurl, SetImgUrl] = useState(intialimage);
+  const [imageUrl, setImgUrl] = useState(intialimage);
 
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
@@ -242,170 +250,173 @@ const RequestDetails = ({ initialData, intialimage }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mb-10">
+    <div className="flex flex-col items-center justify-center sm:px-4 py-2">
       <Toaster position="bottom-center" reverseOrder={false} />
-      <Backdrop
-        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-        open={fetchLoading}
-      >
+      <Backdrop sx={{ color: "#fff", zIndex: 1000 }} open={fetchLoading}>
         <CircularProgress color="inherit" />
-      </Backdrop>{" "}
-      <p className="text-2xl font-bold">Request Details</p>
-      {data.ReportedInfo?.Info && data.ReportedInfo?.Review == false ? (
-        <Alert severity="warning" className="w-full mt-3">
-          Warning: please follow the below guidelines otherwise the request will
-          be deleted
-          <br></br>
-          {data.ReportedInfo.Info}.{" "}
+      </Backdrop>
+
+      <h2 className="text-4xl font-bold mb-2 text-center">Request Details</h2>
+
+      {data?.ReportedInfo?.Info && !data?.ReportedInfo?.Review ? (
+        <Alert severity="warning" className="w-full max-w-2xl mb-4">
+          <strong>Warning:</strong> Please follow the guidelines below, or your
+          request may be deleted.
+          <br /> {data.ReportedInfo.Info}
           <span
-            onClick={() => {
-              SetReviewModal(true);
-            }}
+            onClick={() => setReviewModal(true)}
             className="ml-3 text-blue-600 cursor-pointer"
           >
             Request Review
           </span>
         </Alert>
-      ) : data.ReportedInfo?.Review ? (
-        <Alert severity="info" className="w-full mt-3">
-          The request is submitted for review
+      ) : data?.ReportedInfo?.Review ? (
+        <Alert severity="info" className="w-full max-w-2xl mb-4">
+          Request submitted for review
         </Alert>
       ) : null}
+
       {loading ? (
         <Box sx={{ display: "flex" }} className="mt-5">
           <CircularProgress />
         </Box>
       ) : (
-        <div className="w-full">
+        <div className="w-full max-w-6xl bg-white rounded-lg sm:p-6 p-2">
           {data && (
-            <div className="flex flex-col items-center lg:flex-row justify-around m-auto w-full lg:w-full mt-5 xl:justify-around p-2">
-              <div className="flex flex-col gap-2 items-center">
+            <div className="flex flex-col lg:flex-row gap-10">
+              <div className="flex flex-col items-center w-full lg:w-1/3">
                 <Image
-                  src={imageurl}
-                  className="object-cover rounded-md responsive-image !h-[300px]"
+                  src={imageUrl}
+                  width={200}
+                  height={200}
+                  className="object-cover rounded-md !h-64 !w-[330px] m-auto"
                   alt="Request Image"
                 />
-                <form
-                  onSubmit={updateRequestImage}
-                  className="flex justify-center items-center "
-                >
-                  {data.status !== "Completed" && data.status !== "Deleted" ? (
-                    <>
-                      {" "}
-                      <input
-                        type="file"
-                        id="image"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="w-1/2"
-                      />
-                      <Button type="submit">Update Photo</Button>
-                    </>
-                  ) : null}
-                </form>
-                <p className="font-bold text-xl text-center">
-                  {data.description}
-                </p>
+                {data.status !== "Completed" && data.status !== "Deleted" && (
+                  <form className="flex flex-col  w-full mt-4">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageChange}
+                      className="mb-2"
+                    />
+                    <Button
+                      onClick={(e) => {
+                        updateRequestImage(e);
+                      }}
+                    >
+                      Update Photo
+                    </Button>
+                  </form>
+                )}
               </div>
-              <div className="flex flex-col w-full xl:w-1/2 gap-y-4 formshadow p-3 sm:p-6 rounded-lg  mt-4 sm:mt-0">
-                <div className="flex items-center sm:justify-normal ">
-                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                    <MdOutlineHandyman /> Service type :
+
+              <div className="w-full lg:w-2/3 flex flex-col gap-3 p-4 border rounded-lg">
+                {/* service type */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 font-semibold sm:text-lg sm:w-1/3">
+                    <MdOutlineHandyman /> Service type:
                   </span>
-                  <p className="text-lg">{data.service}</p>
+                  <p>{data.service}</p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                    <FaAddressCard /> Address :
+                {/* description  */}
+                <div className="flex items-center  gap-2">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    <MdOutlineTextSnippet /> Description:
                   </span>
-                  <p className="text-lg">{data.location}</p>
+                  <p className="text-base">{data.description}</p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                    <TbMapPinCode />
-                    Pincode :
+                {/* address */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    {" "}
+                    <FaAddressCard /> Address:
                   </span>
-                  <p className="text-lg">{data.pincode}</p>
+                  <p>{data.location}</p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                    <FaLocationDot />
-                    City :
+                {/* pincode  */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    <TbMapPinCode /> Pincode:
                   </span>
-                  <p className="text-lg">{data.city}</p>
+                  <p className="text-base">{data.pincode}</p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                    <FaCalendarCheck />
-                    Visiting Date :
+                {/* city  */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    <FaLocationDot /> City:
                   </span>
-                  <p className="text-lg">
-                    {data.date
-                      ? `${moment(data.date).format("MMMM Do YYYY")} at ${
-                          data.time
-                        }`
-                      : "No date available"}
+                  <p className="text-base">{data.city}</p>
+                </div>
+                <hr />
+                {/* visiting date  */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    <FaCalendarCheck /> Visiting Date:
+                  </span>
+                  <p className="text-base">
+                    {data.date ? (
+                      <>
+                        {moment(data.date).format("MMMM Do YYYY")} at{" "}
+                        {data.time}
+                      </>
+                    ) : (
+                      "No date available"
+                    )}
                   </p>
                 </div>
                 <hr />
-                <div className="flex items-center sm:justify-normal">
-                  <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                    <SiStatuspage />
-                    Status :
+                {/* status  */}
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    <SiStatuspage /> Status:
                   </span>
-                  <div className="text-lg">
+                  <div>
                     {data.status === "Pending" ? (
                       <Tag icon={<ClockCircleOutlined />} color="warning">
-                        {data.status}
+                        Pending
                       </Tag>
                     ) : data.status === "Accepted" ? (
                       <Tag icon={<CheckCircleOutlined />} color="blue">
-                        {data.status}
+                        Accepted
                       </Tag>
                     ) : data.status === "Assigned" ? (
-                      <Tag icon={<CheckCircleOutlined />} color="success">
-                        {data.status}
+                      <Tag icon={<CheckCircleOutlined />} color="green">
+                        Assigned
                       </Tag>
                     ) : data.status === "Completed" ? (
                       <Tag icon={<CheckCircleOutlined />} color="purple">
-                        {data.status}
+                        Completed
                       </Tag>
-                    ) : data.status === "Deleted" ? (
+                    ) : (
                       <Tag icon={<CheckCircleOutlined />} color="red">
                         {data.status}
                       </Tag>
-                    ) : null}
+                    )}
                   </div>
                 </div>
                 <hr />
-                {data.assignedTo ? (
-                  <div className="flex items-center sm:justify-normal">
-                    <span className="flex items-center gap-2 font-bold text-lg sm:w-[30%]">
-                      <MdOutlineAssignmentTurnedIn />
-                      Assigned to :
+                {/* assignes to  */}
+                {data.assignedTo && (
+                  <div className="flex items-center gap-2">
+                    <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                      <MdOutlineAssignmentTurnedIn className="text-xl" />{" "}
+                      Assigned to:
                     </span>
-                    <div className="text-lg flex justify-between items-center gap-5">
-                      <Link
-                        href={`/worker/worker_profile/${data.assignedTo?._id}`}
-                      >
-                        <span> {data.assignedTo?.Name}</span>
-                      </Link>
-                      {data.status != "Completed" ? (
-                        <Button
-                          onClick={() => {
-                            SetunassignModal(true);
-                          }}
-                        >
-                          unassign
-                        </Button>
-                      ) : null}
-                    </div>
+
+                    <Link
+                      href={`/worker/worker_profile/${data.assignedTo?._id}`}
+                    >
+                      <span className=" text-blue-600 cursor-pointer">
+                        {data.assignedTo?.Name}
+                      </span>
+                    </Link>
                   </div>
-                ) : null}
+                )}
                 {data.status !== "Completed" && data.status !== "Deleted" ? (
                   <div className="flex gap-1 justify-around sm:flex-row flex-col">
                     {data.status === "Pending" ||
@@ -424,223 +435,220 @@ const RequestDetails = ({ initialData, intialimage }) => {
                     </Button>
                   </div>
                 ) : null}
-                {/* modal */}
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box sx={style} className="flex flex-col gap-2">
-                    <p className="font-bold text-center">
-                      Are you sure you want to delete this request ?
-                    </p>{" "}
-                    <Button
-                      className="bg-red-600 hover:bg-red-700"
-                      onClick={() => {
-                        DeleteRequest();
-                      }}
-                    >
-                      Delete
-                    </Button>
-                    <Button onClick={handleClose}>Cancel</Button>
-                  </Box>
-                </Modal>
-                {/* mark as completed modal  */}
-                <Modal
-                  open={completed}
-                  onClose={() => {
-                    SetCompleted(false);
-                  }}
-                >
-                  <Box sx={style} className="flex flex-col gap-2 sm:w-[400px]">
-                    <p className="text-center font-semibold">
-                      Rate you experience with the worker
-                    </p>
-                    <hr />
-                    <div className="flex flex-col gap-1">
-                      <label className="text-sm m-0 font-medium text-gray-700">
-                        Rating
-                      </label>{" "}
-                      <div className="flex">
-                        {" "}
-                        <Rating
-                          name="hover-feedback"
-                          value={stars}
-                          precision={1}
-                          getLabelText={getLabelText}
-                          onChange={(event, newValue) => {
-                            setValue(newValue);
-                          }}
-                          onChangeActive={(event, newHover) => {
-                            setHover(newHover);
-                          }}
-                          emptyIcon={
-                            <StarIcon
-                              style={{ opacity: 0.55 }}
-                              fontSize="inherit"
-                            />
-                          }
-                        />
-                        {stars !== null && (
-                          <Box sx={{ ml: 2 }}>
-                            {labels[hover !== -1 ? hover : stars]}
-                          </Box>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      {" "}
-                      <label
-                        htmlFor="description"
-                        className="text-sm m-0 font-medium text-gray-700"
-                      >
-                        Comment
-                      </label>
-                      <Textarea
-                        name="description"
-                        id="description"
-                        placeholder="Add comment"
-                        value={comment}
-                        onChange={handleCommentChange}
-                        className="w-full h-20 overflow-y-scroll scrollbar-hide"
-                        required
-                      />
-                      <p className="text-gray-400">
-                        {200 - comment.length} characters remaining
-                      </p>
-                    </div>
-
-                    <div>
-                      <label
-                        htmlFor="price"
-                        className="text-sm m-0 font-medium text-gray-700"
-                      >
-                        Price charged by the worker
-                      </label>
-                      <Input
-                        id="address"
-                        name="address"
-                        value={price}
-                        onChange={(e) => SetPrice(e.target.value)}
-                        placeholder="Price"
-                        type="number"
-                        className="w-full"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      <Button
-                        onClick={() => {
-                          HandleCompleteRequest(data.assignedTo._id);
-                          SetCompleted(false);
-                        }}
-                      >
-                        Submit
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          SetCompleted(false);
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </Box>
-                </Modal>
-                {/* request review modal  */}
-                <Modal open={reviewmodal}>
-                  <Box sx={style} className="flex flex-col gap-2 ">
-                    <p className="text-center font-semibold">
-                      Make the changes before requesting review
-                    </p>
-                    <hr></hr>
-                    <div></div> {/* placeholder div */}
-                    <Button
-                      onClick={() => {
-                        RequestReview(rid);
-                      }}
-                    >
-                      Request review
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        SetReviewModal(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                    <hr />
-                  </Box>
-                </Modal>
-                {/* unassign modal  */}
-                <Modal
-                  open={unassignModal}
-                  onClose={() => {
-                    SetunassignModal(false);
-                  }}
-                >
-                  <Box sx={style} className="flex flex-col gap-2">
-                    <p className="font-bold text-center">
-                      Are you sure you want to unassign this worker ?
-                    </p>{" "}
-                    <div>
-                      {" "}
-                      <Textarea
-                        name="description"
-                        placeholder="Type reason"
-                        value={description}
-                        onChange={handleChange}
-                        className="w-full h-20 overflow-y-scroll scrollbar-hide"
-                        required
-                      />
-                      <p className="text-gray-400">
-                        {100 - description.length} characters remaining
-                      </p>
-                    </div>
-                    <Button
-                      onClick={(e) => {
-                        UnassignWorker(e, data.assignedTo?._id);
-                      }}
-                    >
-                      Unassign
-                    </Button>
-                    <Button
-                      onClick={() => {
-                        SetunassignModal(false);
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </Box>
-                </Modal>
-
-                {/* {date expires}  */}
-                <Modal
-                  open={dateExpiredModal}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                >
-                  <Box
-                    sx={style}
-                    className="flex flex-col gap-2 sm:w-[400px] w-[300px] "
-                  >
-                    <p className="text-red-600 text-center">
-                      The visiting date for this request is expired please
-                      reschedule this request in the reschedule tab !
-                    </p>{" "}
-                    <Button
-                      onClick={() => {
-                        SetdateExpiredModal(false);
-                      }}
-                    >
-                      Ignore
-                    </Button>
-                  </Box>
-                </Modal>
               </div>
             </div>
           )}
+          {/* modal */}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={style} className="flex flex-col gap-2">
+              <p className="font-bold text-center">
+                Are you sure you want to delete this request ?
+              </p>{" "}
+              <Button
+                className="bg-red-600 hover:bg-red-700"
+                onClick={() => {
+                  DeleteRequest();
+                }}
+              >
+                Delete
+              </Button>
+              <Button onClick={handleClose}>Cancel</Button>
+            </Box>
+          </Modal>
+          {/* mark as completed modal  */}
+          <Modal
+            open={completed}
+            onClose={() => {
+              SetCompleted(false);
+            }}
+          >
+            <Box sx={style} className="flex flex-col gap-2 sm:w-[400px]">
+              <p className="text-center font-semibold">
+                Rate you experience with the worker
+              </p>
+              <hr />
+              <div className="flex flex-col gap-1">
+                <label className="text-sm m-0 font-medium text-gray-700">
+                  Rating
+                </label>{" "}
+                <div className="flex">
+                  {" "}
+                  <Rating
+                    name="hover-feedback"
+                    value={stars}
+                    precision={1}
+                    getLabelText={getLabelText}
+                    onChange={(event, newValue) => {
+                      setValue(newValue);
+                    }}
+                    onChangeActive={(event, newHover) => {
+                      setHover(newHover);
+                    }}
+                    emptyIcon={
+                      <StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />
+                    }
+                  />
+                  {stars !== null && (
+                    <Box sx={{ ml: 2 }}>
+                      {labels[hover !== -1 ? hover : stars]}
+                    </Box>
+                  )}
+                </div>
+              </div>
+
+              <div>
+                {" "}
+                <label
+                  htmlFor="description"
+                  className="text-sm m-0 font-medium text-gray-700"
+                >
+                  Comment
+                </label>
+                <Textarea
+                  name="description"
+                  id="description"
+                  placeholder="Add comment"
+                  value={comment}
+                  onChange={handleCommentChange}
+                  className="w-full h-20 overflow-y-scroll scrollbar-hide"
+                  required
+                />
+                <p className="text-gray-400">
+                  {200 - comment.length} characters remaining
+                </p>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="price"
+                  className="text-sm m-0 font-medium text-gray-700"
+                >
+                  Price charged by the worker
+                </label>
+                <Input
+                  id="address"
+                  name="address"
+                  value={price}
+                  onChange={(e) => SetPrice(e.target.value)}
+                  placeholder="Price"
+                  type="number"
+                  className="w-full"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button
+                  onClick={() => {
+                    HandleCompleteRequest(data.assignedTo._id);
+                    SetCompleted(false);
+                  }}
+                >
+                  Submit
+                </Button>
+                <Button
+                  onClick={() => {
+                    SetCompleted(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </Box>
+          </Modal>
+          {/* request review modal  */}
+          <Modal open={reviewmodal}>
+            <Box sx={style} className="flex flex-col gap-2 ">
+              <p className="text-center font-semibold">
+                Make the changes before requesting review
+              </p>
+              <hr></hr>
+              <div></div> {/* placeholder div */}
+              <Button
+                onClick={() => {
+                  RequestReview(rid);
+                }}
+              >
+                Request review
+              </Button>
+              <Button
+                onClick={() => {
+                  SetReviewModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <hr />
+            </Box>
+          </Modal>
+          {/* unassign modal  */}
+          <Modal
+            open={unassignModal}
+            onClose={() => {
+              SetunassignModal(false);
+            }}
+          >
+            <Box sx={style} className="flex flex-col gap-2">
+              <p className="font-bold text-center">
+                Are you sure you want to unassign this worker ?
+              </p>{" "}
+              <div>
+                {" "}
+                <Textarea
+                  name="description"
+                  placeholder="Type reason"
+                  value={description}
+                  onChange={handleChange}
+                  className="w-full h-20 overflow-y-scroll scrollbar-hide"
+                  required
+                />
+                <p className="text-gray-400">
+                  {100 - description.length} characters remaining
+                </p>
+              </div>
+              <Button
+                onClick={(e) => {
+                  UnassignWorker(e, data.assignedTo?._id);
+                }}
+              >
+                Unassign
+              </Button>
+              <Button
+                onClick={() => {
+                  SetunassignModal(false);
+                }}
+              >
+                Cancel
+              </Button>
+            </Box>
+          </Modal>
+
+          {/* {date expires}  */}
+          <Modal
+            open={dateExpiredModal}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box
+              sx={style}
+              className="flex flex-col gap-2 sm:w-[400px] w-[300px] "
+            >
+              <p className="text-red-600 text-center">
+                The visiting date for this request is expired please reschedule
+                this request in the reschedule tab !
+              </p>{" "}
+              <Button
+                onClick={() => {
+                  SetdateExpiredModal(false);
+                }}
+              >
+                Ignore
+              </Button>
+            </Box>
+          </Modal>
         </div>
       )}
     </div>

@@ -1,7 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
-import loginimage from "../../assests/login.svg";
 import TextField from "@mui/material/TextField";
 import { Button } from "@/components/ui/button";
 import IconButton from "@mui/material/IconButton";
@@ -189,13 +187,10 @@ const LoginForm = () => {
       <div className="relative flex justify-around sm:mt-20 mt-5">
         <Toaster position="bottom-center" reverseOrder={false} />
 
-        <Image
-          src={loginimage}
-          alt="welcome image"
-          className="lg:w-[500px] lg:h-[400px] sm:w-[300px] sm:h-[300px] hidden md:block"
-        />
-        <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%] formshadow py-10 px-2 rounded-md h-fit ">
-          {/* <p className="font-bold text-2xl ">LOGIN</p> */}
+        <div className="flex flex-col items-center md:w-[40%] sm:w-3/4 w-[90%] formshadow py-10 px-2 rounded-md h-fit gap-3">
+          <p className="font-bold text-3xl tracking-wide text-gray-800">
+            LOGIN
+          </p>
           <form
             className="w-full flex justify-center flex-col items-center gap-y-10"
             onSubmit={HandleLogin}
@@ -250,7 +245,7 @@ const LoginForm = () => {
             </div>
             <div className="w-full flex flex-col items-center gap-3">
               {" "}
-              <Button type="submit" className="sm:w-1/2 w-3/4">
+              <Button type="submit" className="sm:w-1/2 w-3/4 text-xl tracking-wider">
                 Login
               </Button>
               <p>

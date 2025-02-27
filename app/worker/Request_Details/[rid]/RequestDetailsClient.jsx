@@ -1,24 +1,31 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import Link from "next/link";
+import moment from "moment";
+import { toast, Toaster } from "react-hot-toast";
+
+// UI Components
+import { Button } from "../../../../components/ui/button";
+import { Typography, Alert } from "@mui/material";
 import { Tag, Image } from "antd";
+import { PulseLoader } from "react-spinners";
+
+// Icons
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-import { MdOutlineHandyman } from "react-icons/md";
+import { MdOutlineHandyman, MdOutlineTextSnippet } from "react-icons/md";
 import { FaLocationDot, FaCalendarCheck, FaAddressCard } from "react-icons/fa6";
 import { SiStatuspage } from "react-icons/si";
-import moment from "moment";
-import { Button } from "../../../../components/ui/button";
 import { TbMapPinCode, TbMessageReport } from "react-icons/tb";
-import { PulseLoader } from "react-spinners";
-import { toast, Toaster } from "react-hot-toast";
+
+// Modals & Components
 import ModalComponent from "../../../_components/Modal";
-import ReportModal from "./../_Modals/ReportModal";
+import ReportModal from "../_Modals/ReportModal";
 import AcceptRequest from "../_Modals/AcceptRequest";
-import Link from "next/link";
-import Alert from "@mui/material/Alert";
-import { Typography } from "@mui/material";
-import Empty from "../../../assests/Empty.svg";
 import { useAuth } from "@/app/_context/UserAuthContent";
+
+// Assets
+import Empty from "../../../assests/Empty.svg";
 
 const RequestDetailsClient = ({
   IntialRequestData,
@@ -73,7 +80,6 @@ const RequestDetailsClient = ({
         throw new Error(data.message || "Something went wrong");
       } else {
         SetBan(data.worker.Banned.ban);
-        // console.log("data", data.worker.Banned.ban);
       }
       return data;
     } catch (error) {
@@ -81,6 +87,7 @@ const RequestDetailsClient = ({
       return { success: false, message: error.message };
     }
   };
+
   return (
     <div className="flex flex-col items-center justify-center mb-10 sm:mt-0 mt-20">
       <Toaster position="bottom-center" reverseOrder={false} />
@@ -99,19 +106,15 @@ const RequestDetailsClient = ({
           </span>
         </div>
       ) : (
-        <div className="mt-2 ">
+        <>
           {data ? (
-            <div className="flex flex-col lg:flex-row gap-6 bg-white shadow-lg rounded-lg p-2">
+            <div className="flex flex-col lg:flex-row gap-6 bg-white shadow-lg rounded-lg lg:p-6 lg:w-3/4 w-full p-2">
               {/* Image Section */}
-              <div className="flex flex-col items-center justify-between lg:w-2/5">
+              <div className="flex flex-col items-center lg:w-2/5 ">
                 <Image
                   src={requestimage}
-                  className="object-cover rounded-md lg:!h-[400px] lg:!w-full !h-[300px]"
+                  className="object-cover rounded-md lg:!h-[400px] lg:!w-full !h-[300px] justify-center"
                 />
-
-                <p className="font-bold text-xl text-center mt-4">
-                  {data.description}
-                </p>
               </div>
 
               {/* Details Section */}
@@ -129,16 +132,24 @@ const RequestDetailsClient = ({
 
                 {/* Service Type */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <MdOutlineHandyman /> Service type:
                   </span>
                   <p className="text-base">{data.service}</p>
                 </div>
                 <hr />
+                {/* description  */}
+                <div className="flex items-center">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
+                    <MdOutlineTextSnippet /> Description:
+                  </span>
+                  <p className=" text-base">{data.description}</p>
+                </div>
+                <hr />
 
                 {/* Address */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <FaAddressCard /> Address:
                   </span>
                   <p className="text-base">
@@ -161,7 +172,7 @@ const RequestDetailsClient = ({
 
                 {/* Pincode */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <TbMapPinCode /> Pincode:
                   </span>
                   <p className="text-base">{data.pincode}</p>
@@ -170,7 +181,7 @@ const RequestDetailsClient = ({
 
                 {/* City */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <FaLocationDot /> City:
                   </span>
                   <p className="text-base">{data.city}</p>
@@ -179,7 +190,7 @@ const RequestDetailsClient = ({
 
                 {/* Visiting Date */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <FaCalendarCheck /> Visiting Date:
                   </span>
                   <p className="text-base">
@@ -197,7 +208,7 @@ const RequestDetailsClient = ({
 
                 {/* Status */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <SiStatuspage /> Status:
                   </span>
                   <div>
@@ -228,7 +239,7 @@ const RequestDetailsClient = ({
 
                 {/* Created By */}
                 <div className="flex items-center">
-                  <span className="flex items-center gap-2 font-semibold text-lg w-1/3">
+                  <span className="flex items-center gap-2 font-semibold text-lg sm:w-1/3">
                     <FaLocationDot /> Created by:
                   </span>
                   <p className="text-base">
@@ -250,7 +261,7 @@ const RequestDetailsClient = ({
                       className="w-full sm:w-1/2"
                       disabled={true}
                     >
-                      Request Accepted
+                      Already Accepted
                     </Button>
                   ) : (
                     <Button
@@ -307,7 +318,7 @@ const RequestDetailsClient = ({
             ModalType={AcceptRequest}
             id={rid}
           />
-        </div>
+        </>
       )}
     </div>
   );

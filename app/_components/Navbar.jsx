@@ -265,6 +265,24 @@ const Navbar = () => {
                     </ListItemButton>
                   </ListItem>
 
+                  {/* hire  */}
+                  <ListItem disablePadding>
+                    <ListItemButton onClick={handleDrawerClose}>
+                      <Link 
+                    href="/user/hire"
+                    className={`${
+                      pathname === "/user/hire" ? "border-b-2 " : ""
+                    }`}
+                  >
+                   <ListItemIcon></ListItemIcon>
+                        <ListItemText primary="Create Request" />
+                  </Link>
+                       
+                     
+                    </ListItemButton>
+                  </ListItem>
+                 
+
                   {/* dashboard  */}
                   <div className="flex justify-center ">
                     <Button

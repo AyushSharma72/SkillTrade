@@ -76,7 +76,7 @@ const Hire = () => {
     const initializeData = async () => {
       setLoading(true);
 
-      // Get stored coordinates or fetch new ones
+      // Get stored coordinates
       let coordinates = JSON.parse(localStorage.getItem("userCoordinates"));
       let auth = JSON.parse(localStorage.getItem("auth"));
       let pincode = auth?.user?.Pincode;
@@ -184,13 +184,13 @@ const Hire = () => {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <p className="text-center font-bold text-4xl text-gray-800">
+      <p className="text-center font-bold text-4xl text-gray-800 mt-12 sm:mt-0">
         Hire Service Providers Directly
       </p>
       <Toaster></Toaster>
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between lg:flex-row flex-col mt-6 ">
         {/* Filters */}
-        <div className="w-1/4 bg-white shadow-md rounded-xl p-4 h-[400px]">
+        <div className="lg:w-1/4 bg-white  rounded-xl p-4 lg:h-[400px]">
           <p className="font-semibold text-lg text-center">Filters</p>
           <div className="flex flex-col gap-2">
             <p className="font-semibold text-gray-700">Service Type</p>
@@ -235,8 +235,8 @@ const Hire = () => {
         </div>
 
         {/* Service Providers */}
-        <div className="w-2/3 flex flex-col items-center">
-          <p className="text-lg text-gray-600 mb-4">
+        <div className="lg:w-2/3 flex flex-col items-center">
+          <p className="text-lg text-gray-600 mb-4  text-center">
             Service providers according to your preferences
           </p>
 
@@ -303,7 +303,7 @@ const Hire = () => {
                   <hr className="border-gray-300" />
 
                   {/* Other Details */}
-                  <div className="flex justify-between items-center">
+                  <div className="flex justify-between sm:items-center sm:flex-row flex-col gap-3">
                     <span className="text-gray-700">
                       <Tag className="text-sm">Completed Requests:</Tag>{" "}
                       <span className="font-semibold">
@@ -351,7 +351,7 @@ const Hire = () => {
                         className="w-full h-40 overflow-y-scroll scrollbar-hide"
                         required
                       />
-                      {300-description.length} characters remaining
+                      {300 - description.length} characters remaining
                       {/* Date Input */}
                       <label className="block mt-4 text-sm font-medium text-gray-700">
                         Select Date:
