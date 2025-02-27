@@ -1,119 +1,101 @@
 "use client";
 import React, { useState } from "react";
-import Input from "@mui/joy/Input";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "../../../_context/UserAuthContent";
 import { UpdatePassword } from "./fetchfunction/UpdatePassword";
 import { Toaster, toast } from "react-hot-toast";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
+import { Loader2 } from "lucide-react";
 import Link from "next/link";
 
 const UserPassword = () => {
   const [auth] = useAuth();
-  const [password, Setpassword] = useState("");
-  const [newpassword, Setnewpassword] = useState("");
-  const [errors, setErrors] = useState({ password: false, newpassword: false });
-  const [open, setOpen] = React.useState(false);
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  async function updateuserdata() {
-    // Validate input fields
-
-    const validationErrors = {
-      password: !password.trim(),
-      newpassword: !newpassword.trim(),
-    };
-    setErrors(validationErrors);
-
-    if (validationErrors.password || validationErrors.newpassword) {
+  async function handleUpdate() {
+    if (!password.trim() || !newPassword.trim()) {
       toast.error("Please fill in all required fields");
       return;
     }
 
-    const passwords = {
-      oldpassword: password,
-      newpass: newpassword,
-    };
-
     if (auth?.user?._id) {
-      setOpen(true);
+      setLoading(true);
       try {
-        const response = await UpdatePassword(auth?.user?._id, passwords);
+        const response = await UpdatePassword(auth?.user?._id, {
+          oldpassword: password,
+          newpass: newPassword,
+        });
 
         if (response.success) {
-          setOpen(false);
           toast.success(response.message);
-          Setpassword("");
-          Setnewpassword("");
+          setPassword("");
+          setNewPassword("");
         } else {
-          setOpen(false);
           toast.error(response.message);
         }
       } catch (error) {
-        setOpen(false);
-        // console.log(error);
-        toast.error("An error occurred while updating user info");
+        toast.error("An error occurred while updating the password");
+      } finally {
+        setLoading(false);
       }
     }
   }
 
   return (
-    <div className="w-full mb-2">
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
-      <div className="flex flex-col justify-center gap-4 border-2 border-gray-300 m-auto w-[85%] lg:w-3/4 xl:w-1/2 rounded-lg p-5">
-        <p className="text-3xl text-center font-medium">Reset Password</p>
-        <hr />
-
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-col gap-2 w-[90%] sm:w-1/2 m-auto">
-            <label className="font-medium">Old Password</label>
+    <div className="flex items-center justify-center p-4">
+      <Toaster position="top-center" />
+      <Card className="w-full max-w-md shadow-lg p-6 bg-white rounded-2xl border ">
+        <CardHeader>
+          <CardTitle className="text-center text-2xl font-semibold">
+            Reset Password
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              Old Password
+            </label>
             <Input
-              name="name"
+              type="password"
               value={password}
-              onChange={(e) => {
-                Setpassword(e.target.value);
-                setErrors((prev) => ({ ...prev, password: false }));
-              }}
-              size="md"
-              error={errors.password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your old password"
             />
           </div>
-          <div className="flex flex-col gap-2 sm:w-1/2 m-auto  w-[90%]">
-            <label className="font-medium">New password</label>
+          <div>
+            <label className="block text-sm font-medium mb-1">
+              New Password
+            </label>
             <Input
-              name="mobile"
-              value={newpassword}
-              onChange={(e) => {
-                Setnewpassword(e.target.value);
-                setErrors((prev) => ({ ...prev, newpassword: false }));
-              }}
-              size="md"
-              error={errors.newpassword}
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
               placeholder="Enter your new password"
             />
           </div>
-
-          <div className="flex flex-col gap-2 w-1/4 m-auto mt-4">
-            <Button onClick={updateuserdata}>Reset</Button>
+          <Button
+            className="w-full mt-2"
+            onClick={handleUpdate}
+            disabled={loading}
+          >
+            {loading ? (
+              <Loader2 className="animate-spin" size={18} />
+            ) : (
+              "Reset Password"
+            )}
+          </Button>
+          <div className="text-center mt-2">
+            <Link href="/">
+              <Button variant="outline" className="w-full">
+                Home
+              </Button>
+            </Link>
           </div>
-        </div>
-      </div>
-
-      <div className="text-center mt-4 mb-2">
-        <Link href="/" className="w-[100px]">
-          <Button className="w-[100px]">Home</Button>
-        </Link>
-      </div>
-      <Backdrop
-        sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
-        open={open}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        </CardContent>
+      </Card>
     </div>
   );
 };

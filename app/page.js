@@ -1,6 +1,7 @@
 import { Button } from "../components/ui/button";
 import Link from "next/link";
 import dynamic from "next/dynamic";
+import Footer from "./_components/Footer";
 const LottieAnimation = dynamic(
   () => import("./_components/homepageanimation"),
   {
@@ -82,6 +83,10 @@ export default function Home() {
           <div className="text-center md:text-left md:w-[55%] xl:w-1/2 space-y-5 p-2"></div>
         </div>
       </div>
+
+
+
+      <Footer></Footer>
     </div>
   );
 }

@@ -136,6 +136,14 @@ const Navbar = () => {
               >
                 All Request
               </Link>
+              <Link
+                href="/worker/hire"
+                className={`${
+                  pathname === "/worker/hire" ? "border-b-2 " : ""
+                }`}
+              >
+                Hiring Requests
+              </Link>
               <WorkerMenu />
             </>
           ) : auth?.user?.role == 2 ? (

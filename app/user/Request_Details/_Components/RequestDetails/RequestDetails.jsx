@@ -30,9 +30,9 @@ import Alert from "@mui/material/Alert";
 import Backdrop from "@mui/material/Backdrop";
 import { UnAssign } from "../../_FetchFunction/UnassignWorker";
 
-const RequestDetails = ({ initialData, loadingstate, intialimage }) => {
+const RequestDetails = ({ initialData, intialimage }) => {
   const [data, setData] = useState(initialData);
-  const [loading, setLoading] = useState(loadingstate);
+  const [loading, setLoading] = useState(false);
   const { rid } = useParams();
   const [image, setImage] = useState(null);
   const [open, setOpen] = React.useState(false);

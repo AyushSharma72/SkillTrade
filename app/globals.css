@@ -87,3 +87,14 @@ body::-webkit-scrollbar {
     width: 280px !important;
   }
 }
+
+@layer base {}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

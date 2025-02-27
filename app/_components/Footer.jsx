@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 const Footer = () => {
   return (
@@ -17,17 +18,17 @@ const Footer = () => {
             <h3 className="text-lg font-semibold md:text-center">Quick Links</h3>
             <div className="flex gap-3 md:justify-center">
               {" "}
-              <a href="#" className="text-gray-400 hover:text-white">
+              <Link href="/" className="text-gray-400 hover:text-white">
                 Home
-              </a>
+              </Link>
               |
-              <a href="#" className="text-gray-400 hover:text-white">
+              <Link href="/" className="text-gray-400 hover:text-white">
                 About
-              </a>
+              </Link>
               |
-              <a href="#" className="text-gray-400 hover:text-white">
+              <Link href="/Contact" className="text-gray-400 hover:text-white">
                 Contact
-              </a>
+              </Link>
             </div>
           </div>
 

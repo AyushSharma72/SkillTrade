@@ -30,7 +30,6 @@ import { toast, Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
-
 const Hire = () => {
   const [workers, setWorkers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -46,6 +45,7 @@ const Hire = () => {
   const [backdrop, setBackDrop] = useState(false);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+
   // Function to get user location
   const getUserLocation = () => {
     return new Promise((resolve, reject) => {
@@ -170,9 +170,17 @@ const Hire = () => {
       toast.error("error try again later");
     } finally {
       SetDescription("");
+      setDate(null);
+      setTime(null);
       setBackDrop(false);
     }
   }
+
+  const handleDescriptionChange = (event) => {
+    if (event.target.value.length <= 300) {
+      SetDescription(event.target.value);
+    }
+  };
 
   return (
     <div className="max-w-7xl mx-auto p-6">
@@ -337,11 +345,13 @@ const Hire = () => {
                         name="description"
                         placeholder="Give a description of your request"
                         value={description}
-                        onChange={(e) => SetDescription(e.target.value)}
+                        onChange={(e) => {
+                          handleDescriptionChange(e);
+                        }}
                         className="w-full h-40 overflow-y-scroll scrollbar-hide"
                         required
                       />
-
+                      {300-description.length} characters remaining
                       {/* Date Input */}
                       <label className="block mt-4 text-sm font-medium text-gray-700">
                         Select Date:
@@ -353,7 +363,6 @@ const Hire = () => {
                         className="w-full p-2 border rounded-md mt-1"
                         required
                       />
-
                       {/* Time Input */}
                       <label className="block mt-4 text-sm font-medium text-gray-700">
                         Select Time:

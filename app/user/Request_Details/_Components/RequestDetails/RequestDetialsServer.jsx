@@ -2,8 +2,13 @@ import RequestDetails from "./RequestDetails";
 
 export default async function RequestDetailsServer({ params }) {
   const { rid } = params;
+
   if (!rid) {
-    return <p>Error: Request ID is missing.</p>;
+    return (
+      <p className="text-red-600 text-center text-2xl">
+        Error: Request ID is missing.
+      </p>
+    );
   }
 
   try {
@@ -11,21 +16,26 @@ export default async function RequestDetailsServer({ params }) {
       `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetSingleUserRequest/${rid}`,
       { next: { revalidate: 100 } }
     );
-    const info = await response.json();
-    if (info.success) {
-      return (
-        <RequestDetails
-          initialData={info.requestdetails}
-          loadingstate={false}
-          intialimage={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`}
-        />
-      );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
-    throw new Error("Failed to fetch request details.");
-  } catch (error) {
-    console.error("Error fetching data:", error);
+    const info = await response.json();
+
+    if (!info.success) {
+      throw new Error(info.message || "Failed to fetch request details.");
+    }
+
     return (
-      <p className="text-red-600  text-center text-2xl">
+      <RequestDetails
+        initialData={info.requestdetails}
+        loadingstate={false}
+        intialimage={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/GetRequestPhotoController/${rid}`}
+      />
+    );
+  } catch (error) {
+    return (
+      <p className="text-red-600 text-center text-2xl">
         Failed to load request details.
       </p>
     );

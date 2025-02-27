@@ -147,13 +147,18 @@ const WorkerSchema = mongoose.Schema(
         description: {
           type: String,
         },
-        visitingDate:{
-          type:Date
+        visitingDate: {
+          type: Date,
         },
-        time:{
-           type: String,
+        time: {
+          type: String,
         },
-        date: {
+        status: {
+          type: String,
+          default: "Pending",
+          enum: ["Pending", "Accepted", "Rejected", "Completed"],
+        },
+        Creationdate: {
           type: Date,
         },
       },

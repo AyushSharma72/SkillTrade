@@ -708,7 +708,7 @@ async function SendHireRequest(req, resp) {
       description: description,
       visitingDate: date,
       time: time,
-      date: currentdate,
+      Creationdate: currentdate,
     });
 
     await worker.save();

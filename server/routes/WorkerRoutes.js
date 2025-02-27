@@ -14,6 +14,7 @@ const {
   UnassignRequest,
   RecommandedForYou,
   CheckBan,
+  GetHiringRequest,
 } = require("../controllers/WorkerController");
 
 const router = express.Router();
@@ -43,5 +44,7 @@ router.post("/UnassignRequest/:rid/:wid", UnassignRequest);
 router.get("/RecommandedForYou/:wid", RecommandedForYou);
 
 router.get("/CheckBan/:wid", CheckBan);
+
+router.get("/HiringRequest/:wid",GetHiringRequest)
 
 module.exports = router;

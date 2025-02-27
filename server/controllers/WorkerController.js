@@ -659,6 +659,43 @@ async function CheckBan(req, resp) {
   }
 }
 
+async function GetHiringRequest(req, resp) {
+  try {
+    const { wid } = req.params;
+    const { page = 1, limit = 5 } = req.query;
+
+    const worker = await WorkerModal.findById(wid).select("HireRequests");
+
+    if (!worker) {
+      return resp.status(404).send({
+        success: false,
+        message: "Worker not found",
+      });
+    }
+
+    const totalRequests = worker.HireRequests.length;
+    const paginatedRequests = worker.HireRequests.slice(
+      (page - 1) * limit,
+      page * limit
+    );
+
+    return resp.status(200).send({
+      success: true,
+      totalRequests,
+      totalPages: Math.ceil(totalRequests / limit),
+      currentPage: Number(page),
+      hiringRequests: paginatedRequests,
+    });
+
+    
+  } catch (error) {
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
 module.exports = {
   RegisterWorker,
   CheckCity,
@@ -673,4 +710,5 @@ module.exports = {
   UnassignRequest,
   RecommandedForYou,
   CheckBan,
+  GetHiringRequest,
 };
