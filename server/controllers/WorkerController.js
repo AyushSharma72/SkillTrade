@@ -664,7 +664,9 @@ async function GetHiringRequest(req, resp) {
     const { wid } = req.params;
     const { page = 1, limit = 5 } = req.query;
 
-    const worker = await WorkerModal.findById(wid).select("HireRequests");
+    const worker = await WorkerModal.findById(wid)
+      .select("HireRequests")
+      .populate("HireRequests.user", "Name  MobileNo");
 
     if (!worker) {
       return resp.status(404).send({
@@ -681,14 +683,11 @@ async function GetHiringRequest(req, resp) {
 
     return resp.status(200).send({
       success: true,
-      totalRequests,
       totalPages: Math.ceil(totalRequests / limit),
-      currentPage: Number(page),
       hiringRequests: paginatedRequests,
     });
-
-    
   } catch (error) {
+    console.log(error);
     return resp.status(500).send({
       success: false,
       message: "Internal server error",

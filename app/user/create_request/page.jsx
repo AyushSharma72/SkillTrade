@@ -20,6 +20,8 @@ import Image from "next/image";
 import Link from "next/link";
 import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
 import { Toaster, toast } from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
+import Avatar from "@mui/material/Avatar";
 
 const CreateRequest = () => {
   //mui
@@ -41,6 +43,11 @@ const CreateRequest = () => {
   const [pincode, Setpincode] = useState(null);
   const [city, Setcity] = useState("");
 
+  const searchParams = useSearchParams();
+  const workerId = searchParams.get("id");
+  const workerName = searchParams.get("name");
+  const expertise = searchParams.get("expertise");
+  const defaultService = services.find((s) => s.value === expertise) || null;
   const minDate = new Date();
   const [auth, setAuth] = useAuth();
 
@@ -106,12 +113,12 @@ const CreateRequest = () => {
           const position = await new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
               enableHighAccuracy: true,
-              timeout: 10000, 
+              timeout: 10000,
             });
           });
 
           const { latitude, longitude } = position.coords;
-          setCoordinates({ latitude, longitude }); 
+          setCoordinates({ latitude, longitude });
 
           const address = await getHumanReadableAddress(latitude, longitude);
           setCustomLocation(address);
@@ -133,7 +140,7 @@ const CreateRequest = () => {
       toast.error("All fields are required");
       return;
     }
-    if ((!location && !customLocation) || (!service && !customService)) {
+    if ((!location && !customLocation) || (!service && !customService && !defaultService)) {
       toast.error("All fields are required");
       return;
     }
@@ -142,7 +149,11 @@ const CreateRequest = () => {
     formData.append("user", auth.user._id);
     formData.append(
       "service",
-      isCustomService ? customService : service?.value
+      isCustomService
+        ? customService
+        : defaultService
+        ? defaultService.value
+        : service?.value
     );
     formData.append("description", description);
     formData.append("image", image?.file ? image.file : null);
@@ -157,6 +168,7 @@ const CreateRequest = () => {
     formData.append("pincode", pincode);
     formData.append("city", city);
     formData.append("coordinates", JSON.stringify(coordinates));
+    formData.append("workerid", workerId);
     try {
       const request = await fetch(
         `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/request/CreateRequest`,
@@ -184,12 +196,19 @@ const CreateRequest = () => {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
-      <p className="w-full text-center font-bold text-3xl mt-20 sm:mt-2">
+      <Toaster position="bottom-center" reverseOrder={false} />
+      <p className="w-full text-center font-bold text-3xl mt-20 sm:mt-4 flex justify-center ">
         Create Request
+        {workerId && workerName && (
+          <span className="flex ml-2 gap-2 items-center">
+            To Hire{" "}
+            <Avatar
+              src={`${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerImage/${workerId}`}
+              sx={{ width: 35, height: 35 }}
+            />{" "}
+            {workerName}
+          </span>
+        )}
       </p>
       <Stepper
         activeStep={activeStep}
@@ -206,7 +225,7 @@ const CreateRequest = () => {
           <p className="font-bold text-2xl">Request submitted</p>
           <Image src={success} className="w-[300px]"></Image>
           <Link href="/user/view_request">
-            < CustomButton>View request</ CustomButton>
+            <CustomButton>View request</CustomButton>
           </Link>
         </div>
       ) : (
@@ -220,8 +239,8 @@ const CreateRequest = () => {
                 <Select
                   required
                   options={services}
-                  isDisabled={isCustomService}
-                  value={service}
+                  isDisabled={defaultService ? true : isCustomService}
+                  value={defaultService || service}
                   onChange={setService}
                   className="w-full"
                   placeholder="Select service"

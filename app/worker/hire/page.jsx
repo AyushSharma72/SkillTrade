@@ -1,36 +1,42 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useAuth } from "@/app/_context/UserAuthContent";
 import {
   TableContainer,
   Table,
   TableHead,
-  TableRow,
   TableBody,
-  Button,
   Pagination,
 } from "@mui/material";
 import { Tag } from "antd";
+import { useAuth } from "@/app/_context/UserAuthContent";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import moment from "moment";
-
+import toast from "react-hot-toast";
+import Empty from "../../assests/Empty.svg";
+import { Button } from "../../../components/ui/button";
+import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
+import Image from "next/image";
+import { IoCall } from "react-icons/io5";
 
 const HiringRequest = () => {
   const [data, setData] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [auth, useAuth] = useAuth();
+  const [auth, setAuth] = useAuth();
 
   useEffect(() => {
     const fetchHiringRequests = async () => {
+      if (!auth?.user?._id) return;
       setLoading(true);
+
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC__BASE_URL}/api/HiringRequest/${auth?.user?._id}?page=${pageNumber}&limit=5`
+          `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/HiringRequest/${auth.user._id}?page=${pageNumber}&limit=5`
         );
         const result = await response.json();
+
         if (response.ok) {
           setData(result.hiringRequests);
           setTotalPages(result.totalPages);
@@ -43,8 +49,15 @@ const HiringRequest = () => {
       setLoading(false);
     };
 
-    fetchHiringRequests();
-  }, [pageNumber]);
+    if (auth) {
+      fetchHiringRequests();
+    } else {
+      const storedAuth = JSON.parse(localStorage.getItem("auth"));
+      if (storedAuth) {
+        setAuth(storedAuth);
+      }
+    }
+  }, [auth, pageNumber]);
 
   const handlePageChange = (event, value) => {
     setPageNumber(value);
@@ -53,30 +66,43 @@ const HiringRequest = () => {
   return (
     <div>
       {loading ? (
-        <p>Loading...</p>
-      ) : (
-        <>
+        <p className="text-2xl text-center mt-10">Loading...</p>
+      ) : data.length > 0 ? (
+        <div className="flex flex-col justify-center items-center  mt-20 sm:mt-0">
+          <p className="text-3xl mt-5 leading-6">Hiring requests</p>
           <TableContainer className="cursor-pointer sm:mt-5 mt-10 m-auto justify-center flex flex-col pb-3">
             <Table aria-label="customized table">
               <TableHead>
-                <TableRow>
-                  <TableCell align="center">Description</TableCell>
-                  <TableCell align="center">Visiting Date</TableCell>
-                  <TableCell align="center">Time</TableCell>
-                  <TableCell align="center">Status</TableCell>
-                  <TableCell align="center">Created On</TableCell>
-                  <TableCell align="center">Action</TableCell>
-                </TableRow>
+                <StyledTableRow>
+                  <StyledTableCell align="center">Description</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Visiting Date
+                  </StyledTableCell>
+                  <StyledTableCell align="center">Time</StyledTableCell>
+                  <StyledTableCell align="center">Status</StyledTableCell>
+                  <StyledTableCell align="center">Address</StyledTableCell>
+                  <StyledTableCell align="center">Created By</StyledTableCell>
+                  <StyledTableCell align="center">Action</StyledTableCell>
+                </StyledTableRow>
               </TableHead>
               <TableBody>
                 {data.map((item, index) => (
-                  <TableRow key={item._id || index}>
-                    <TableCell align="center">{item.description}</TableCell>
-                    <TableCell align="center">
+                  <StyledTableRow key={item._id || index}>
+                    <StyledTableCell align="center">
+                      {item.description}
+                    </StyledTableCell>
+                    {/* visiting date  */}
+                    <StyledTableCell align="center">
                       {moment(item.visitingDate).format("MMMM Do YYYY")}
-                    </TableCell>
-                    <TableCell align="center">{item.time}</TableCell>
-                    <TableCell align="center">
+                    </StyledTableCell>
+
+                    {/* time  */}
+                    <StyledTableCell align="center">
+                      {item.time}
+                    </StyledTableCell>
+
+                    {/* status  */}
+                    <StyledTableCell align="center">
                       {item.status === "Pending" ? (
                         <Tag icon={<ClockCircleOutlined />} color="warning">
                           {item.status}
@@ -94,20 +120,45 @@ const HiringRequest = () => {
                           {item.status}
                         </Tag>
                       ) : null}
-                    </TableCell>
-                    <TableCell align="center">
+                    </StyledTableCell>
+                    {/* address */}
+                    <StyledTableCell align="center">
+                      <a
+                        href={
+                          item.coordinates?.coordinates?.length === 2
+                            ? `https://www.google.com/maps?q=${item.coordinates.coordinates[1]},${item.coordinates.coordinates[0]}`
+                            : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                                item.address
+                              )}`
+                        }
+                        target="_blank"
+                        className="text-blue-500"
+                      >
+                        {item.address}
+                      </a>
+                    </StyledTableCell>
+
+                    {/* creation date  */}
+                    <StyledTableCell align="center">
+                      {item?.user?.Name} on{" "}
                       {moment(item.Creationdate).format("MMMM Do YYYY")}
-                    </TableCell>
-                    <TableCell align="center">
-                      <Link href={`Request_Details/${item._id}`}>
-                        <Button>View</Button>
-                      </Link>
-                    </TableCell>
-                  </TableRow>
+                    </StyledTableCell>
+                    {/* contact  */}
+                    <StyledTableCell align="center">
+                      <Button
+                        onClick={() => {
+                          window.location.href = `tel:${item?.user.MobileNo?.toString()}`;
+                        }}
+                      >
+                        <IoCall className="mr-1" />
+                        Contact
+                      </Button>
+                    </StyledTableCell>
+                  </StyledTableRow>
                 ))}
               </TableBody>
             </Table>
-          </TableContainer> 
+          </TableContainer>
           <Pagination
             className="mt-5"
             count={totalPages}
@@ -115,7 +166,15 @@ const HiringRequest = () => {
             color="primary"
             onChange={handlePageChange}
           />
-        </>
+        </div>
+      ) : (
+        <div className="w-full flex-col gap-5 justify-center flex h-[500px] items-center mt-10">
+          <Image src={Empty} height={400} width={400}></Image>
+          <p className="text-2xl">No, Hiring request for you </p>
+          <Link href="/">
+            <Button>Home</Button>
+          </Link>
+        </div>
       )}
     </div>
   );

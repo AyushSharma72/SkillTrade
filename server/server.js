@@ -7,14 +7,6 @@ const WorkerRoutes = require("./routes/WorkerRoutes");
 const RequestRoutes = require("./routes/RequestRoutes");
 const AdminRoutes = require("./routes/AdminRoutes");
 
-process.on("uncaughtException", (err) => {
-  console.error("Uncaught Exception:", err);
-});
-
-process.on("unhandledRejection", (reason, promise) => {
-  console.error("Unhandled Rejection:", reason);
-});
-
 const app = express();
 
 //parse the data

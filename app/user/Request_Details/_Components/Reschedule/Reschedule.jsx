@@ -65,10 +65,7 @@ const Reschedule = ({ intialData }) => {
         </div>
       ) : (
         <div className="flex-col flex justify-around items-center sm:flex-col md:flex-row p-3">
-          <Toaster
-  position="bottom-center"
-  reverseOrder={false}
-/>
+          <Toaster position="bottom-center" reverseOrder={false} />
           <Backdrop
             sx={(theme) => ({ color: "#fff", zIndex: theme.zIndex.drawer + 1 })}
             open={loading}

@@ -140,27 +140,8 @@ const WorkerSchema = mongoose.Schema(
     },
     HireRequests: [
       {
-        user: {
-          type: Schema.Types.ObjectId,
-          ref: "Users",
-        },
-        description: {
-          type: String,
-        },
-        visitingDate: {
-          type: Date,
-        },
-        time: {
-          type: String,
-        },
-        status: {
-          type: String,
-          default: "Pending",
-          enum: ["Pending", "Accepted", "Rejected", "Completed"],
-        },
-        Creationdate: {
-          type: Date,
-        },
+        type: Schema.Types.ObjectId,
+        ref: "Requests",
       },
     ],
   },

@@ -27,7 +27,7 @@ const RequestSchema = new mongoose.Schema(
     coordinates: {
       type: {
         type: String,
-        enum: ["Point"], 
+        enum: ["Point"],
       },
       coordinates: {
         type: [Number], // Array of numbers for [longitude, latitude]
@@ -91,11 +91,16 @@ const RequestSchema = new mongoose.Schema(
       Deleted: {
         type: Boolean,
       },
-      Review:{
-        type:Boolean,
-        default:false
-      }
-      
+      Review: {
+        type: Boolean,
+        default: false,
+      },
+    },
+    personalRequestTo: {
+      worker: {
+        type: Schema.Types.ObjectId,
+        ref: "Workers",
+      },
     },
   },
   {

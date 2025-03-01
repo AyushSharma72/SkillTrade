@@ -2,6 +2,7 @@ const RequestModal = require("../modals/RequestModal");
 const WorkerModal = require("../modals/WorkerModal");
 const vader = require("vader-sentiment");
 const fs = require("fs").promises;
+const mongoose = require("mongoose")
 
 async function CreateRequest(req, resp) {
   try {
@@ -15,6 +16,7 @@ async function CreateRequest(req, resp) {
       coordinates,
       pincode,
       city,
+      workerid,
     } = req.fields;
 
     // Check if required fields are present
@@ -46,7 +48,6 @@ async function CreateRequest(req, resp) {
       }
     }
 
-    // Build request data
     const requestData = {
       user,
       service,
@@ -57,8 +58,9 @@ async function CreateRequest(req, resp) {
       pincode,
       city,
     };
-
-    // If geoCoordinates is defined, add it to the request data
+    if (workerid) {
+      requestData.personalRequestTo = workerid;
+    }
     if (geoCoordinates) {
       requestData.coordinates = {
         type: "Point",
@@ -66,7 +68,6 @@ async function CreateRequest(req, resp) {
       };
     }
 
-    // Save the request
     const request = await new RequestModal(requestData).save();
 
     // Handle image upload
@@ -75,6 +76,15 @@ async function CreateRequest(req, resp) {
       request.image.contentType = req.files.image.type;
       await fs.unlink(req.files.image.path);
       await request.save(); // Save the image
+    }
+
+    // add the request id to the worker for whome the request is created
+    if (workerid && mongoose.Types.ObjectId.isValid(workerid)) {
+      const worker = await WorkerModal.findById(workerid);
+      if (worker) {
+        worker.HireRequests.push(request?._id);
+        await worker.save();
+      }
     }
 
     return resp.status(201).send({

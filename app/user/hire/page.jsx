@@ -29,6 +29,7 @@ import { Textarea } from "@mui/joy";
 import { toast, Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { MdMyLocation } from "react-icons/md";
 
 const Hire = () => {
   const [workers, setWorkers] = useState([]);
@@ -36,7 +37,7 @@ const Hire = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [ServiceType, setServiceType] = useState("");
-  const [WorkerCoordinates, setWorkerCoordinates] = useState(null);
+  // const [WorkerCoordinates, setWorkerCoordinates] = useState(null);
   const [auth, setAuth] = useAuth();
   const [hireModal, setHireModal] = useState(false);
   const [workerid, SetWorkerId] = useState("");
@@ -45,6 +46,8 @@ const Hire = () => {
   const [backdrop, setBackDrop] = useState(false);
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [address, setAddress] = useState("");
+  const [useCurrentLocation, setUseCurrentLocation] = useState(false);
 
   // Function to get user location
   const getUserLocation = () => {
@@ -83,11 +86,6 @@ const Hire = () => {
       if (!coordinates) {
         coordinates = await getUserLocation();
       }
-
-      if (coordinates && auth) {
-        setWorkerCoordinates(coordinates);
-      }
-
       fetchWorkers(coordinates, pincode);
     };
 
@@ -144,34 +142,60 @@ const Hire = () => {
 
   async function SendHireRequest() {
     try {
+      if (useCurrentLocation) {
+        let storedCoordinates = localStorage.getItem("userCoordinates");
+        var coordinates = storedCoordinates
+          ? JSON.parse(storedCoordinates)
+          : null;
+      }
+
+      if (!address || !date || !time || !description) {
+        toast.error("All fields are required");
+        return;
+      }
+
       setBackDrop(true);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/users/hire/${workerid}/${auth?.user?._id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            description: description,
-            date: date,
-            time: time,
+            description,
+            date,
+            time,
+            address,
+            Coordinates: {
+              type: "Point",
+              coordinates: [coordinates.longitude, coordinates.latitude],
+            },
           }),
         }
       );
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        throw new Error("Invalid JSON response from server.");
+      }
 
       if (response.ok) {
         setHireModal(false);
-        toast.success(data.message);
+        toast.success(data.message || "Hire request sent successfully.");
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to send hire request.");
       }
     } catch (error) {
-      toast.error("error try again later");
+      console.error("Error in SendHireRequest:", error);
+      toast.error("Something went wrong. Please try again later.");
     } finally {
+      // Reset form fields
       SetDescription("");
       setDate(null);
       setTime(null);
+      setAddress(null);
       setBackDrop(false);
     }
   }
@@ -316,19 +340,28 @@ const Hire = () => {
                           View Profile
                         </Button>
                       </Link>
-                      <Button
-                        className="flex items-center gap-2  text-white px-4 py-2 rounded-lg shadow-md  transition"
-                        onClick={() => {
-                          handleOpenHireModal(worker._id, worker.Name);
-                        }}
+                      <Link
+                        href={`/user/create_request?id=${encodeURIComponent(
+                          worker._id
+                        )}&name=${encodeURIComponent(worker.Name)}&expertise=${encodeURIComponent(worker.ServiceType)}`}
                       >
-                        <FaHandshake />
-                        Hire
-                      </Button>
+                        {" "}
+                        <Button
+                          className="flex items-center gap-2  text-white px-4 py-2 rounded-lg shadow-md  transition"
+                          // onClick={() => {
+                          //   handleOpenHireModal(worker._id, worker.Name);
+                          // }}
+                        >
+                          <FaHandshake />
+                          Hire
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </div>
               ))}
+
+              {/* hire modal  */}
               <AlertDialog open={hireModal}>
                 <AlertDialogContent>
                   <AlertDialogHeader>
@@ -374,6 +407,28 @@ const Hire = () => {
                         className="w-full p-2 border rounded-md mt-1"
                         required
                       />
+                      {/* address input  */}
+                      <label className="block mt-4 text-sm font-medium text-gray-700">
+                        Address
+                      </label>
+                      <div className="relative">
+                        <input
+                          type="text"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          className="w-full p-2 border rounded-md mt-1"
+                          required
+                        />
+                        <MdMyLocation
+                          className={`absolute right-3 top-[40%] cursor-pointer text-lg text-black ${
+                            useCurrentLocation ? "text-blue-600" : null
+                          }`}
+                          title="get current location"
+                          onClick={() => {
+                            setUseCurrentLocation(!useCurrentLocation);
+                          }}
+                        />
+                      </div>
                     </AlertDialogDescription>
                   </AlertDialogHeader>
                   <AlertDialogFooter>

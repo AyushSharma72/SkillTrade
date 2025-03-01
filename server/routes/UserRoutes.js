@@ -13,7 +13,7 @@ const {
   SubmitForReview,
   SendEmailVerificationOtp,
   ListWorkers,
-  SendHireRequest,
+  // SendHireRequest,
 } = require("../controllers/UserController");
 
 const Isloggedin = require("../middleware/Isloggedin");
@@ -47,6 +47,6 @@ router.post("/SendEmailVerificationOtp", SendEmailVerificationOtp);
 
 router.post("/ListWorkers/:page", ListWorkers);
 
-router.post("/hire/:wid/:uid", SendHireRequest);
+// router.post("/hire/:wid/:uid", SendHireRequest);
 
 module.exports = router;
