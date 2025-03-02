@@ -97,10 +97,8 @@ const RequestSchema = new mongoose.Schema(
       },
     },
     personalRequestTo: {
-      worker: {
-        type: Schema.Types.ObjectId,
-        ref: "Workers",
-      },
+      type: Schema.Types.ObjectId,
+      ref: "Workers",
     },
   },
   {

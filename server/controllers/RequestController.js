@@ -2,7 +2,7 @@ const RequestModal = require("../modals/RequestModal");
 const WorkerModal = require("../modals/WorkerModal");
 const vader = require("vader-sentiment");
 const fs = require("fs").promises;
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
 
 async function CreateRequest(req, resp) {
   try {
@@ -232,6 +232,7 @@ async function GetAllRequests(req, resp) {
     const requests = await RequestModal.find({
       status: { $in: ["Accepted", "Pending"] },
       date: { $gte: currentDate },
+      personalRequestTo: { $exists: false },
     })
       .select("service location date status user coordinates")
       .skip((pagenumber - 1) * 5)
@@ -242,7 +243,6 @@ async function GetAllRequests(req, resp) {
         totalrequests,
         requests,
         success: true,
-        message: "all request fetched",
       });
     } else {
       return resp.status(200).send({

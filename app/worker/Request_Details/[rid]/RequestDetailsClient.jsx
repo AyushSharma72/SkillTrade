@@ -153,19 +153,20 @@ const RequestDetailsClient = ({
                     <FaAddressCard /> Address:
                   </span>
                   <p className="text-base">
-                    {WorkerCoordinates.latitude &&
-                    data.coordinates?.coordinates[1] ? (
-                      <a
-                        href={`https://www.google.com/maps?q=${data.coordinates?.coordinates[1]},${data.coordinates?.coordinates[0]}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 font-medium"
-                      >
-                        {data.location}
-                      </a>
-                    ) : (
-                      data.location
-                    )}
+                    <a
+                      href={
+                        data.coordinates?.coordinates[1]
+                          ? `https://www.google.com/maps?q=${data.coordinates?.coordinates[1]},${data.coordinates?.coordinates[0]}`
+                          : `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                              item.location
+                            )}`
+                      }
+                      target="_blank"
+                      className="text-blue-500"
+                    >
+                      {" "}
+                      {data.location}
+                    </a>
                   </p>
                 </div>
                 <hr />

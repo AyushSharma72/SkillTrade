@@ -103,7 +103,7 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
             <br></br>
             Reason:{WorkerData?.Verified.rejectedReason}
           </Alert>
-        ) : WorkerData?.Banned.ban ? (
+        ) : WorkerData?.Banned?.ban ? (
           <Alert severity="error" className="w-[73%] mt-5">
             {`Your profile was banned until ${new Date(
               WorkerData?.Banned?.tillDate

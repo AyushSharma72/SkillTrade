@@ -405,7 +405,7 @@ async function GetWorkerAcceptedRequest(req, resp) {
       return resp.status(400).json({ message: "Worker ID is required" });
     }
 
-    const page = parseInt(pagenumber, 10) || 1;
+    const page = parseInt(pagenumber, 10) || 1; 
     const limit = 5;
     const skip = (page - 1) * limit;
 
@@ -662,35 +662,134 @@ async function CheckBan(req, resp) {
 async function GetHiringRequest(req, resp) {
   try {
     const { wid } = req.params;
-    const { page = 1, limit = 5 } = req.query;
+    let { page = 1, limit = 5 } = req.query;
 
-    const worker = await WorkerModal.findById(wid)
-      .select("HireRequests")
-      .populate("HireRequests.user", "Name  MobileNo");
+    page = parseInt(page);
+    limit = parseInt(limit);
 
-    if (!worker) {
+    const worker = await WorkerModal.findById(wid).select("HireRequests");
+
+    if (!worker || !worker.HireRequests.length) {
       return resp.status(404).send({
         success: false,
-        message: "Worker not found",
+        message: "No requests found",
       });
     }
 
+    // for pagination
     const totalRequests = worker.HireRequests.length;
-    const paginatedRequests = worker.HireRequests.slice(
+    const totalPages = Math.ceil(totalRequests / limit);
+
+    const paginatedRequestsIds = worker.HireRequests.slice(
       (page - 1) * limit,
       page * limit
     );
 
+    const paginatedRequests = await RequestModal.find({
+      _id: { $in: paginatedRequestsIds },
+    })
+      .select("description time status location user coordinates")
+      .populate({
+        path: "user",
+        select: "Name MobileNo",
+      });
+
     return resp.status(200).send({
       success: true,
-      totalPages: Math.ceil(totalRequests / limit),
       hiringRequests: paginatedRequests,
+      totalPages,
+      currentPage: page,
     });
   } catch (error) {
-    console.log(error);
+    console.error("Error fetching hiring requests:", error);
     return resp.status(500).send({
       success: false,
       message: "Internal server error",
+    });
+  }
+}
+
+async function AcceptHiringRequest(req, resp) {
+  try {
+    const { wid, rid } = req.params;
+    const { EstimatedPrice, description } = req.body;
+
+    if (!wid || !rid) {
+      return resp.status(400).send({
+        success: false,
+        message: "Worker ID or Request ID is missing.",
+      });
+    }
+    if (!EstimatedPrice) {
+      return resp.status(400).send({
+        success: false,
+        message: "Estimated price is missing.",
+      });
+    }
+
+    const existingAcceptance = await RequestModal.findOne({
+      _id: rid,
+      "acceptedBy.worker": wid,
+    });
+
+    if (existingAcceptance) {
+      return resp.status(400).send({
+        success: false,
+        message: "You have already accepted this request",
+      });
+    }
+    const existingrequest = await RequestModal.findOne({ _id: rid });
+
+    if (
+      existingrequest.status === "Assigned" ||
+      existingrequest.status === "Deleted" ||
+      existingrequest.status === "Completed"
+    ) {
+      return resp.status(400).send({
+        success: false,
+        message: "This request cannot be accepted",
+      });
+    }
+
+    const date = new Date();
+    const updatedRequest = await RequestModal.findByIdAndUpdate(
+      rid,
+      {
+        $push: {
+          acceptedBy: {
+            worker: wid,
+            estimatedPrice: EstimatedPrice,
+            priceJustification: description,
+            acceptedAt: date,
+          },
+        },
+        status:
+          existingrequest.status == "Pending"
+            ? "Assigned"
+            : existingrequest.status,
+        assignedTo: wid,
+        confirmedAt: date,
+      },
+      { new: true }
+    );
+
+    if (!updatedRequest) {
+      return resp.status(404).send({
+        success: false,
+        message: "Request not found.",
+      });
+    }
+
+    return resp.status(200).send({
+      success: true,
+      message: "this request is assigned to you",
+      request: updatedRequest,
+    });
+  } catch (error) {
+    console.error(error);
+    return resp.status(500).send({
+      success: false,
+      message: "Internal server error.",
     });
   }
 }
@@ -710,4 +809,5 @@ module.exports = {
   RecommandedForYou,
   CheckBan,
   GetHiringRequest,
+  AcceptHiringRequest,
 };
