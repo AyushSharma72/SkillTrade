@@ -220,13 +220,8 @@ const HiringRequest = () => {
       )}
 
       {/* modal to accept request  */}
-      <Dialog
-        open={open}
-        onOpenChange={() => {
-          setOpen(false);
-        }}
-      >
-        <DialogContent className="w-[280px] sm:w-[400px]">
+      <Dialog open={open}>
+        <DialogContent className="w-[280px] sm:w-[400px]" hideClose>
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-bold">
               Accept Request

@@ -48,6 +48,4 @@ router.get("/CheckBan/:wid", CheckBan);
 
 router.get("/HiringRequest/:wid", GetHiringRequest);
 
-router.post("/AcceptHiringRequest/:wid/:rid", AcceptHiringRequest);
-
 module.exports = router;
