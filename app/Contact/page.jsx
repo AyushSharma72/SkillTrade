@@ -6,7 +6,7 @@ import {
   FaEnvelope,
   FaLinkedin,
 } from "react-icons/fa";
-
+import { toast,Toaster } from "react-hot-toast";
 import Image from "next/image";
 import Ayush from "../assests/Ayush2.jpg";
 import Footer from "../_components/Footer";
@@ -32,89 +32,23 @@ const ContactForm = () => {
         }
       );
       if (response.status === 200) {
-      
+        toast.success("We received your query");
         SetName("");
         SetEmail("");
         SetMessage("");
       } else {
-      
+        toast.error("Please try after some time");
       }
     } catch (error) {
-    
+      toast.error("Something went wrong");
     } finally {
       Setloading(false);
     }
-  }
-
-  return (
-    <div className="w-full max-w-md">
-      {" "}
-      <h1 className="text-4xl font-bold text-gray-800 mt-8 text-center">
-        Get in Touch
-      </h1>
-      <p className="text-gray-600 text-lg mb-6 text-center">
-        We are here for you. How can we help?
-      </p>
-      <form onSubmit={handleSubmit} className=" rounded-lg p-6 w-full max-w-md">
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-medium">
-            Name
-          </label>
-          <input
-            type="text"
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="name"
-            required
-            placeholder="Enter your name"
-            value={Name}
-            onChange={(e) => SetName(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 font-medium">
-            Email
-          </label>
-          <input
-            type="email"
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            id="email"
-            required
-            placeholder="Enter your email"
-            value={Email}
-            onChange={(e) => SetEmail(e.target.value)}
-          />
-        </div>
-        <div className="mb-4">
-          <label htmlFor="message" className="block text-gray-700 font-medium">
-            Message
-          </label>
-          <textarea
-            className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none "
-            id="message"
-            rows="4"
-            required
-            placeholder="Go ahead! We are listening..."
-            value={Message}
-            onChange={(e) => SetMessage(e.target.value)}
-          ></textarea>
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 rounded-lg"
-          disabled={loading}
-        >
-          {loading ? "Sending..." : "Submit"}
-        </button>
-      </form>
-    </div>
-  );
-};
-
-const Contact = () => {
+@@ -114,85 +114,85 @@
   return (
     <>
     <div className="flex flex-col items-center w-full px-4 mt-8">
-       
+        <Toaster/>
       <div className="flex flex-wrap justify-center gap-8 sm:w-3/4 p-3 bg-white shadow-lg mt-3">
         <ContactForm />
         <div className="flex flex-col p-3 rounded-lg">
