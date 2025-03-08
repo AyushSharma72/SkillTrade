@@ -27,27 +27,24 @@ export default function CheckLogin(WrappedComponent) {
             const data = await res.json();
             if (data.success) {
               setIsAuthenticated(true);
-              setLoading(false);
-            } else {
-              setIsAuthenticated(false);
-              setLoading(false);
             }
-          } else {
-            setIsAuthenticated(false);
-            setLoading(false);
           }
         } catch (error) {
-          setIsAuthenticated(false);
           console.error("Error checking authentication:", error);
+        } finally {
           setLoading(false);
         }
       };
 
-      if (localStorage.getItem("auth") && auth?.token) {
-        checkAuth();
-      } else {
-        setIsAuthenticated(false);
-        setLoading(false);
+      if (typeof window !== "undefined") {
+        // Ensure it's running on the client
+        const storedAuth = localStorage.getItem("auth");
+        if (storedAuth && auth?.token) {
+          checkAuth();
+        } else {
+          setIsAuthenticated(false);
+          setLoading(false);
+        }
       }
     }, [auth?.token, router]);
 
@@ -60,9 +57,9 @@ export default function CheckLogin(WrappedComponent) {
         </div>
       );
     }
+
     if (isAuthenticated) {
       router.push("/");
-
       return (
         <div className="flex justify-center w-100 h-screen items-center">
           <p className="font-bold text-3xl">Redirecting...</p>

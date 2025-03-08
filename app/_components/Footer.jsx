@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 const Footer = () => {
@@ -15,7 +16,9 @@ const Footer = () => {
 
           {/* Navigation Links */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-semibold md:text-center">Quick Links</h3>
+            <h3 className="text-lg font-semibold md:text-center">
+              Quick Links
+            </h3>
             <div className="flex gap-3 md:justify-center">
               {" "}
               <Link href="/" className="text-gray-400 hover:text-white">
