@@ -9,7 +9,7 @@ export default async function WorkerProfile({ params }) {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerData/${wid}`,
       {
-        cache: "no-store",
+        next: { revalidate: 60 },
       }
     );
 

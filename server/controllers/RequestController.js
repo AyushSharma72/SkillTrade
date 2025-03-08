@@ -58,7 +58,7 @@ async function CreateRequest(req, resp) {
       pincode,
       city,
     };
-    if (workerid) {
+    if (workerid && mongoose.Types.ObjectId.isValid(workerid)) {
       requestData.personalRequestTo = workerid;
     }
     if (geoCoordinates) {
@@ -92,6 +92,7 @@ async function CreateRequest(req, resp) {
       message: "Request created successfully",
       request,
     });
+    
   } catch (error) {
     console.error("Error creating request:", error);
     return resp.status(500).send({
