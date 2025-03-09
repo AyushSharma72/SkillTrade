@@ -1,7 +1,6 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
-import dynamic from "next/dynamic";
+import PulseLoader from "react-spinners/PulseLoader";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -10,35 +9,23 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Table,
-  TableBody,
-  TableContainer,
-  TableHead,
-  Box,
-  Modal,
-  Backdrop,
-  CircularProgress,
 } from "@mui/material";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
 import { Button } from "../../../components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 import { RxCross1 } from "react-icons/rx";
 import Empty from "../../assests/Empty.svg";
 import { style } from "../../_Arrays/Arrays";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import isAdmin from "@/app/_components/privateroutes/isAdmin";
 import { Textarea } from "@mui/joy";
-
-// Dynamic Imports
-const PulseLoader = dynamic(() => import("react-spinners/PulseLoader"), {
-  ssr: false,
-});
-const toast = dynamic(() => import("react-hot-toast"), { ssr: false });
-const Toaster = dynamic(
-  () => import("react-hot-toast").then((mod) => mod.Toaster),
-  { ssr: false }
-);
-const isAdmin = dynamic(
-  () => import("@/app/_components/privateroutes/isAdmin"),
-  { ssr: false }
-);
+import { toast, Toaster } from "react-hot-toast";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const Page = ({ role }) => {
   const [requests, setRequests] = useState([]);

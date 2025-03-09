@@ -1,18 +1,13 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
-import {
-  MdVerifiedUser,
-  MdOutlineLocationOn,
-  MdMyLocation,
-} from "react-icons/md";
+import { MdVerifiedUser, MdOutlineLocationOn } from "react-icons/md";
 import Rating from "@mui/material/Rating";
 import { Tag } from "antd";
 import { FaHandshake } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/_context/UserAuthContent";
 import Pagination from "@mui/material/Pagination";
 import Link from "next/link";
 import {
@@ -34,12 +29,7 @@ import { Textarea } from "@mui/joy";
 import { toast, Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
-
-// Dynamically import useAuth to avoid SSR issues
-const useAuth = dynamic(
-  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
-  { ssr: false }
-);
+import { MdMyLocation } from "react-icons/md";
 
 const Hire = () => {
   const [workers, setWorkers] = useState([]);
@@ -353,9 +343,7 @@ const Hire = () => {
                       <Link
                         href={`/user/create_request?id=${encodeURIComponent(
                           worker._id
-                        )}&name=${encodeURIComponent(
-                          worker.Name
-                        )}&expertise=${encodeURIComponent(worker.ServiceType)}`}
+                        )}&name=${encodeURIComponent(worker.Name)}&expertise=${encodeURIComponent(worker.ServiceType)}`}
                       >
                         {" "}
                         <Button

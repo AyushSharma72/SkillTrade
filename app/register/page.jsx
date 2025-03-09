@@ -1,16 +1,8 @@
 "use client";
-
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserRegisterForm from "../_components/register/UserRegisterForm";
 import WorkerRegisterForm from "../_components/register/WorkerRegisterForm";
-import dynamic from "next/dynamic";
-
-// Dynamically import CheckLogin to avoid SSR-related issues
-const CheckLogin = dynamic(
-  () => import("../_components/privateroutes/CheckLogin"),
-  { ssr: false }
-);
-
+import CheckLogin from "../_components/privateroutes/CheckLogin";
 const Register = () => {
   return (
     <div className="flex justify-center sm:mt-0 mt-20">
