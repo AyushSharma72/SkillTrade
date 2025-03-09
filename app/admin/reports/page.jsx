@@ -1,6 +1,7 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
-import PulseLoader from "react-spinners/PulseLoader";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -16,17 +17,30 @@ import {
   IconButton,
   Backdrop,
   CircularProgress,
+  Tooltip,
 } from "@mui/material";
 import { Button } from "../../../components/ui/button";
 import { MdDelete } from "react-icons/md";
 import { IoIosInformationCircle } from "react-icons/io";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import Empty from "../../assests/Empty.svg";
-import { toast, Toaster } from "react-hot-toast";
 import { StyledTableCell, style } from "../../_Arrays/Arrays";
 import { Textarea } from "@mui/joy";
-import isAdmin from "@/app/_components/privateroutes/isAdmin";
-import Tooltip from "@mui/material/Tooltip";
+
+// Dynamic Imports
+const PulseLoader = dynamic(() => import("react-spinners/PulseLoader"), {
+  ssr: false,
+});
+const toast = dynamic(() => import("react-hot-toast"), { ssr: false });
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
+const isAdmin = dynamic(
+  () => import("@/app/_components/privateroutes/isAdmin"),
+  { ssr: false }
+);
+
 import {
   AlertDialog,
   AlertDialogContent,
@@ -236,7 +250,9 @@ const Page = ({ role }) => {
                     Reports Count
                   </StyledTableCell>
                   <StyledTableCell align="center">Actions</StyledTableCell>
-                  <StyledTableCell align="center">Review Request</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Review Request
+                  </StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -299,32 +315,29 @@ const Page = ({ role }) => {
                       {/* Review Section */}
                       <StyledTableCell align="center">
                         {report.ReviewRequested ? (
-                        
-                            
-                            <div className="flex gap-4 justify-center items-center">
-                              <Button
-                                title="Approve the review"
-                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
-                                onClick={() => {
-                                  SetRequestId(report.requestId);
-                                  if (requestId) {
-                                    approveRequest();
-                                  }
-                                }}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                title="Reject the review"
-                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded"
-                                onClick={() => {
-                                  SetRequestId(report.requestId);
-                                  SetRejectReviewModal(true);
-                                }}
-                              >
-                                Reject
-                              </Button>
-                           
+                          <div className="flex gap-4 justify-center items-center">
+                            <Button
+                              title="Approve the review"
+                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
+                              onClick={() => {
+                                SetRequestId(report.requestId);
+                                if (requestId) {
+                                  approveRequest();
+                                }
+                              }}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              title="Reject the review"
+                              className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded"
+                              onClick={() => {
+                                SetRequestId(report.requestId);
+                                SetRejectReviewModal(true);
+                              }}
+                            >
+                              Reject
+                            </Button>
                           </div>
                         ) : (
                           <span className="text-gray-500">N/A</span>
@@ -399,7 +412,13 @@ const Page = ({ role }) => {
           <Typography variant="h5" className="mb-4 text-center">
             No Reported Requests
           </Typography>
-          <Image src={Empty} alt="No Data" width={500} height={400} className="sm:!w-[500px]  !w-[300px]"/>
+          <Image
+            src={Empty}
+            alt="No Data"
+            width={500}
+            height={400}
+            className="sm:!w-[500px]  !w-[300px]"
+          />
           <Link href="/">
             <Button className="mt-4">Go Home</Button>
           </Link>

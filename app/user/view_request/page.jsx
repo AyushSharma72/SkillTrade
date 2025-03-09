@@ -1,34 +1,33 @@
 "use client";
-import * as React from "react";
-import { useState, useEffect } from "react";
 
-
-import { useAuth } from "@/app/_context/UserAuthContent";
-import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
+import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-
 import { Button } from "@/components/ui/button";
 import Pagination from "@mui/material/Pagination";
 import { PulseLoader } from "react-spinners";
 import { Tag } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-
-
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
-
-
 import moment from "moment";
 import { Toaster, toast } from "react-hot-toast";
-
 import Image from "next/image";
 import Empty from "../../assests/Empty.svg";
+
+// Dynamically import useAuth and UserPrivateRoutes to prevent SSR issues
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
+const UserPrivateRoutes = dynamic(
+  () => import("../../_components/privateroutes/UserPrivateRoutes"),
+  { ssr: false }
+);
 
 function ViewRequest() {
   const [auth, setauth] = useAuth();

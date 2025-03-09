@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   TableContainer,
   Table,
@@ -13,10 +14,8 @@ import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import moment from "moment";
 import { toast, Toaster } from "react-hot-toast";
-import Empty from "../../assests/Empty.svg";
 import { Button } from "../../../components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
-import Image from "next/image";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +24,9 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+
+const Image = dynamic(() => import("next/image"), { ssr: false });
+const Empty = dynamic(() => import("../../assests/Empty.svg"), { ssr: false });
 
 const HiringRequest = () => {
   const [data, setData] = useState([]);

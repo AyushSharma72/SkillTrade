@@ -1,12 +1,13 @@
 "use client";
+
 import * as React from "react";
+import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import { useAuth } from "@/app/_context/UserAuthContent";
-import { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
@@ -18,18 +19,16 @@ import { PulseLoader } from "react-spinners";
 import Empty from "../../assests/Empty.svg";
 import Image from "next/image";
 import Link from "next/link";
-// import UserPrivateRoutes from "./../../_components/privateroutes/UserPrivateRoutes"; // use later
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import SmallScreennmodal from "./SmallScreenmodal";
 import Paper from "@mui/material/Paper";
+import Alert from "@mui/material/Alert";
 import {
   StyledTableCell,
   StyledTableRow,
   calculateDistance,
   marks,
 } from "../../_Arrays/Arrays";
-import Alert from "@mui/material/Alert";
 import RecommadedJobs from "./RecommadedJobs";
 import {
   Select,
@@ -41,6 +40,15 @@ import {
 import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { TbFilterSearch } from "react-icons/tb";
+
+// Dynamically import components to avoid SSR issues
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
+const SmallScreennmodal = dynamic(() => import("./SmallScreenmodal"), {
+  ssr: false,
+});
 
 function ViewRequest() {
   const [auth, setauth] = useAuth();

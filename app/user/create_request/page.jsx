@@ -1,5 +1,7 @@
 "use client";
+
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import Select from "react-select";
 import { Input, Textarea } from "@mui/joy";
 import { Button as CustomButton } from "@/components/ui/button";
@@ -11,17 +13,27 @@ import StepLabel from "@mui/material/StepLabel";
 import SvgIcon from "@mui/joy/SvgIcon";
 import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
-import { useAuth } from "@/app/_context/UserAuthContent";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { services, steps } from "../../_Arrays/Arrays";
 import success from "../../assests/success.svg";
 import Image from "next/image";
 import Link from "next/link";
-import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
 import { Toaster, toast } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
+
+// Dynamically import UserPrivateRoutes to prevent SSR issues
+const UserPrivateRoutes = dynamic(
+  () => import("../../_components/privateroutes/UserPrivateRoutes"),
+  { ssr: false }
+);
+
+// Dynamically import useAuth since it may rely on localStorage or window
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
 
 const CreateRequest = () => {
   //mui
@@ -140,7 +152,10 @@ const CreateRequest = () => {
       toast.error("All fields are required");
       return;
     }
-    if ((!location && !customLocation) || (!service && !customService && !defaultService)) {
+    if (
+      (!location && !customLocation) ||
+      (!service && !customService && !defaultService)
+    ) {
       toast.error("All fields are required");
       return;
     }

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
@@ -21,9 +22,19 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
 } from "@/components/ui/alert-dialog";
-import { StyledTableCell} from "../../_Arrays/Arrays";
-import toast, { Toaster } from "react-hot-toast";
-import isAdmin from "./../../_components/privateroutes/isAdmin";
+import { StyledTableCell } from "../../_Arrays/Arrays";
+
+// Dynamic Imports
+const toast = dynamic(() => import("react-hot-toast"), { ssr: false });
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
+const isAdmin = dynamic(
+  () => import("../../_components/privateroutes/isAdmin"),
+  { ssr: false }
+);
+
 import Empty from "../../assests/Empty.svg";
 import Image from "next/image";
 

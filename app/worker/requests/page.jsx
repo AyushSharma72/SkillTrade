@@ -1,12 +1,21 @@
 "use client";
 import React from "react";
 import { Tabs } from "antd";
-import AssignedRequest from "./_Components/AssignedRequest";
-import AcceptedRequest from "./_Components/AcceptedRequest";
-import CompletedRequest from "./_Components/CompletedRequest";
 import { FaCheck } from "react-icons/fa";
-import { MdAssignmentInd } from "react-icons/md";
-import { MdIncompleteCircle } from "react-icons/md";
+import { MdAssignmentInd, MdIncompleteCircle } from "react-icons/md";
+import dynamic from "next/dynamic";
+
+const AssignedRequest = dynamic(() => import("./_Components/AssignedRequest"), {
+  ssr: false,
+});
+const AcceptedRequest = dynamic(() => import("./_Components/AcceptedRequest"), {
+  ssr: false,
+});
+const CompletedRequest = dynamic(
+  () => import("./_Components/CompletedRequest"),
+  { ssr: false }
+);
+
 const WorkerRequests = () => {
   const items = [
     {
