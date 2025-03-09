@@ -1,92 +1,43 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import Pagination from "@mui/material/Pagination";
+import Collapse from "@mui/material/Collapse";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import { KeyboardArrowUp, KeyboardArrowDown } from "@mui/icons-material";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+} from "@/components/ui/alert-dialog";
+import { StyledTableCell } from "../../_Arrays/Arrays";
 
-// Dynamic Imports
-const Table = dynamic(() => import("@mui/material/Table"), { ssr: false });
-const TableBody = dynamic(() => import("@mui/material/TableBody"), {
-  ssr: false,
-});
-const TableContainer = dynamic(() => import("@mui/material/TableContainer"), {
-  ssr: false,
-});
-const TableHead = dynamic(() => import("@mui/material/TableHead"), {
-  ssr: false,
-});
-const TableRow = dynamic(() => import("@mui/material/TableRow"), {
-  ssr: false,
-});
-const Paper = dynamic(() => import("@mui/material/Paper"), { ssr: false });
-const Pagination = dynamic(() => import("@mui/material/Pagination"), {
-  ssr: false,
-});
-const Collapse = dynamic(() => import("@mui/material/Collapse"), {
-  ssr: false,
-});
-const Typography = dynamic(() => import("@mui/material/Typography"), {
-  ssr: false,
-});
-const IconButton = dynamic(() => import("@mui/material/IconButton"), {
-  ssr: false,
-});
-const { KeyboardArrowUp, KeyboardArrowDown } = dynamic(
-  () => import("@mui/icons-material"),
-  { ssr: false }
-);
-const Link = dynamic(() => import("next/link"), { ssr: false });
-const Image = dynamic(() => import("next/image"), { ssr: false });
+let toast, Toaster, isAdmin;
+if (typeof window !== "undefined") {
+  toast = require("react-hot-toast");
+  Toaster = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.Toaster),
+    { ssr: false }
+  );
+  isAdmin = dynamic(() => import("../../_components/privateroutes/isAdmin"), {
+    ssr: false,
+  });
+}
 
-const toast = dynamic(() => import("react-hot-toast"), { ssr: false });
-const Toaster = dynamic(
-  () => import("react-hot-toast").then((mod) => mod.Toaster),
-  { ssr: false }
-);
-
-const isAdmin = dynamic(
-  () => import("../../_components/privateroutes/isAdmin"),
-  { ssr: false }
-);
-const Empty = dynamic(() => import("../../assests/Empty.svg"), { ssr: false });
-
-const Button = dynamic(() => import("@/components/ui/button"), { ssr: false });
-const AlertDialog = dynamic(
-  () => import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialog),
-  { ssr: false }
-);
-const AlertDialogContent = dynamic(
-  () =>
-    import("@/components/ui/alert-dialog").then(
-      (mod) => mod.AlertDialogContent
-    ),
-  { ssr: false }
-);
-const AlertDialogHeader = dynamic(
-  () =>
-    import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogHeader),
-  { ssr: false }
-);
-const AlertDialogTitle = dynamic(
-  () =>
-    import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogTitle),
-  { ssr: false }
-);
-const AlertDialogDescription = dynamic(
-  () =>
-    import("@/components/ui/alert-dialog").then(
-      (mod) => mod.AlertDialogDescription
-    ),
-  { ssr: false }
-);
-const AlertDialogFooter = dynamic(
-  () =>
-    import("@/components/ui/alert-dialog").then((mod) => mod.AlertDialogFooter),
-  { ssr: false }
-);
-
-const StyledTableCell = dynamic(
-  () => import("../../_Arrays/Arrays").then((mod) => mod.StyledTableCell),
-  { ssr: false }
-);
+import Empty from "../../assests/Empty.svg";
+import Image from "next/image";
 
 const WorkersTable = ({ role }) => {
   const [workers, setWorkers] = useState([]);
