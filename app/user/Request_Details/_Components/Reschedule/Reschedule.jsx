@@ -9,9 +9,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import UpdateRequest from "../../_FetchFunction/EditRequest";
 import { useParams } from "next/navigation";
-import reschedule from "/reschedule.svg";
 import Image from "next/image";
-import completedimage from "/requestcompletedimage.svg";
 
 const Reschedule = ({ intialData }) => {
   const [loading, setLoading] = useState(false);
@@ -59,8 +57,10 @@ const Reschedule = ({ intialData }) => {
             }`}
           </p>
           <Image
-            src={completedimage}
-            className="lg:w-[400px] lg:h-[300px] w-[300px] h-[300px] md:w-[300px] md:h-[300px]"
+            src="/requestcompletedimage.svg"
+            className="lg:w-[400px] lg:h-[400px] w-[200px] h-[200px] md:w-[300px] md:h-[300px]"
+            width={400}
+            height={400}
           />
         </div>
       ) : (
@@ -74,8 +74,10 @@ const Reschedule = ({ intialData }) => {
           </Backdrop>
 
           <Image
-            src={reschedule}
+            src="/reschedule.svg"
             className="lg:w-[400px] lg:h-[400px] w-[200px] h-[200px] md:w-[300px] md:h-[300px]"
+            width={400}
+            height={400}
           />
           <div className="w-full sm:w-[90%] lg:w-1/2">
             <p className="font-bold text-2xl text-center">Reschedule Request</p>

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import demouserimage from "/demouserimage.jpg";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import Rating from "@mui/material/Rating";
 import { FaSquareWhatsapp } from "react-icons/fa6";
@@ -22,8 +21,10 @@ import Chip from "@mui/material/Chip";
 import Ratings from "./_Components/Ratings";
 import { useParams } from "next/navigation";
 import Lottie from "react-lottie";
-import animationData from ".././loading.json";
+import animationData from "../../_Arrays/loading.json";
 import Alert from "@mui/material/Alert";
+import Image from "next/image"
+
 
 const WorkerProfileClient = ({ IntialWorkerData }) => {
   const [open, setOpen] = useState(false);
@@ -143,15 +144,17 @@ const WorkerProfileClient = ({ IntialWorkerData }) => {
 
               <div className="flex flex-col justify-center items-center  gap-1 rounded-lg shadow-lg bg-white">
                 {" "}
-                <img
+                <Image
                   src={
                     imageError
-                      ? demouserimage // Fallback image if error occurs
+                      ? "/demouserimage.jpg" // Fallback image if error occurs
                       : `${process.env.NEXT_PUBLIC__BASE_URL}/api/v1/workers/GetWorkerImage/${wid}`
                   }
                   alt="Worker"
                   className="shadow-md !h-[200px] w-[200px] object-cover rounded-[50%]"
                   onError={() => setImageError(true)}
+                  width={200}
+                  height={200}
                 />
                 <div className="flex flex-col w-full pl-3 pb-3 gap-3">
                   {" "}

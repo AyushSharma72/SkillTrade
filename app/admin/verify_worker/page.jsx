@@ -242,7 +242,7 @@ const Page = ({ role }) => {
             No pending verification requests.
           </Typography>
           <Image
-            src="/Empty"
+            src="/Empty.svg"
             alt="No Data"
             width={500}
             height={400}

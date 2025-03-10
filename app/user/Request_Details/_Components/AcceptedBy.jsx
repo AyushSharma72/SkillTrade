@@ -263,7 +263,7 @@ function AcceptedBy() {
           <Typography variant="h5" className="mb-4">
             No Data
           </Typography>
-          <Image src="/Empty" alt="No Data" width={300} height={300} />
+          <Image src="/Empty.svg" alt="No Data" width={300} height={300} />
           <Link href="/">
             <Button variant="contained" color="primary" className="mt-4">
               Go Home

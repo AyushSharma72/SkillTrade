@@ -211,7 +211,7 @@ const HiringRequest = () => {
         </div>
       ) : (
         <div className="w-full flex-col gap-5 justify-center flex h-[500px] items-center mt-10">
-          <Image src="/Empty" height={400} width={400}></Image>
+          <Image src="/Empty.svg" height={400} width={400}></Image>
           <p className="text-2xl">No, Hiring request for you </p>
           <Link href="/">
             <Button>Home</Button>

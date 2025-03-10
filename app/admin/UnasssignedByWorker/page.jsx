@@ -299,7 +299,7 @@ const WorkersTable = ({ role }) => {
           <Typography variant="h5" className="mt-4 mb-4 text-center">
             No workers found with unassigned requests
           </Typography>
-          <Image src="/Empty" alt="No Data" width={500} height={400} />
+          <Image src="/Empty.svg" alt="No Data" width={500} height={400} />
           <Link href="/">
             <Button className="mt-4">Go Home</Button>
           </Link>

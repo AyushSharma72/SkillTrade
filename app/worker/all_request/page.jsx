@@ -41,11 +41,8 @@ import Box from "@mui/material/Box";
 import Slider from "@mui/material/Slider";
 import { TbFilterSearch } from "react-icons/tb";
 
-// Dynamically import components to avoid SSR issues
-const useAuth = dynamic(
-  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
-  { ssr: false }
-);
+import { useAuth } from "@/app/_context/UserAuthContent";
+
 const SmallScreennmodal = dynamic(() => import("./SmallScreenmodal"), {
   ssr: false,
 });
@@ -469,7 +466,7 @@ function ViewRequest() {
         ) : (
           <div className="sm:w-3/4 flex flex-col justify-center items-center">
             <p className="font-bold text-3xl text-center mt-10">No Data</p>
-            <Image src="/Empty" className="w-[400px] h-[400px] m-auto" />
+            <Image src="/Empty.svg" className="w-[400px] h-[400px] m-auto" width={400} height={400}/>
             <Link href="/">
               <Button>Home</Button>
             </Link>

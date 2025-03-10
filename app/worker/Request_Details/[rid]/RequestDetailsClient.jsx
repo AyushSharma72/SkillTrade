@@ -293,7 +293,7 @@ const RequestDetailsClient = ({
                 Request not found
               </Typography>
               <Image
-                src="/Empty"
+                src="/Empty.svg"
                 alt="No Data"
                 width={400}
                 height={400}
