@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
 import { Button } from "@/components/ui/button";
 import toast, { Toaster } from "react-hot-toast";
@@ -9,9 +9,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import UpdateRequest from "../../_FetchFunction/EditRequest";
 import { useParams } from "next/navigation";
-import reschedule from "../../../../assests/reschedule.svg";
+import reschedule from "/reschedule.svg";
 import Image from "next/image";
-import completedimage from "../../../../assests/requestcompletedimage.svg";
+import completedimage from "/requestcompletedimage.svg";
 
 const Reschedule = ({ intialData }) => {
   const [loading, setLoading] = useState(false);

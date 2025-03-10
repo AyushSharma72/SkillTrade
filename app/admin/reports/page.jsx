@@ -21,9 +21,9 @@ import { Button } from "../../../components/ui/button";
 import { MdDelete } from "react-icons/md";
 import { IoIosInformationCircle } from "react-icons/io";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import Empty from "../../assests/Empty.svg";
+
 import { toast, Toaster } from "react-hot-toast";
-import { StyledTableCell, style } from "../../_Arrays/Arrays";
+import { StyledTableCell } from "../../_Arrays/Arrays";
 import { Textarea } from "@mui/joy";
 import isAdmin from "@/app/_components/privateroutes/isAdmin";
 import Tooltip from "@mui/material/Tooltip";
@@ -399,7 +399,7 @@ const Page = ({ role }) => {
           <Typography variant="h5" className="mb-4 text-center">
             No Reported Requests
           </Typography>
-          <Image src={Empty} alt="No Data" width={500} height={400} className="sm:!w-[500px]  !w-[300px]"/>
+          <Image src="/Empty" alt="No Data" width={500} height={400} className="sm:!w-[500px]  !w-[300px]"/>
           <Link href="/">
             <Button className="mt-4">Go Home</Button>
           </Link>

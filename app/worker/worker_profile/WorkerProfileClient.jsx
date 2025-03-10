@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import demouserimage from "../../assests/demouserimage.jpg";
+import demouserimage from "/demouserimage.jpg";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import Rating from "@mui/material/Rating";
 import { FaSquareWhatsapp } from "react-icons/fa6";
@@ -22,7 +22,7 @@ import Chip from "@mui/material/Chip";
 import Ratings from "./_Components/Ratings";
 import { useParams } from "next/navigation";
 import Lottie from "react-lottie";
-import animationData from "../../assests/loading.json";
+import animationData from ".././loading.json";
 import Alert from "@mui/material/Alert";
 
 const WorkerProfileClient = ({ IntialWorkerData }) => {

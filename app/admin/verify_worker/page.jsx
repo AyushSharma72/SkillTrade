@@ -17,7 +17,7 @@ import TableHead from "@mui/material/TableHead";
 import { Button } from "../../../components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 import { RxCross1 } from "react-icons/rx";
-import Empty from "../../assests/Empty.svg";
+
 import { style } from "../../_Arrays/Arrays";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -242,7 +242,7 @@ const Page = ({ role }) => {
             No pending verification requests.
           </Typography>
           <Image
-            src={Empty}
+            src="/Empty"
             alt="No Data"
             width={500}
             height={400}

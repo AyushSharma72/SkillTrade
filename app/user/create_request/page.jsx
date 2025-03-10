@@ -15,7 +15,6 @@ import { useAuth } from "@/app/_context/UserAuthContent";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { services, steps } from "../../_Arrays/Arrays";
-import success from "../../assests/success.svg";
 import Image from "next/image";
 import Link from "next/link";
 import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
@@ -223,7 +222,7 @@ const CreateRequest = () => {
       {activeStep === steps.length ? (
         <div className="flex flex-col justify-center items-center gap-y-4 h-[500px]">
           <p className="font-bold text-2xl">Request submitted</p>
-          <Image src={success} className="w-[300px]"></Image>
+          <Image src="/success.svg" className="w-[300px]"></Image>
           <Link href="/user/view_request">
             <CustomButton>View request</CustomButton>
           </Link>

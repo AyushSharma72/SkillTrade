@@ -24,7 +24,7 @@ import {
 import { StyledTableCell} from "../../_Arrays/Arrays";
 import toast, { Toaster } from "react-hot-toast";
 import isAdmin from "./../../_components/privateroutes/isAdmin";
-import Empty from "../../assests/Empty.svg";
+
 import Image from "next/image";
 
 const WorkersTable = ({ role }) => {
@@ -299,7 +299,7 @@ const WorkersTable = ({ role }) => {
           <Typography variant="h5" className="mt-4 mb-4 text-center">
             No workers found with unassigned requests
           </Typography>
-          <Image src={Empty} alt="No Data" width={500} height={400} />
+          <Image src="/Empty" alt="No Data" width={500} height={400} />
           <Link href="/">
             <Button className="mt-4">Go Home</Button>
           </Link>

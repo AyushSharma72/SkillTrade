@@ -13,7 +13,7 @@ import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import moment from "moment";
 import { toast, Toaster } from "react-hot-toast";
-import Empty from "../../assests/Empty.svg";
+
 import { Button } from "../../../components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 import Image from "next/image";
@@ -211,7 +211,7 @@ const HiringRequest = () => {
         </div>
       ) : (
         <div className="w-full flex-col gap-5 justify-center flex h-[500px] items-center mt-10">
-          <Image src={Empty} height={400} width={400}></Image>
+          <Image src="/Empty" height={400} width={400}></Image>
           <p className="text-2xl">No, Hiring request for you </p>
           <Link href="/">
             <Button>Home</Button>

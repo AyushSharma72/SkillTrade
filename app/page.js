@@ -16,7 +16,7 @@ export default function Home() {
 
       <div
         className="flex items-center flex-col sm:h-[400px] h-[550px] justify-center
-       bg-[url('./assests/hero_backGround.webp')] bg-cover bg-center bg-no-repeat 
+       bg-[url('/hero_backGround.webp')] bg-cover bg-center bg-no-repeat 
        gap-7 sm:gap-5 p-3 sm:mt-0 mt-[70px]"
       >
         <h1 className="text-5xl sm:text-6xl font-bold font-sans text-white text-center">

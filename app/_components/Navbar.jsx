@@ -3,7 +3,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import logo from "../assests/logo.png";
+// import logo from "/logo.png";
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -91,9 +91,11 @@ const Navbar = () => {
       {/* navbar big screen  */}
       <div className="w-full  xl:w-3/4 justify-between sm:flex hidden">
         <Image
-          src={logo}
+          src="/logo.png"
           className="w-[200px] h-[70px]"
           alt="skill trade logo"
+          width={200}
+          height={70}
         ></Image>
         <div className=" xl:w-1/2 sm:w-1/2 flex items-center justify-around xl:justify-around font-bold">
           {auth?.user?.role == 0 ? (
@@ -216,7 +218,13 @@ const Navbar = () => {
               >
                 <MenuIcon />
               </IconButton>
-              <Image src={logo} className="w-[200px] h-[70px]" alt="Logo" />
+              <Image
+                src="/logo.png"
+                className="w-[200px] h-[70px]"
+                alt="Logo"
+                width={200}
+                height={70}
+              />
             </Toolbar>
           </AppBar>
           <Drawer
@@ -268,20 +276,17 @@ const Navbar = () => {
                   {/* hire  */}
                   <ListItem disablePadding>
                     <ListItemButton onClick={handleDrawerClose}>
-                      <Link 
-                    href="/user/hire"
-                    className={`${
-                      pathname === "/user/hire" ? "border-b-2 " : ""
-                    }`}
-                  >
-                   <ListItemIcon></ListItemIcon>
+                      <Link
+                        href="/user/hire"
+                        className={`${
+                          pathname === "/user/hire" ? "border-b-2 " : ""
+                        }`}
+                      >
+                        <ListItemIcon></ListItemIcon>
                         <ListItemText primary="Create Request" />
-                  </Link>
-                       
-                     
+                      </Link>
                     </ListItemButton>
                   </ListItem>
-                 
 
                   {/* dashboard  */}
                   <div className="flex justify-center ">

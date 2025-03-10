@@ -25,7 +25,7 @@ import AcceptRequest from "../_Modals/AcceptRequest";
 import { useAuth } from "@/app/_context/UserAuthContent";
 
 // Assets
-import Empty from "../../../assests/Empty.svg";
+
 
 const RequestDetailsClient = ({
   IntialRequestData,
@@ -293,7 +293,7 @@ const RequestDetailsClient = ({
                 Request not found
               </Typography>
               <Image
-                src={Empty}
+                src="/Empty"
                 alt="No Data"
                 width={400}
                 height={400}

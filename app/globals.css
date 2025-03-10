@@ -48,14 +48,14 @@ body::-webkit-scrollbar {
 }
 
 .swiper-button-next::after {
-  content: url("./assests/arrowsvgicon.svg") !important;
+  content: url("/arrowsvgicon.svg") !important;
   background-size: cover;
   display: flex;
   align-items: center;
 }
 
 .swiper-button-prev::after {
-  content: url("./assests/arrowsvgiconleft.svg") !important;
+  content: url("/arrowsvgiconleft.svg") !important;
   background-size: cover;
   display: flex;
   align-items: center;

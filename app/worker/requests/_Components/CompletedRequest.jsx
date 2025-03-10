@@ -13,7 +13,7 @@ import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-import Empty from "../../../assests/Empty.svg";
+
 import Image from "next/image";
 import { StyledTableCell, StyledTableRow } from "../../../_Arrays/Arrays";
 
@@ -142,7 +142,7 @@ const CompletedRequest = () => {
       ) : (
         <div className="w-full flex flex-col justify-center items-center">
           <p className="font-bold text-3xl text-center mt-10">No Data</p>
-          <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
+          <Image src="/Empty" className="w-[400px] h-[400px] m-auto" />
           <Link href="/">
             <Button>Home</Button>
           </Link>

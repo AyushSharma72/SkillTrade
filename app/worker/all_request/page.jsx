@@ -16,7 +16,7 @@ import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import Pagination from "@mui/material/Pagination";
 import { GetRequestFilteredData } from "./GetRequestFilteredData";
 import { PulseLoader } from "react-spinners";
-import Empty from "../../assests/Empty.svg";
+
 import Image from "next/image";
 import Link from "next/link";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -469,7 +469,7 @@ function ViewRequest() {
         ) : (
           <div className="sm:w-3/4 flex flex-col justify-center items-center">
             <p className="font-bold text-3xl text-center mt-10">No Data</p>
-            <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
+            <Image src="/Empty" className="w-[400px] h-[400px] m-auto" />
             <Link href="/">
               <Button>Home</Button>
             </Link>

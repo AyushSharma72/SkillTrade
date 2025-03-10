@@ -1,10 +1,10 @@
 "use client";
 import React, { useState } from "react";
-import Contactus from "../assests/contacus.jpg";
+import Contactus from "./contacus.jpg";
 import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
 import Image from "next/image";
-import Ayush from "../assests/Ayush2.jpg";
+import Ayush from "/Ayush2.jpg";
 import Footer from "../_components/Footer";
 
 const ContactForm = () => {

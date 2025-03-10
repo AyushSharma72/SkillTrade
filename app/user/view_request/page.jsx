@@ -28,7 +28,7 @@ import moment from "moment";
 import { Toaster, toast } from "react-hot-toast";
 
 import Image from "next/image";
-import Empty from "../../assests/Empty.svg";
+
 
 function ViewRequest() {
   const [auth, setauth] = useAuth();
@@ -163,7 +163,7 @@ function ViewRequest() {
       ) : (
         <div className="w-full flex flex-col justify-center items-center">
           <p className="font-bold text-3xl text-center mt-10">No Data</p>
-          <Image src={Empty} className="w-[400px] h-[400px] m-auto" />
+          <Image src="/Empty" className="w-[400px] h-[400px] m-auto" width={400} height={400}/>
           <Link href="/">
             <Button>Home</Button>
           </Link>

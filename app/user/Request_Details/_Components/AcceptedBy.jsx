@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import Pagination from "@mui/material/Pagination";
 import { GetAcceptedByData } from "../_FetchFunction/AcceptedByData";
 import { PulseLoader } from "react-spinners";
-import Empty from "../../../assests/Empty.svg";
+
 import Image from "next/image";
 import Link from "next/link";
 import Box from "@mui/material/Box";
@@ -263,7 +263,7 @@ function AcceptedBy() {
           <Typography variant="h5" className="mb-4">
             No Data
           </Typography>
-          <Image src={Empty} alt="No Data" width={300} height={300} />
+          <Image src="/Empty" alt="No Data" width={300} height={300} />
           <Link href="/">
             <Button variant="contained" color="primary" className="mt-4">
               Go Home
