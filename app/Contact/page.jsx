@@ -1,10 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import Contactus from "./contacus.jpg";
 import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
 import Image from "next/image";
-import Ayush from "/Ayush2.jpg";
 import Footer from "../_components/Footer";
 
 const ContactForm = () => {
@@ -115,7 +113,7 @@ const Contact = () => {
           <ContactForm />
           <div className="flex flex-col p-3 rounded-lg">
             <Image
-              src={Contactus}
+              src="./contacus.jpg"
               className="w-80 rounded-lg shadow-lg"
               alt="Contact Us"
             />
@@ -156,7 +154,7 @@ const Contact = () => {
         <p className="text-2xl font-bold text-gray-800 mt-10">Developed By</p>
         <div className="flex flex-col items-center mt-4">
           <Image
-            src={Ayush}
+            src="/Ayush2.jpg"
             alt="Ayush Sharma"
             className="w-32 h-32 rounded-full object-cover shadow-lg mb-4"
           />
