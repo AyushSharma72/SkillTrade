@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
+// import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
 // import { toast, Toaster } from "react-hot-toast";
-import Image from "next/image";
+// import Image from "next/image";
 import Footer from "../_components/Footer";
 
 const ContactForm = () => {
@@ -125,14 +125,14 @@ const Contact = () => {
                 href="mailto:asharma7588@gmail.com"
                 className=" text-lg flex items-center mt-2"
               >
-                <FaEnvelope className="text-xl mr-2" /> asharma7588@gmail.com
+                {/* <FaEnvelope className="text-xl mr-2" /> asharma7588@gmail.com */}
               </a>
 
               <a
                 href="mailto:Mohitsinghtadhiyal8@gmail.com"
                 className=" text-lg flex items-center mt-2"
               >
-                <FaEnvelope className="text-xl mr-2" />{" "}
+                {/* <FaEnvelope className="text-xl mr-2" />{" "} */}
                 Mohitsinghtadhiyal8@gmail.com
               </a>
 
@@ -142,7 +142,7 @@ const Contact = () => {
                   target="blank"
                   className="flex"
                 >
-                  <FaLinkedin className="text-2xl mr-2" /> Ayush Sharma
+                  {/* <FaLinkedin className="text-2xl mr-2" /> Ayush Sharma */}
                 </a>
               </div>
             </div>
@@ -166,20 +166,20 @@ const Contact = () => {
               target="_blank"
               className="bg-gray-800 text-white p-3 rounded-full"
             >
-              <FaGithub className="text-2xl" />
+              {/* <FaGithub className="text-2xl" /> */}
             </a>
             <a
               href="mailto:asharma7588@gmail.com"
               className="bg-red-500 text-white p-3 rounded-full"
             >
-              <FaEnvelope className="text-2xl" />
+              {/* <FaEnvelope className="text-2xl" /> */}
             </a>
             <a
               href="https://www.linkedin.com/in/ayush-sharma-a155a8267"
               target="_blank"
               className="bg-blue-700 text-white p-3 rounded-full"
             >
-              <FaLinkedin className="text-2xl" />
+              {/* <FaLinkedin className="text-2xl" /> */}
             </a>
           </div>
         </div>
