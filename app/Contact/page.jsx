@@ -113,7 +113,7 @@ const Contact = () => {
           <ContactForm />
           <div className="flex flex-col p-3 rounded-lg">
             <Image
-              src="./contacus.jpg"
+              src="/contacus.jpg"
               className="w-80 rounded-lg shadow-lg"
               alt="Contact Us"
             />
