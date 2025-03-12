@@ -112,11 +112,11 @@ const Contact = () => {
         <div className="flex flex-wrap justify-center gap-8 sm:w-3/4 p-3 bg-white shadow-lg mt-3">
           <ContactForm />
           <div className="flex flex-col p-3 rounded-lg">
-            <Image
+            {/* <Image
               src="/contacus.jpg"
               className="w-80 rounded-lg shadow-lg"
               alt="Contact Us"
-            />
+            /> */}
             <p className="text-xl font-semibold mt-4 mb-2 text-center">
               Contact us
             </p>
@@ -153,11 +153,11 @@ const Contact = () => {
 
         <p className="text-2xl font-bold text-gray-800 mt-10">Developed By</p>
         <div className="flex flex-col items-center mt-4">
-          <Image
+          {/* <Image
             src="/Ayush2.jpg"
             alt="Ayush Sharma"
             className="w-32 h-32 rounded-full object-cover shadow-lg mb-4"
-          />
+          /> */}
           <p className="text-lg font-semibold">Ayush Sharma</p>
           <p className="text-gray-600">Developer and Project Manager</p>
           <div className="flex mt-4 space-x-4">
