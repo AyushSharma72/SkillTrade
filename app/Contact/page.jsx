@@ -1,6 +1,4 @@
 "use client";
-export const dynamic = "force-dynamic"; // do not prerender this page
-
 import React, { useState } from "react";
 import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
 import dynamic from "next/dynamic";
