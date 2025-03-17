@@ -6,7 +6,10 @@ import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import toast, { Toaster } from "react-hot-toast";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useAuth } from "@/app/_context/UserAuthContent";
@@ -47,6 +50,7 @@ const LoginForm = () => {
   const [mobileNo, setMobileNo] = useState("");
 
   const verifyOtp = async () => {
+     const toast = (await import("react-hot-toast")).toast;
     if (!otp) {
       toast.error("OTP is required");
       return;
@@ -95,6 +99,7 @@ const LoginForm = () => {
 
   async function HandleLogin(event) {
     event.preventDefault();
+     const toast = (await import("react-hot-toast")).toast;
     setLoading(true); // Start loading
 
     // Create FormData from the form event
@@ -150,6 +155,7 @@ const LoginForm = () => {
   }
 
   async function SendOtp() {
+     const toast = (await import("react-hot-toast")).toast;
     try {
       SetSendingOtp(true);
       SetOtpGenerate(false);
@@ -283,7 +289,8 @@ const LoginForm = () => {
                 required
               />
               <Button
-                onClick={() => {
+                onClick={async () => {
+                   const toast = (await import("react-hot-toast")).toast;
                   if (email) {
                     generateOTP();
                     if (GeneratedOtp) {

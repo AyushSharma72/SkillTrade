@@ -14,14 +14,10 @@ const ContactForm = () => {
   const [Email, SetEmail] = useState("");
   const [Message, SetMessage] = useState("");
   const [loading, Setloading] = useState(false);
-  const toast = dynamic(
-    () => import("react-hot-toast").then((mod) => mod.toast),
-    {
-      ssr: false,
-    }
-  );
+
   async function handleSubmit(e) {
     e.preventDefault();
+    const toast = (await import("react-hot-toast")).toast;
     try {
       Setloading(true);
       const response = await fetch(

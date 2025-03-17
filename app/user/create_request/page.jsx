@@ -1,37 +1,29 @@
 "use client";
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
+import Select from "react-select";
 import { Input, Textarea } from "@mui/joy";
 import { Button as CustomButton } from "@/components/ui/button";
 import Button from "@mui/joy/Button";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
-import SvgIcon from "@mui/joy/SvgIcon";
 import StepLabel from "@mui/material/StepLabel";
+import SvgIcon from "@mui/joy/SvgIcon";
+import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
 import { useAuth } from "@/app/_context/UserAuthContent";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { services, steps } from "../../_Arrays/Arrays";
 import Image from "next/image";
 import Link from "next/link";
 import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
-import { useSearchParams } from "next/navigation";
-import Avatar from "@mui/material/Avatar";
-
-// Dynamically import problematic libraries
-const Select = dynamic(() => import("react-select"), { ssr: false });
-const DatePicker = dynamic(() => import("react-datepicker"), { ssr: false });
 const Toaster = dynamic(
   () => import("react-hot-toast").then((mod) => mod.Toaster),
   { ssr: false }
 );
-const toast = dynamic(
-  () => import("react-hot-toast").then((mod) => mod.toast),
-  { ssr: false }
-);
-
-// react-icons doesn't support dynamic import, so import this way
-import { MdDeleteOutline } from "react-icons/md";
+import { useSearchParams } from "next/navigation";
+import Avatar from "@mui/material/Avatar";
 
 const CreateRequest = () => {
   //mui
@@ -144,16 +136,14 @@ const CreateRequest = () => {
   };
 
   async function handleSubmit(e) {
+      const toast = (await import("react-hot-toast")).toast; 
     e.preventDefault();
 
     if (!description || !time || !date) {
       toast.error("All fields are required");
       return;
     }
-    if (
-      (!location && !customLocation) ||
-      (!service && !customService && !defaultService)
-    ) {
+    if ((!location && !customLocation) || (!service && !customService && !defaultService)) {
       toast.error("All fields are required");
       return;
     }
