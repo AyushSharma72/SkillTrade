@@ -13,9 +13,9 @@ import TimeLineServer from "../_Components/TimeLine/TimeLineServer";
 export default function Page({ params }) {
   const { rid } = params;
   
-  // if (!rid) {
-  //   return <p>Error: Request ID not found.</p>;
-  // }
+  if (!rid) {
+    return <p>Error: Request ID not found.</p>;
+  }
 
   const items = [
     {

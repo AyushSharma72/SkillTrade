@@ -10,7 +10,7 @@ import toast, { Toaster } from "react-hot-toast";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css"; 
+import "react-phone-input-2/lib/style.css";
 import { useAuth } from "@/app/_context/UserAuthContent";
 
 const UserRegisterForm = () => {
