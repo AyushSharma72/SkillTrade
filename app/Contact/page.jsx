@@ -3,7 +3,11 @@ export const dynamic = "force-dynamic"; // do not prerender this page
 
 import React, { useState } from "react";
 import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 import Image from "next/image";
 import Footer from "../_components/Footer";
 
@@ -12,7 +16,12 @@ const ContactForm = () => {
   const [Email, SetEmail] = useState("");
   const [Message, SetMessage] = useState("");
   const [loading, Setloading] = useState(false);
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   async function handleSubmit(e) {
     e.preventDefault();
     try {

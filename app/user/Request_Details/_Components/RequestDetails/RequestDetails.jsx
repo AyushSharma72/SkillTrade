@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import moment from "moment";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 
 // UI Components
 import { Tag, Image } from "antd";
@@ -59,7 +63,12 @@ const RequestDetails = ({ initialData, intialimage }) => {
   const [description, setDescription] = useState("");
   const [dateExpiredModal, SetdateExpiredModal] = useState(false);
   const [imageUrl, setImgUrl] = useState(intialimage);
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   function getLabelText(stars) {
     return `${stars} Star${stars !== 1 ? "s" : ""}, ${labels[stars]}`;
   }

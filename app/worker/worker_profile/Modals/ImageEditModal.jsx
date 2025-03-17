@@ -5,7 +5,11 @@ import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { Input } from "@mui/joy";
 import Button from "@mui/joy/Button";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 import SvgIcon from "@mui/joy/SvgIcon";
 import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
@@ -22,10 +26,18 @@ const ImageEditModal = ({ handleClose, GetWorkerData, data }) => {
   const [MobileNo, SetMobileNo] = useState(data.MobileNo);
   const [loading, setLoading] = useState(false);
   const [subServiceOptions, setSubServiceOptions] = useState([data.SubSerives]);
- const [selectedSubServices, setSelectedSubServices] = useState(
-   data.SubSerives.map((sub) => ({ value: sub, label: sub.replace(/_/g, " ") }))
- );
-
+  const [selectedSubServices, setSelectedSubServices] = useState(
+    data.SubSerives.map((sub) => ({
+      value: sub,
+      label: sub.replace(/_/g, " "),
+    }))
+  );
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   async function UpdateUser() {
     setLoading(true);
     try {

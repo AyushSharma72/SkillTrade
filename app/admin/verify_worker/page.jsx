@@ -23,7 +23,11 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import isAdmin from "@/app/_components/privateroutes/isAdmin";
 import { Textarea } from "@mui/joy";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -39,7 +43,12 @@ const Page = ({ role }) => {
   const [rejectionReason, setRejectionReason] = useState("");
   const [selectedId, SetSelectedId] = useState(null);
   const [backdrop, SetBackDrop] = useState(false);
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   const fetchPageData = async (page) => {
     setLoading(true);
     try {

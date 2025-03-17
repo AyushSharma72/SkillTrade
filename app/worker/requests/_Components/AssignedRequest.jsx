@@ -23,7 +23,11 @@ import {
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Textarea } from "@mui/joy";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 
 const AssignedRequest = () => {
   const [requests, setRequests] = useState([]);
@@ -34,7 +38,12 @@ const AssignedRequest = () => {
   const [pageNumber, SetPageNumber] = useState(1);
   const [unassignModal, SetunassignModal] = useState(false);
   const [description, setDescription] = useState("");
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   const handlePageChange = (event, value) => {
     SetPageNumber(value);
   };
@@ -189,10 +198,11 @@ const AssignedRequest = () => {
                     >
                       <Box sx={style} className="flex flex-col gap-1">
                         <p className="font-bold text-center">
-                          Are you sure you want to unassign yourself ?
-                          <br></br>
-                         <span className="!text-red-600">Warning: your profile may get banned for unassigning
-                          yourself multiple times without solid reason.</span> 
+                          Are you sure you want to unassign yourself ?<br></br>
+                          <span className="!text-red-600">
+                            Warning: your profile may get banned for unassigning
+                            yourself multiple times without solid reason.
+                          </span>
                         </p>{" "}
                         <div>
                           {" "}
@@ -241,7 +251,12 @@ const AssignedRequest = () => {
       ) : (
         <div className="w-full flex flex-col justify-center items-center">
           <p className="font-bold text-3xl text-center mt-10">No Data</p>
-          <Image src="/Empty.svg" className="w-[400px] h-[400px] m-auto" width={400} height={400}  />
+          <Image
+            src="/Empty.svg"
+            className="w-[400px] h-[400px] m-auto"
+            width={400}
+            height={400}
+          />
           <Link href="/">
             <Button>Home</Button>
           </Link>

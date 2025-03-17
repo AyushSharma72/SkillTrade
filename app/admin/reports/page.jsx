@@ -21,8 +21,12 @@ import { Button } from "../../../components/ui/button";
 import { MdDelete } from "react-icons/md";
 import { IoIosInformationCircle } from "react-icons/io";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 
-import { toast, Toaster } from "react-hot-toast";
 import { StyledTableCell } from "../../_Arrays/Arrays";
 import { Textarea } from "@mui/joy";
 import isAdmin from "@/app/_components/privateroutes/isAdmin";
@@ -48,7 +52,12 @@ const Page = ({ role }) => {
   const [rejectReviewModal, SetRejectReviewModal] = useState(false);
   const [requestId, SetRequestId] = useState("");
   const [info, SetInfo] = useState("");
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   useEffect(() => {
     fetchPageData(currentPage);
   }, [currentPage]);
@@ -236,7 +245,9 @@ const Page = ({ role }) => {
                     Reports Count
                   </StyledTableCell>
                   <StyledTableCell align="center">Actions</StyledTableCell>
-                  <StyledTableCell align="center">Review Request</StyledTableCell>
+                  <StyledTableCell align="center">
+                    Review Request
+                  </StyledTableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -299,32 +310,29 @@ const Page = ({ role }) => {
                       {/* Review Section */}
                       <StyledTableCell align="center">
                         {report.ReviewRequested ? (
-                        
-                            
-                            <div className="flex gap-4 justify-center items-center">
-                              <Button
-                                title="Approve the review"
-                                className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
-                                onClick={() => {
-                                  SetRequestId(report.requestId);
-                                  if (requestId) {
-                                    approveRequest();
-                                  }
-                                }}
-                              >
-                                Approve
-                              </Button>
-                              <Button
-                                title="Reject the review"
-                                className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded"
-                                onClick={() => {
-                                  SetRequestId(report.requestId);
-                                  SetRejectReviewModal(true);
-                                }}
-                              >
-                                Reject
-                              </Button>
-                           
+                          <div className="flex gap-4 justify-center items-center">
+                            <Button
+                              title="Approve the review"
+                              className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded"
+                              onClick={() => {
+                                SetRequestId(report.requestId);
+                                if (requestId) {
+                                  approveRequest();
+                                }
+                              }}
+                            >
+                              Approve
+                            </Button>
+                            <Button
+                              title="Reject the review"
+                              className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded"
+                              onClick={() => {
+                                SetRequestId(report.requestId);
+                                SetRejectReviewModal(true);
+                              }}
+                            >
+                              Reject
+                            </Button>
                           </div>
                         ) : (
                           <span className="text-gray-500">N/A</span>
@@ -399,7 +407,13 @@ const Page = ({ role }) => {
           <Typography variant="h5" className="mb-4 text-center">
             No Reported Requests
           </Typography>
-          <Image src="/Empty.svg" alt="No Data" width={500} height={400} className="sm:!w-[500px]  !w-[300px]"/>
+          <Image
+            src="/Empty.svg"
+            alt="No Data"
+            width={500}
+            height={400}
+            className="sm:!w-[500px]  !w-[300px]"
+          />
           <Link href="/">
             <Button className="mt-4">Go Home</Button>
           </Link>

@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { Input } from "@mui/joy";
-import Button from "@mui/joy/Button";
-import { toast, Toaster } from "react-hot-toast";
+import Button from "@mui/joy/Button";import dynamic from "next/dynamic";
+const Toaster = dynamic(() => import("react-hot-toast").then((mod) => mod.Toaster), { ssr: false }); 
 import SvgIcon from "@mui/joy/SvgIcon";
 import { MdDeleteOutline } from "react-icons/md";
 import { styled } from "@mui/joy";
@@ -20,7 +20,12 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [city, setCity] = useState(data.city);
   const [pincode, setPincode] = useState(data.pincode);
   const [backdrop, Setbackdrop] = useState(false);
-
+const toast = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.toast),
+  {
+    ssr: false,
+  }
+);
   const VisuallyHiddenInput = styled("input")`
     clip: rect(0 0 0 0);
     clip-path: inset(50%);

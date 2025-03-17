@@ -12,8 +12,11 @@ import { useAuth } from "@/app/_context/UserAuthContent";
 import { ClockCircleOutlined, CheckCircleOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import moment from "moment";
-import { toast, Toaster } from "react-hot-toast";
-
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 import { Button } from "../../../components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 import Image from "next/image";
@@ -36,6 +39,12 @@ const HiringRequest = () => {
   const [description, setDescription] = useState("");
   const [open, setOpen] = useState(false);
   const [uid, setUid] = useState(null);
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
 
   useEffect(() => {
     const fetchHiringRequests = async () => {

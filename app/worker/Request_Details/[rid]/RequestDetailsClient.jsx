@@ -3,7 +3,11 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import moment from "moment";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 
 // UI Components
 import { Button } from "../../../../components/ui/button";
@@ -26,7 +30,6 @@ import { useAuth } from "@/app/_context/UserAuthContent";
 
 // Assets
 
-
 const RequestDetailsClient = ({
   IntialRequestData,
   loadingstate,
@@ -46,7 +49,12 @@ const RequestDetailsClient = ({
   const handleClose = () => setOpen(false);
   const handleOpen2 = () => setOpen2(true);
   const handleClose2 = () => setOpen2(false);
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   useEffect(() => {
     const userCoordinates = JSON.parse(localStorage.getItem("userCoordinates"));
     if (userCoordinates) {

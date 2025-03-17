@@ -1,12 +1,18 @@
+"use client"
 import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import { Input } from "@mui/joy";
-import { Button } from "@/components/ui/button";
-import { toast, Toaster } from "react-hot-toast";
+import { Button } from "@/components/ui/button";import dynamic from "next/dynamic";
 import { style } from "../../_Arrays/Arrays";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 const ResetPassModal = ({ handleClose, email }) => {
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);

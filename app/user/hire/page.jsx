@@ -26,7 +26,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@mui/joy";
-import { toast, Toaster } from "react-hot-toast";
+import dynamic from "next/dynamic";
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { MdMyLocation } from "react-icons/md";
@@ -48,7 +52,12 @@ const Hire = () => {
   const [time, setTime] = useState("");
   const [address, setAddress] = useState("");
   const [useCurrentLocation, setUseCurrentLocation] = useState(false);
-
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   // Function to get user location
   const getUserLocation = () => {
     return new Promise((resolve, reject) => {
@@ -343,7 +352,9 @@ const Hire = () => {
                       <Link
                         href={`/user/create_request?id=${encodeURIComponent(
                           worker._id
-                        )}&name=${encodeURIComponent(worker.Name)}&expertise=${encodeURIComponent(worker.ServiceType)}`}
+                        )}&name=${encodeURIComponent(
+                          worker.Name
+                        )}&expertise=${encodeURIComponent(worker.ServiceType)}`}
                       >
                         {" "}
                         <Button
