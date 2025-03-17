@@ -7,6 +7,7 @@ import Button from "@mui/joy/Button";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
+import SvgIcon from "@mui/joy/SvgIcon";
 import StepLabel from "@mui/material/StepLabel";
 import { styled } from "@mui/joy";
 import { useAuth } from "@/app/_context/UserAuthContent";
