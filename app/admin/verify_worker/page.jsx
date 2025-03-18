@@ -1,5 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic";
+export const dynamicMode = "force-dynamic"; 
 import React, { useState, useEffect } from "react";
 import PulseLoader from "react-spinners/PulseLoader";
 import Image from "next/image";

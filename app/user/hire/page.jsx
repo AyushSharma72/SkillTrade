@@ -1,5 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic";
+export const dynamicMode = "force-dynamic"; 
 import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
