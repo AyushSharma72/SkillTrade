@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";

@@ -8,23 +8,30 @@ function AuthProvider({ children }) {
     user: null,
     token: "",
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const data = localStorage.getItem("auth");
+    // ✅ Check if window exists (Prevents SSR issues)
+    if (typeof window !== "undefined") {
+      const data = localStorage.getItem("auth");
 
-    if (data) {
-      try {
-        const parsedData = JSON.parse(data);
-        setAuth((prevAuth) => ({
-          ...prevAuth,
-          user: parsedData.user || parsedData.worker || null,
-          token: parsedData.token || "",
-        }));
-      } catch (error) {
-        console.error("Failed to parse auth data from localStorage:", error);
+      if (data) {
+        try {
+          const parsedData = JSON.parse(data);
+          setAuth((prevAuth) => ({
+            ...prevAuth,
+            user: parsedData.user || parsedData.worker || null,
+            token: parsedData.token || "",
+          }));
+        } catch (error) {
+          console.error("Failed to parse auth data from localStorage:", error);
+        }
       }
+      setLoading(false); 
     }
   }, []);
+
+  if (loading) return <div>Loading...</div>; // ✅ Prevents hydration mismatch
 
   return (
     <AuthContext.Provider value={[auth, setAuth]}>

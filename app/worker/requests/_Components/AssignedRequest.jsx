@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { FetchAssignedRequest } from "../_FetchFunction/FetchAssignedRequest";

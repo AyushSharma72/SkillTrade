@@ -1,3 +1,4 @@
+"use client"
 import React from "react";
 import Rating from "@mui/material/Rating";
 import moment from "moment";
