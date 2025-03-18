@@ -1,12 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["localhost"], // Add the domain you want to allow for external images
+    domains: ["localhost", "skill-trade-xi.vercel.app"], // Allow both localhost and production domain
   },
   reactStrictMode: false, // Disable StrictMode
-  // eslint:{
-  //   ignoreDuringBuildsx:true
-  // },
+  experimental: {
+    turboMode: false, // Disable Turbo if needed
+  },
+  output: "standalone", // Reduce deployment issues
+  compiler: {
+    removeConsole: true, // Prevent log-related errors
+  },
 };
-  
+
 export default nextConfig;
