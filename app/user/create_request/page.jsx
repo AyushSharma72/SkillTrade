@@ -52,6 +52,7 @@ const CreateRequest = () => {
   const defaultService = services.find((s) => s.value === expertise) || null;
   const minDate = new Date();
   const [auth, setAuth] = useAuth();
+  const [toast, setToast] = useState(null);
 
   const locations = [
     {
@@ -88,6 +89,9 @@ const CreateRequest = () => {
       setImage({ file, url: imageUrl });
     }
   };
+  useEffect(() => {
+    import("react-hot-toast").then((mod) => setToast(mod.toast));
+  }, []);
 
   const getHumanReadableAddress = async (latitude, longitude) => {
     try {
@@ -136,14 +140,16 @@ const CreateRequest = () => {
   };
 
   async function handleSubmit(e) {
-      const toast = (await import("react-hot-toast")).toast; 
     e.preventDefault();
-
+    if (!toast) return;
     if (!description || !time || !date) {
       toast.error("All fields are required");
       return;
     }
-    if ((!location && !customLocation) || (!service && !customService && !defaultService)) {
+    if (
+      (!location && !customLocation) ||
+      (!service && !customService && !defaultService)
+    ) {
       toast.error("All fields are required");
       return;
     }
