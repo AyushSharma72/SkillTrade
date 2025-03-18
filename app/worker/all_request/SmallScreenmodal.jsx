@@ -1,10 +1,12 @@
-"use client"
+"use client";
 import React from "react";
 import Box from "@mui/material/Box";
 import { Button } from "@/components/ui/button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Modal from "@mui/material/Modal";
+import Slider from "@mui/material/Slider";
+
 import {
   Select,
   SelectContent,
@@ -12,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Slider from "@mui/material/Slider";
+
 import { marks, style } from "../../_Arrays/Arrays";
 
 const SmallScreenmodal = ({

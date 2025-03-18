@@ -5,8 +5,8 @@ import AssignedRequest from "./_Components/AssignedRequest";
 import AcceptedRequest from "./_Components/AcceptedRequest";
 import CompletedRequest from "./_Components/CompletedRequest";
 import { FaCheck } from "react-icons/fa";
-import { MdAssignmentInd } from "react-icons/md";
-import { MdIncompleteCircle } from "react-icons/md";
+import { MdAssignmentInd, MdIncompleteCircle } from "react-icons/md";
+
 const WorkerRequests = () => {
   const items = [
     {

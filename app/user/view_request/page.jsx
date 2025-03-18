@@ -1,34 +1,31 @@
 "use client";
 import * as React from "react";
 import { useState, useEffect } from "react";
-
-
-import { useAuth } from "@/app/_context/UserAuthContent";
-import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
+import dynamic from "next/dynamic";
 import Link from "next/link";
-
-import { Button } from "@/components/ui/button";
-import Pagination from "@mui/material/Pagination";
-import { PulseLoader } from "react-spinners";
+import moment from "moment";
+import Image from "next/image";
 import { Tag } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-
-
+import { Toaster, toast } from "react-hot-toast";
+import Pagination from "@mui/material/Pagination";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
-
-
+import { PulseLoader } from "react-spinners";
+import { Button } from "@/components/ui/button";
 import { StyledTableCell, StyledTableRow } from "../../_Arrays/Arrays";
 
-
-import moment from "moment";
-import { Toaster, toast } from "react-hot-toast";
-
-import Image from "next/image";
-
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
+const UserPrivateRoutes = dynamic(
+  () => import("../../_components/privateroutes/UserPrivateRoutes"),
+  { ssr: false }
+);
 
 function ViewRequest() {
   const [auth, setauth] = useAuth();
@@ -163,7 +160,12 @@ function ViewRequest() {
       ) : (
         <div className="w-full flex flex-col justify-center items-center">
           <p className="font-bold text-3xl text-center mt-10">No Data</p>
-          <Image src="/Empty.svg" className="w-[400px] h-[400px] m-auto" width={400} height={400}/>
+          <Image
+            src="/Empty.svg"
+            className="w-[400px] h-[400px] m-auto"
+            width={400}
+            height={400}
+          />
           <Link href="/">
             <Button>Home</Button>
           </Link>

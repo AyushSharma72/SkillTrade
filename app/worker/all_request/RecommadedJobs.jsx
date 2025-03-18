@@ -1,16 +1,22 @@
-"use client"
+"use client";
 import React, { useState, useEffect } from "react";
-import { useAuth } from "@/app/_context/UserAuthContent";
+import dynamic from "next/dynamic";
+import moment from "moment";
+import Link from "next/link";
+import { FaChevronRight } from "react-icons/fa";
+
+import Divider from "@mui/material/Divider";
 import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import moment from "moment";
-import Divider from "@mui/material/Divider";
-import Link from "next/link";
-import { FaChevronRight } from "react-icons/fa";
+
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
 
 const RecommadedJobs = () => {
   const [auth, SetAuth] = useAuth();

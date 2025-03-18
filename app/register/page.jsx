@@ -1,9 +1,19 @@
 "use client";
-export const dynamicMode = "force-dynamic"; 
+import dynamic from "next/dynamic";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import UserRegisterForm from "../_components/register/UserRegisterForm";
-import WorkerRegisterForm from "../_components/register/WorkerRegisterForm";
-import CheckLogin from "../_components/privateroutes/CheckLogin";
+
+const UserRegisterForm = dynamic(
+  () => import("../_components/register/UserRegisterForm"),
+  { ssr: false }
+);
+const WorkerRegisterForm = dynamic(
+  () => import("../_components/register/WorkerRegisterForm"),
+  { ssr: false }
+);
+const CheckLogin = dynamic(
+  () => import("../_components/privateroutes/CheckLogin"),
+  { ssr: false }
+);
 
 const Register = () => {
   return (

@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-// import logo from "/logo.png";
+import dynamic from "next/dynamic"; // Import for dynamic imports
 import { styled, useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Drawer from "@mui/material/Drawer";
@@ -21,14 +21,23 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { useAuth } from "../_context/UserAuthContent";
-import Menu2 from "../_components/NavBarComponenets/menu";
-import WorkerMenu from "./NavBarComponenets/WorkerMenu";
-const drawerWidth = 240;
-import AdminMenu from "./NavBarComponenets/AdminMenu";
 import { Button } from "../../components/ui/button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
-import LogoutModal from "./NavBarComponenets/LogoutModal";
+
+// Dynamically import components with ssr: false to prevent document not found errors
+const LogoutModal = dynamic(() => import("./NavBarComponenets/LogoutModal"), {
+  ssr: false,
+});
+const Menu2 = dynamic(() => import("../_components/NavBarComponenets/menu"), {
+  ssr: false,
+});
+const WorkerMenu = dynamic(() => import("./NavBarComponenets/WorkerMenu"), {
+  ssr: false,
+});
+const AdminMenu = dynamic(() => import("./NavBarComponenets/AdminMenu"), {
+  ssr: false,
+});
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",

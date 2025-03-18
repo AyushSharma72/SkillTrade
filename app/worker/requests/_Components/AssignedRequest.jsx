@@ -1,30 +1,54 @@
-"use client"
+"use client";
+
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { useAuth } from "@/app/_context/UserAuthContent";
 import { FetchAssignedRequest } from "../_FetchFunction/FetchAssignedRequest";
-import { Button } from "@/components/ui/button";
 import moment from "moment";
 import { Tag } from "antd";
 import { CheckCircleOutlined, ClockCircleOutlined } from "@ant-design/icons";
-import Pagination from "@mui/material/Pagination";
 import { PulseLoader } from "react-spinners";
 import Link from "next/link";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-
 import Image from "next/image";
-import {
-  StyledTableCell,
-  StyledTableRow,
-  style,
-} from "../../../_Arrays/Arrays";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import { Textarea } from "@mui/joy";
-import dynamic from "next/dynamic";
+
+const { Button } = dynamic(() => import("@/components/ui/button"), {
+  ssr: false,
+});
+const Pagination = dynamic(() => import("@mui/material/Pagination"), {
+  ssr: false,
+});
+const Table = dynamic(() => import("@mui/material/Table"), { ssr: false });
+const TableBody = dynamic(() => import("@mui/material/TableBody"), {
+  ssr: false,
+});
+const TableContainer = dynamic(() => import("@mui/material/TableContainer"), {
+  ssr: false,
+});
+const TableHead = dynamic(() => import("@mui/material/TableHead"), {
+  ssr: false,
+});
+const TableRow = dynamic(() => import("@mui/material/TableRow"), {
+  ssr: false,
+});
+const Box = dynamic(() => import("@mui/material/Box"), { ssr: false });
+const Modal = dynamic(() => import("@mui/material/Modal"), { ssr: false });
+const Textarea = dynamic(() => import("@mui/joy").then((mod) => mod.Textarea), {
+  ssr: false,
+});
+
+const StyledTableCell = dynamic(
+  () => import("../../../_Arrays/Arrays").then((mod) => mod.StyledTableCell),
+  { ssr: false }
+);
+const StyledTableRow = dynamic(
+  () => import("../../../_Arrays/Arrays").then((mod) => mod.StyledTableRow),
+  { ssr: false }
+);
+const style = dynamic(
+  () => import("../../../_Arrays/Arrays").then((mod) => mod.style),
+  { ssr: false }
+);
+
 const Toaster = dynamic(
   () => import("react-hot-toast").then((mod) => mod.Toaster),
   { ssr: false }

@@ -1,17 +1,40 @@
 "use client";
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
+import dynamic from "next/dynamic";
+
+// Dynamically import components that might access `document`
+const TextField = dynamic(() => import("@mui/material/TextField"), {
+  ssr: false,
+});
+const IconButton = dynamic(() => import("@mui/material/IconButton"), {
+  ssr: false,
+});
+const InputAdornment = dynamic(() => import("@mui/material/InputAdornment"), {
+  ssr: false,
+});
+const Visibility = dynamic(() => import("@mui/icons-material/Visibility"), {
+  ssr: false,
+});
+const VisibilityOff = dynamic(
+  () => import("@mui/icons-material/VisibilityOff"),
+  { ssr: false }
+);
+const Backdrop = dynamic(() => import("@mui/material/Backdrop"), {
+  ssr: false,
+});
+const CircularProgress = dynamic(
+  () => import("@mui/material/CircularProgress"),
+  { ssr: false }
+);
+const PhoneInput = dynamic(() => import("react-phone-input-2"), { ssr: false });
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
+
 import { Button } from "@/components/ui/button";
-import IconButton from "@mui/material/IconButton";
-import InputAdornment from "@mui/material/InputAdornment";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import toast, { Toaster } from "react-hot-toast";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 import { useAuth } from "@/app/_context/UserAuthContent";
+import "react-phone-input-2/lib/style.css";
 
 const UserRegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);

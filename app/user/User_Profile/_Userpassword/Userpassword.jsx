@@ -3,11 +3,20 @@ import React, { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useAuth } from "../../../_context/UserAuthContent";
-import { UpdatePassword } from "./fetchfunction/UpdatePassword";
 import { Toaster, toast } from "react-hot-toast";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const useAuth = dynamic(
+  () => import("../../../_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
+const UpdatePassword = dynamic(
+  () =>
+    import("./fetchfunction/UpdatePassword").then((mod) => mod.UpdatePassword),
+  { ssr: false }
+);
 
 const UserPassword = () => {
   const [auth] = useAuth();

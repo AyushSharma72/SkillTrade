@@ -1,14 +1,22 @@
 "use client";
-export const dynamicMode = "force-dynamic"; 
 import React, { useState } from "react";
 import { FaGithub, FaEnvelope, FaLinkedin } from "react-icons/fa";
 import dynamic from "next/dynamic";
+
+// ✅ Dynamically import react-hot-toast
 const Toaster = dynamic(
   () => import("react-hot-toast").then((mod) => mod.Toaster),
-  { ssr: false }
+  {
+    ssr: false,
+  }
 );
-import Image from "next/image";
-import Footer from "../_components/Footer";
+
+// ✅ Dynamically import Next.js Image if needed
+const Image = dynamic(() => import("next/image"), { ssr: false });
+
+// ✅ Dynamically import Footer if it uses document/window
+const Footer = dynamic(() => import("../_components/Footer"), { ssr: false });
+
 
 const ContactForm = () => {
   const [Name, SetName] = useState("");

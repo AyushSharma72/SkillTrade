@@ -1,18 +1,46 @@
 "use client";
+
 import React, { useState } from "react";
-import Box from "@mui/material/Box";
-import { Input } from "@mui/joy";
-import Button from "@mui/joy/Button";import dynamic from "next/dynamic";
-const Toaster = dynamic(() => import("react-hot-toast").then((mod) => mod.Toaster), { ssr: false }); 
-import SvgIcon from "@mui/joy/SvgIcon";
-import { MdDeleteOutline } from "react-icons/md";
-import { styled } from "@mui/joy";
+import dynamic from "next/dynamic";
 import "react-datepicker/dist/react-datepicker.css";
-import { Button as CustomButton } from "@/components/ui/button";
-import { UpdateProfile } from "../_FetchFunction/UpdateUserProfile";
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { style } from "../../../_Arrays/Arrays";
+
+const Box = dynamic(() => import("@mui/material/Box"), { ssr: false });
+const Input = dynamic(() => import("@mui/joy").then((mod) => mod.Input), {
+  ssr: false,
+});
+const Button = dynamic(() => import("@mui/joy/Button"), { ssr: false });
+const SvgIcon = dynamic(() => import("@mui/joy/SvgIcon"), { ssr: false });
+const { MdDeleteOutline } = dynamic(() => import("react-icons/md"), {
+  ssr: false,
+});
+const { styled } = dynamic(() => import("@mui/joy"), { ssr: false });
+
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
+const CustomButton = dynamic(
+  () => import("@/components/ui/button").then((mod) => mod.Button),
+  { ssr: false }
+);
+
+const { UpdateProfile } = dynamic(
+  () => import("../_FetchFunction/UpdateUserProfile"),
+  { ssr: false }
+);
+
+const Backdrop = dynamic(() => import("@mui/material/Backdrop"), {
+  ssr: false,
+});
+const CircularProgress = dynamic(
+  () => import("@mui/material/CircularProgress"),
+  { ssr: false }
+);
+
+const style = dynamic(
+  () => import("../../../_Arrays/Arrays").then((mod) => mod.style),
+  { ssr: false }
+);
 
 const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [vimage, setImage] = useState(null);
@@ -20,12 +48,12 @@ const EditProfileModal = ({ handleClose, GetWorkerData, data }) => {
   const [city, setCity] = useState(data.city);
   const [pincode, setPincode] = useState(data.pincode);
   const [backdrop, Setbackdrop] = useState(false);
-const toast = dynamic(
-  () => import("react-hot-toast").then((mod) => mod.toast),
-  {
-    ssr: false,
-  }
-);
+  const toast = dynamic(
+    () => import("react-hot-toast").then((mod) => mod.toast),
+    {
+      ssr: false,
+    }
+  );
   const VisuallyHiddenInput = styled("input")`
     clip: rect(0 0 0 0);
     clip-path: inset(50%);

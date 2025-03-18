@@ -1,14 +1,28 @@
-"use client"
+"use client";
+
 import React from "react";
-import Rating from "@mui/material/Rating";
+import dynamic from "next/dynamic";
 import moment from "moment";
-import Avatar from "@mui/material/Avatar";
-import { EffectCoverflow, Pagination, Navigation } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+
+const Rating = dynamic(() => import("@mui/material/Rating"), { ssr: false });
+const Avatar = dynamic(() => import("@mui/material/Avatar"), { ssr: false });
+
+const { EffectCoverflow, Pagination, Navigation } = dynamic(
+  () => import("swiper/modules"),
+  { ssr: false }
+);
+
+const Swiper = dynamic(() => import("swiper/react").then((mod) => mod.Swiper), {
+  ssr: false,
+});
+const SwiperSlide = dynamic(
+  () => import("swiper/react").then((mod) => mod.SwiperSlide),
+  { ssr: false }
+);
 
 const Ratings = ({ Reviews }) => {
   return (

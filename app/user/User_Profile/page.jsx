@@ -1,11 +1,19 @@
 "use client";
 import React from "react";
 import { Tabs } from "antd";
-import Userinfo from "./_Userinfo/Userinfo";
-import UserPassword from "./_Userpassword/Userpassword";
 import { IoMdInformationCircle } from "react-icons/io";
 import { FaLock } from "react-icons/fa6";
-import UserPrivateRoutes from "@/app/_components/privateroutes/UserPrivateRoutes";
+import dynamic from "next/dynamic";
+
+const Userinfo = dynamic(() => import("./_Userinfo/Userinfo"), { ssr: false });
+const UserPassword = dynamic(() => import("./_Userpassword/Userpassword"), {
+  ssr: false,
+});
+const UserPrivateRoutes = dynamic(
+  () => import("@/app/_components/privateroutes/UserPrivateRoutes"),
+  { ssr: false }
+);
+
 const items = [
   {
     key: "1",

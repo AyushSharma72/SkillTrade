@@ -1,30 +1,47 @@
 "use client";
-import React, { useState } from "react";
-import { useAuth } from "@/app/_context/UserAuthContent";
-import Rating from "@mui/material/Rating";
-import { FaSquareWhatsapp } from "react-icons/fa6";
-import { FaSquarePhone } from "react-icons/fa6";
-import { FaCircleUser } from "react-icons/fa6";
-import { FaAddressCard } from "react-icons/fa";
-import { TbMapPinCode } from "react-icons/tb";
-import { PiCityFill } from "react-icons/pi";
-import { SiTicktick } from "react-icons/si";
-import { FaCheckCircle } from "react-icons/fa";
-import { IoIosTime } from "react-icons/io";
-import { FaEdit } from "react-icons/fa";
-import moment from "moment";
-import { Badge, Space } from "antd";
-import ModalComponent from "./_Components/Modal";
-import ImageEditModal from "./Modals/ImageEditModal";
-import EditProfileModal from "./Modals/EditProfileModal";
-import Chip from "@mui/material/Chip";
-import Ratings from "./_Components/Ratings";
-import { useParams } from "next/navigation";
-import Lottie from "react-lottie";
-import animationData from "../../_Arrays/loading.json";
-import Alert from "@mui/material/Alert";
-import Image from "next/image"
 
+import React, { useState } from "react";
+import dynamic from "next/dynamic";
+import { useAuth } from "@/app/_context/UserAuthContent";
+import { useParams } from "next/navigation";
+import moment from "moment";
+
+const Rating = dynamic(() => import("@mui/material/Rating"), { ssr: false });
+const {
+  FaSquareWhatsapp,
+  FaSquarePhone,
+  FaCircleUser,
+  FaAddressCard,
+  FaCheckCircle,
+  FaEdit,
+} = dynamic(() => import("react-icons/fa6"), { ssr: false });
+const { TbMapPinCode } = dynamic(() => import("react-icons/tb"), {
+  ssr: false,
+});
+const { PiCityFill } = dynamic(() => import("react-icons/pi"), { ssr: false });
+const { SiTicktick } = dynamic(() => import("react-icons/si"), { ssr: false });
+const { IoIosTime } = dynamic(() => import("react-icons/io"), { ssr: false });
+const { Badge, Space } = dynamic(() => import("antd"), { ssr: false });
+
+const ModalComponent = dynamic(() => import("./_Components/Modal"), {
+  ssr: false,
+});
+const ImageEditModal = dynamic(() => import("./Modals/ImageEditModal"), {
+  ssr: false,
+});
+const EditProfileModal = dynamic(() => import("./Modals/EditProfileModal"), {
+  ssr: false,
+});
+const Chip = dynamic(() => import("@mui/material/Chip"), { ssr: false });
+const Ratings = dynamic(() => import("./_Components/Ratings"), { ssr: false });
+
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
+const animationData = dynamic(() => import("../../_Arrays/loading.json"), {
+  ssr: false,
+});
+
+const Alert = dynamic(() => import("@mui/material/Alert"), { ssr: false });
+const Image = dynamic(() => import("next/image"), { ssr: false });
 
 const WorkerProfileClient = ({ IntialWorkerData }) => {
   const [open, setOpen] = useState(false);

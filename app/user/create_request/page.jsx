@@ -1,26 +1,42 @@
 "use client";
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import Select from "react-select";
-import { Input, Textarea } from "@mui/joy";
+import { Input, Textarea, SvgIcon, styled } from "@mui/joy";
 import { Button as CustomButton } from "@/components/ui/button";
 import Button from "@mui/joy/Button";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
-import SvgIcon from "@mui/joy/SvgIcon";
 import { MdDeleteOutline } from "react-icons/md";
-import { styled } from "@mui/joy";
-import { useAuth } from "@/app/_context/UserAuthContent";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { services, steps } from "../../_Arrays/Arrays";
 import Image from "next/image";
 import Link from "next/link";
-import UserPrivateRoutes from "../../_components/privateroutes/UserPrivateRoutes";
-import { toast, Toaster } from "react-hot-toast";
 import { useSearchParams } from "next/navigation";
 import Avatar from "@mui/material/Avatar";
+
+const services = dynamic(
+  () => import("../../_Arrays/Arrays").then((mod) => mod.services),
+  { ssr: false }
+);
+const steps = dynamic(
+  () => import("../../_Arrays/Arrays").then((mod) => mod.steps),
+  { ssr: false }
+);
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
+const UserPrivateRoutes = dynamic(
+  () => import("../../_components/privateroutes/UserPrivateRoutes"),
+  { ssr: false }
+);
+const Toaster = dynamic(
+  () => import("react-hot-toast").then((mod) => mod.Toaster),
+  { ssr: false }
+);
 
 const CreateRequest = () => {
   //mui

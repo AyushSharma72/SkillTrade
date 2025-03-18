@@ -1,32 +1,52 @@
 "use client";
 import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import { Button } from "@/components/ui/button";
-import IconButton from "@mui/material/IconButton";
 import dynamic from "next/dynamic";
+import { RxCross1 } from "react-icons/rx";
+import { useAuth } from "@/app/_context/UserAuthContent";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
+// ✅ MUI Imports
+import TextField from "@mui/material/TextField";
+import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+
+// ✅ Joy UI Imports
+import { Input } from "@mui/joy";
+
+// ✅ Ant Design Imports (Using Dynamic Import)
+const Typography = dynamic(() => import("antd").then((mod) => mod.Typography), {
+  ssr: false,
+});
+const { Title } = Typography;
+const Otp = dynamic(() => import("antd").then((mod) => mod.Input), {
+  ssr: false,
+});
+
+// ✅ External Library Imports
+const PhoneInput = dynamic(() => import("react-phone-input-2"), { ssr: false });
+import "react-phone-input-2/lib/style.css";
+
+// ✅ Custom Component Imports (Using Dynamic Import for Modal)
+const ModalComponent = dynamic(() => import("../Modal"), { ssr: false });
+const ResetPassModal = dynamic(() => import("./ResetPassModal"), {
+  ssr: false,
+});
+
+// ✅ Toaster (Prevent SSR Issues)
 const Toaster = dynamic(
   () => import("react-hot-toast").then((mod) => mod.Toaster),
   { ssr: false }
 );
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { useAuth } from "@/app/_context/UserAuthContent";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
-import { Input } from "@mui/joy";
-import { Typography } from "antd";
-import { Input as Otp } from "antd";
-const { Title } = Typography;
-import { RxCross1 } from "react-icons/rx";
+
+// ✅ Other Imports
 import { style } from "../../_Arrays/Arrays";
-import ModalComponent from "../Modal";
-import ResetPassModal from "./ResetPassModal";
-import Link from "next/link";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
 
 const LoginForm = () => {
   const [auth, SetAuth] = useAuth();
@@ -51,7 +71,7 @@ const LoginForm = () => {
   const [mobileNo, setMobileNo] = useState("");
 
   const verifyOtp = async () => {
-     const toast = (await import("react-hot-toast")).toast;
+    const toast = (await import("react-hot-toast")).toast;
     if (!otp) {
       toast.error("OTP is required");
       return;
@@ -100,7 +120,7 @@ const LoginForm = () => {
 
   async function HandleLogin(event) {
     event.preventDefault();
-     const toast = (await import("react-hot-toast")).toast;
+    const toast = (await import("react-hot-toast")).toast;
     setLoading(true); // Start loading
 
     // Create FormData from the form event
@@ -156,7 +176,7 @@ const LoginForm = () => {
   }
 
   async function SendOtp() {
-     const toast = (await import("react-hot-toast")).toast;
+    const toast = (await import("react-hot-toast")).toast;
     try {
       SetSendingOtp(true);
       SetOtpGenerate(false);
@@ -252,7 +272,10 @@ const LoginForm = () => {
             </div>
             <div className="w-full flex flex-col items-center gap-3">
               {" "}
-              <Button type="submit" className="sm:w-1/2 w-3/4 text-xl tracking-wider">
+              <Button
+                type="submit"
+                className="sm:w-1/2 w-3/4 text-xl tracking-wider"
+              >
                 Login
               </Button>
               <p>
@@ -291,7 +314,7 @@ const LoginForm = () => {
               />
               <Button
                 onClick={async () => {
-                   const toast = (await import("react-hot-toast")).toast;
+                  const toast = (await import("react-hot-toast")).toast;
                   if (email) {
                     generateOTP();
                     if (GeneratedOtp) {

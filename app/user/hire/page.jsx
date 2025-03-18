@@ -1,16 +1,12 @@
 "use client";
-export const dynamicMode = "force-dynamic"; 
+export const dynamicMode = "force-dynamic";
 import React, { useEffect, useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Chip from "@mui/material/Chip";
-import { MdVerifiedUser, MdOutlineLocationOn } from "react-icons/md";
 import Rating from "@mui/material/Rating";
-import { Tag } from "antd";
-import { FaHandshake } from "react-icons/fa";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/app/_context/UserAuthContent";
 import Pagination from "@mui/material/Pagination";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -27,14 +23,25 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Textarea } from "@mui/joy";
+import Backdrop from "@mui/material/Backdrop";
+import CircularProgress from "@mui/material/CircularProgress";
+import {
+  MdVerifiedUser,
+  MdOutlineLocationOn,
+  MdMyLocation,
+} from "react-icons/md";
+import { FaHandshake } from "react-icons/fa";
+import { Tag } from "antd";
 import dynamic from "next/dynamic";
+
+const useAuth = dynamic(
+  () => import("@/app/_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
 const Toaster = dynamic(
   () => import("react-hot-toast").then((mod) => mod.Toaster),
   { ssr: false }
 );
-import Backdrop from "@mui/material/Backdrop";
-import CircularProgress from "@mui/material/CircularProgress";
-import { MdMyLocation } from "react-icons/md";
 
 const Hire = () => {
   const [workers, setWorkers] = useState([]);

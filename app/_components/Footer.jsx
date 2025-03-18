@@ -1,6 +1,24 @@
 "use client";
-import Link from "next/link";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
+import dynamic from "next/dynamic";
+
+const Link = dynamic(() => import("next/link"), { ssr: false });
+const FaFacebook = dynamic(
+  () => import("react-icons/fa").then((mod) => mod.FaFacebook),
+  { ssr: false }
+);
+const FaTwitter = dynamic(
+  () => import("react-icons/fa").then((mod) => mod.FaTwitter),
+  { ssr: false }
+);
+const FaInstagram = dynamic(
+  () => import("react-icons/fa").then((mod) => mod.FaInstagram),
+  { ssr: false }
+);
+const FaLinkedin = dynamic(
+  () => import("react-icons/fa").then((mod) => mod.FaLinkedin),
+  { ssr: false }
+);
+
 const Footer = () => {
   return (
     <footer className="bg-gray-900 text-white py-6 mt-8">

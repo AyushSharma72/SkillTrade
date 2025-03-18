@@ -2,9 +2,6 @@
 import React, { useState, useEffect } from "react";
 import Input from "@mui/joy/Input";
 import { Button } from "@/components/ui/button";
-import { GetUserInfo } from "./fetchfunction/GetUserInfo";
-import { useAuth } from "../../../_context/UserAuthContent";
-import { UpdateUserInfo } from "./fetchfunction/UpdateUserInfo";
 import { Toaster, toast } from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,9 +16,23 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Input as Otp } from "antd";
-import { Typography } from "antd";
+import { Input as Otp, Typography } from "antd";
+import dynamic from "next/dynamic";
+
 const { Title } = Typography;
+const GetUserInfo = dynamic(
+  () => import("./fetchfunction/GetUserInfo").then((mod) => mod.GetUserInfo),
+  { ssr: false }
+);
+const UpdateUserInfo = dynamic(
+  () =>
+    import("./fetchfunction/UpdateUserInfo").then((mod) => mod.UpdateUserInfo),
+  { ssr: false }
+);
+const useAuth = dynamic(
+  () => import("../../../_context/UserAuthContent").then((mod) => mod.useAuth),
+  { ssr: false }
+);
 
 const Userinfo = () => {
   const [auth, setAuth] = useAuth();
