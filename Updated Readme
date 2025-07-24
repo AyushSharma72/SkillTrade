@@ -1,0 +1,71 @@
+🤝 SkillTrade
+SkillTrade is a peer-to-peer platform where individuals can exchange skills and knowledge with each other. Whether it's coding for cooking or design for digital marketing, SkillTrade connects learners and experts to trade talents without money.
+
+🚀 Features
+👤 User Functionality
+🔍 Discover Skills: Browse available skills offered by other users.
+
+🤝 Offer a Skill: List your expertise to trade with others.
+
+🔄 Skill Exchange: Connect with users and propose mutually beneficial exchanges.
+
+💬 In-App Messaging: Chat securely with potential skill partners.
+
+⭐ Ratings & Reviews: Leave feedback to build a trustworthy community.
+
+🛠️ Admin Functionality
+👥 User Management: Monitor user activities and resolve conflicts.
+
+🚫 Report & Moderate: Handle abuse reports and content moderation.
+
+📊 Analytics Dashboard: View platform usage statistics and trends.
+
+💡 Tech Stack
+Technology	Description
+Frontend	React.js, Tailwind CSS
+Backend	Node.js, Express.js
+Database	MongoDB
+Authentication	JWT-based Auth
+Realtime Chat	Socket.io
+Deployment	Render / Vercel / Heroku
+
+🔧 Installation
+bash
+Copy
+Edit
+# Clone the repository
+git clone https://github.com/your-username/skilltrade.git
+cd skilltrade
+
+# Install server dependencies
+cd server
+npm install
+
+# Install client dependencies
+cd ../client
+npm install
+
+# Start both servers
+npm run dev
+🌐 Live Demo
+🌍 Visit SkillTrade Live
+
+📸 Screenshots
+Browse Skills	Chat System	Skill Profile
+
+🤝 Contributing
+We welcome contributions! To contribute:
+
+Fork the repo
+
+Create your feature branch (git checkout -b feature/YourFeature)
+
+Commit your changes (git commit -m 'Add some feature')
+
+Push to the branch (git push origin feature/YourFeature)
+
+Open a pull request
+
+📄 License
+MIT License © 2025 [Your Name]
+
